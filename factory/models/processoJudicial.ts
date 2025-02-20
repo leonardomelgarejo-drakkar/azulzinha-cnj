@@ -1,4 +1,4 @@
-import { DataRequest } from "../helper/util/DataRequest";
+import { DataRequest } from "../../helper/util/DataRequest";
 
 export class ProcessoJudicial {
   constructor(
