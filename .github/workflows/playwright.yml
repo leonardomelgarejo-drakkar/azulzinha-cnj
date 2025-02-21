@@ -9,7 +9,6 @@ on:
 permissions:
   contents: read
   pages: write
-  id-token: write
 
 jobs:
   test:
@@ -69,10 +68,17 @@ jobs:
           name: cucumber-test-report
           path: test-results
 
-      - name: Publish Test Report to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: test-results
+      - name: Create gh-pages branch if not exists
+        run: |
+          git fetch origin gh-pages || git checkout --orphan gh-pages
+          git reset --hard
+          git commit --allow-empty -m "Initialize GitHub Pages"
+          git push origin gh-pages
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: test-results
+          publish_branch: gh-pages
+          force_orphan: true
