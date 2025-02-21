@@ -83,7 +83,7 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.DRAKKAR_TEST_AUTOMATION }}
           publish_dir: test-results
           publish_branch: gh-pages
           force_orphan: true
