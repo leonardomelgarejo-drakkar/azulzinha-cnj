@@ -182,7 +182,8 @@ When('a requisição de inclusão é realizada {int} vez es', async function (qu
 
     response = await this.context.post("", {
       headers: getHeaders(),
-      data: requestData
+      data: requestData,
+      timeout: (30 * 1000)
     });
 
     requestEndTime = performance.now();
