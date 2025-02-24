@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
 
 jobs:
@@ -84,3 +84,11 @@ jobs:
             git commit --allow-empty -m "Initialize GitHub Pages"
             git push origin gh-pages
           fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: test-results
+          publish_branch: gh-pages
+          force_orphan: true
