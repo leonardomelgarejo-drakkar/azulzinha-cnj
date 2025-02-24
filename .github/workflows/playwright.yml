@@ -21,8 +21,7 @@ jobs:
       - name: Set up test data
         run: |
           mkdir -p helper/util/test-data  # Cria o diretório caso não exista
-          echo "userName=${{ secrets.USER_NAME }}" > helper/util/test-data/registerUser.json
-          echo "password=${{ secrets.PASSWORD }}" >> helper/util/test-data/registerUser.json
+          echo "{\"userName\":\"${{ secrets.USER_NAME }}\", \"password\":\"${{ secrets.PASSWORD }}\"}" > helper/util/test-data/registerUser.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
