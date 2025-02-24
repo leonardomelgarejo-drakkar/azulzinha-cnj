@@ -73,14 +73,14 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
-          - name: Create gh-pages branch if not exists
-          run: |
-            git fetch origin gh-pages || echo "Branch gh-pages ainda não existe"
-            if git show-ref --verify --quiet refs/heads/gh-pages; then
-              git checkout gh-pages
-            else
-              git checkout --orphan gh-pages
-              git reset --hard
-              git commit --allow-empty -m "Initialize GitHub Pages"
-              git push origin gh-pages
-            fi
+      - name: Create gh-pages branch if not exists
+        run: |
+          git fetch origin gh-pages || echo "Branch gh-pages ainda não existe"
+          if git show-ref --verify --quiet refs/heads/gh-pages; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+            git reset --hard
+            git commit --allow-empty -m "Initialize GitHub Pages"
+            git push origin gh-pages
+          fi
