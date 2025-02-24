@@ -167,8 +167,8 @@ Given('o usuário preenche o nome do depositante com muitos caracteres', async f
 });
 
 When('a requisição de inclusão é realizada {int} vez es', async function (quantidadeExecucoes) {
-  baseURL = "https://dev.azulzinhapay.fiserv.com/CNJ_API/rest/CNJ";
-  resourcePath = "/CadastroCobrancaDepositoJudicial";
+  baseURL = process.env.BASEURL;
+  resourcePath = process.env.RESOURCE_PATH_DEPOSITO_JUDICIAL;
   url = `${baseURL}${resourcePath}`;
 
   context = await request.newContext({
@@ -183,7 +183,7 @@ When('a requisição de inclusão é realizada {int} vez es', async function (qu
     response = await this.context.post("", {
       headers: getHeaders(),
       data: requestData,
-      timeout: (30 * 1000)
+      timeout: (10 * 1000)
     });
 
     requestEndTime = performance.now();
