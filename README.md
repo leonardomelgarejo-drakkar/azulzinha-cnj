@@ -1,3 +1,5 @@
+![CI Status](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/playwright.yml/badge.svg)
+
 # Projeto de automação de testes de API e WEB do projeto Azulzinha - CNJ
 
 ## Descrição
@@ -49,7 +51,7 @@ Ao rodar os testes (conforme tópico anterior), dois arquivos são criados na pa
 Para visualizar o relatório HTML, basta abrir o arquivo `cucumber-report.html` no navegador. 🚀
 
 ### 📍 Execução Remota  
-A geração de relatórios para execuções remotas está em fase de manutenção e será integrada à pipeline CI/CD. O objetivo é disponibilizá-los via GitHub Actions/GitLab Pages/Allure Report (escolha a ferramenta usada no projeto). 🔧
+A geração de relatórios para execuções remotas está em fase de manutenção e será integrada à pipeline CI/CD. O objetivo é disponibilizá-los via GitHub Actions. O relatório gerado pode ser acessado no [CUCUMBER REPORT](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/).
 
 ## Estrutura do projeto
 
@@ -158,7 +160,9 @@ O arquivo tsconfig.json é usado para configurar o compilador TypeScript (tsc).
 
 ## Pipeline
 
-A configuração da pipeline para execuções remotas está em fase de manutenção. Atualizações serão disponibilizadas em breve. 🔧
+Atualmente, a pipeline CI inclui os seguintes steps:
+- **test**: Execução dos testes automatizados.
+- **deploy-report**: Deploy do relatório de testes para o GitHub Pages.
 
 ### 📦 Dependências Principais  
 
