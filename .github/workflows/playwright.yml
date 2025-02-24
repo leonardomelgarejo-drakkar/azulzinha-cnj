@@ -20,10 +20,8 @@ jobs:
 
       - name: Set up test data
         run: |
-          echo '{
-            "userName": "${{ secrets.USER_NAME }}",
-            "password": "${{ secrets.PASSWORD }}"
-          }' > helper/util/test-data/registerUser.json
+          echo "userName=${{ secrets.USER_NAME }}" > helper/util/test-data/registerUser.json
+          echo "password=${{ secrets.PASSWORD }}" >> helper/util/test-data/registerUser.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
