@@ -88,6 +88,13 @@ jobs:
       - name: Rename Cucumber Report to index.html
         run: cp test-results/cucumber-report.html test-results/index.html
 
+      - name: Update gh-pages before push
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull --rebase origin gh-pages
+      
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
