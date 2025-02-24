@@ -18,6 +18,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up test data
+        run: |
+          echo '{
+            "userName": "${{ secrets.USER_NAME }}",
+            "password": "${{ secrets.PASSWORD }}"
+          }' > helper/util/test-data/registerUser.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -93,7 +100,6 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
           git pull --rebase origin gh-pages
-      
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
