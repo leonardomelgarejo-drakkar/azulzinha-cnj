@@ -20,37 +20,29 @@ jobs:
 
       - name: Set up test data
         run: |
-          mkdir -p helper/util/test-data  # Cria o diretório caso não exista
-          echo "{\"userName\":\"${{ secrets.USER_NAME }}\", \"password\":\"${{ secrets.PASSWORD }}\"}" > helper/util/test-data/registerUser.json
+          if [ ! -f helper/util/test-data/registerUser.json ]; then
+            mkdir -p helper/util/test-data
+            echo "{\"userName\":\"${{ secrets.USER_NAME }}\", \"password\":\"${{ secrets.PASSWORD }}\"}" > helper/util/test-data/registerUser.json
+          fi
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: 'npm'
+      - name: Setup Node.js and Playwright
+        run: |
+          npx playwright install --with-deps
+          npm ci
 
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}-${{ hashFiles('package.json') }}-${{ matrix.node-version }}
           restore-keys: |
-            ${{ runner.os }}-node-
-            
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+            ${{ runner.os }}-node-${{ matrix.node-version }}-
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
 
       - name: Run Cucumber tests
         run: npm test
-
-      - name: List test results directory (debug)
-        run: ls -la test-results
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
@@ -64,40 +56,14 @@ jobs:
     needs: test
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Download Test Report
         uses: actions/download-artifact@v4
         with:
           name: cucumber-test-report
           path: test-results
 
-      - name: Configure Git identity
-        run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-
-      - name: Create gh-pages branch if not exists
-        run: |
-          git fetch origin gh-pages || echo "Branch gh-pages ainda não existe"
-          if git show-ref --verify --quiet refs/heads/gh-pages; then
-            git checkout gh-pages
-          else
-            git checkout --orphan gh-pages
-            git reset --hard
-            git commit --allow-empty -m "Initialize GitHub Pages"
-            git push origin gh-pages --force
-          fi
-
       - name: Rename Cucumber Report to index.html
         run: cp test-results/cucumber-report.html test-results/index.html
-
-      - name: Update gh-pages before push
-        run: |
-          git fetch origin gh-pages
-          git checkout gh-pages
-          git pull --rebase origin gh-pages
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
