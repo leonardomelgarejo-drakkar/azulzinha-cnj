@@ -30,7 +30,7 @@ Execução local - A execução dos testes é orquestrada pelo Cucumber-JS, ou s
   ``npm test --TAGS="@smoke-test or @funcional-test"``
 
   * Rodar os grupos de cenários de testes A e B (Informe as tags desejadas): 
-  ``npm test --TAGS="@smoke-test or @funcional-test"``
+  ``npm test --TAGS="@smoke-test and @funcional-test"``
 
 ## 📊 Relatório de Testes  
 
