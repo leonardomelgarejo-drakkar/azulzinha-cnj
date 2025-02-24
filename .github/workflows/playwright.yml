@@ -95,3 +95,4 @@ jobs:
           publish_dir: test-results
           publish_branch: gh-pages
           force_orphan: true
+          allow_empty_commit: true
