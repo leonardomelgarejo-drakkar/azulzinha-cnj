@@ -12,7 +12,7 @@ Este projeto contempla a automação de testes de API e WEB do projeto Azulzinha
 * Instalar [Cucumber-JS 11.1.1](https://github.com/cucumber/cucumber-js)
 * Instalar [Playwright 1.49](https://playwright.dev/docs/intro)
 * Clone o repositório: ```git clone https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj```
-* [🔧 Ajustes para Execução Local](#ajustes-para-execucao-local)
+* [Ajustes para Execução Local](#ajustes-para-execucao-local)
 
 ## Como rodar os testes
 
@@ -213,7 +213,9 @@ Atualmente, a pipeline CI inclui os seguintes steps:
 | `dotenv` | 16.4.7 | Gerenciamento de variáveis de ambiente |
 | `ts-node` | 10.9.2 | Permite rodar TypeScript sem necessidade de compilar para JavaScript |
 
-## Ajustes para Execução Local
+
+## Ajustes para Execucao Local
+
 
 Ajustes para o Arquivo registerUser.json:
 Para garantir que o arquivo registerUser.json seja criado corretamente no seu ambiente local, execute o seguinte comando no terminal:
