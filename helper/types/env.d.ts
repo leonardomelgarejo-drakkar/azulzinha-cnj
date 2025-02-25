@@ -3,7 +3,7 @@ export {}
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      ENV: "dev" | "test";
+      ENV: "dev";
       BASEURL: string;
       RESOURCE_PATH_DEPOSITO_JUDICIAL: string;
     }

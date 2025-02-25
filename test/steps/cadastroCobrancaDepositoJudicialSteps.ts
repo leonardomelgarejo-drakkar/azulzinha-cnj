@@ -170,6 +170,7 @@ When('a requisição de inclusão é realizada {int} vez es', async function (qu
   baseURL = process.env.BASEURL;
   resourcePath = process.env.RESOURCE_PATH_DEPOSITO_JUDICIAL;
   url = `${baseURL}${resourcePath}`;
+  console.log("URL: " + url);
 
   context = await request.newContext({
     baseURL: url,

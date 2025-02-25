@@ -12,6 +12,7 @@ Este projeto contempla a automação de testes de API e WEB do projeto Azulzinha
 * Instalar [Cucumber-JS 11.1.1](https://github.com/cucumber/cucumber-js)
 * Instalar [Playwright 1.49](https://playwright.dev/docs/intro)
 * Clone o repositório: ```git clone https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj```
+* [🔧 Ajustes para Execução Local](#ajustes-para-execucao-local)
 
 ## Como rodar os testes
 
@@ -211,3 +212,23 @@ Atualmente, a pipeline CI inclui os seguintes steps:
 | `@playwright/test` | 1.49.1 | Automação de testes Web e API |
 | `dotenv` | 16.4.7 | Gerenciamento de variáveis de ambiente |
 | `ts-node` | 10.9.2 | Permite rodar TypeScript sem necessidade de compilar para JavaScript |
+
+## Ajustes para Execução Local
+
+Ajustes para o Arquivo registerUser.json:
+Para garantir que o arquivo registerUser.json seja criado corretamente no seu ambiente local, execute o seguinte comando no terminal:
+
+```bash
+   mkdir -p helper/util/test-data
+   echo "{\"userName\":\"<YOUR_USER_NAME>\", \"password\":\"<YOUR_PASSWORD>\"}" > helper/util/test-data/registerUser.json
+```
+
+Ajustes para o Arquivo .env.dev:
+Certifique-se de criar o arquivo .env.dev no diretório helper/env com as seguintes variáveis de ambiente:
+
+```bash
+   mkdir -p helper/env
+   echo "BASEURL=http://example.com" > helper/env/.env.dev
+   echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=/resourceExemple" >> helper/env/.env.dev
+   echo "ENV=dev" >> helper/env/.env.dev
+```
