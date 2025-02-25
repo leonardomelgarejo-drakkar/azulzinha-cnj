@@ -50,8 +50,12 @@ Ao rodar os testes (conforme tópico anterior), dois arquivos são criados na pa
 
 Para visualizar o relatório HTML, basta abrir o arquivo `cucumber-report.html` no navegador. 🚀
 
-### 📍 Execução Remota  
-A geração de relatórios para execuções remotas está em fase de manutenção e será integrada à pipeline CI/CD. O objetivo é disponibilizá-los via GitHub Actions. O relatório gerado pode ser acessado no [CUCUMBER REPORT](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/).
+### 📍 Execução Remota   
+A geração de relatórios para execuções remotas está em fase de manutenção e será integrada à pipeline CI/CD. O objetivo é disponibilizá-los via GitHub Actions.  
+
+O relatório gerado pode ser acessado no [CUCUMBER REPORT](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/).  
+
+O JSON do relatório pode ser acessado diretamente em: [Cucumber Report JSON](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/report.json).
 
 ## Estrutura do projeto
 

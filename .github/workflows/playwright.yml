@@ -65,6 +65,9 @@ jobs:
       - name: Rename Cucumber Report to index.html
         run: cp test-results/cucumber-report.html test-results/index.html
 
+      - name: Ensure JSON is accessible
+        run: cp test-results/cucumber-report.json test-results/report.json
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
