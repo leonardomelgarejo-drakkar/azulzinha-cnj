@@ -53,9 +53,44 @@ Para visualizar o relatório HTML, basta abrir o arquivo `cucumber-report.html` 
 ### 📍 Execução Remota   
 A geração de relatórios para execuções remotas está em fase de manutenção e será integrada à pipeline CI/CD. O objetivo é disponibilizá-los via GitHub Actions.  
 
-O relatório gerado pode ser acessado no [CUCUMBER REPORT](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/).  
+O relatório gerado pode ser acessado em [Cucumber Report HTML](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/).  
 
-O JSON do relatório pode ser acessado diretamente em: [Cucumber Report JSON](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/report.json).
+O JSON do relatório pode ser acessado diretamente em: [Cucumber Report JSON](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/report.json).  
+
+### 🛠 Como Gerar o Relatório HTML a partir do JSON  
+Se você quiser gerar o relatório HTML localmente, siga estes passos usando o **Cucumber HTML Formatter**:  
+
+1. **Instale a ferramenta (caso ainda não tenha)**:
+   ```bash
+   npm install --save-dev @cucumber/html-formatter
+   ```
+
+2. **Baixe o JSON do relatório**:
+   ```bash
+   wget -O report.json https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/report.json
+   ```
+
+3. **Gere o relatório HTML**:
+   ```bash
+   npx @cucumber/html-formatter report.json > cucumber-report.html
+   ``` 
+
+4. **Abra o relatório no navegador**:
+   
+   No macOS:
+   ```bash
+   open cucumber-report.html
+   ```
+
+   No Linux:
+   ```bash
+   xdg-open cucumber-report.html
+   ```
+
+   No Windows (CMD ou PowerShell):
+   ```bash
+   start cucumber-report.html
+   ```
 
 ## Estrutura do projeto
 
