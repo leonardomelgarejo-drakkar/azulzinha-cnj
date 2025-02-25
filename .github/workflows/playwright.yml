@@ -41,6 +41,19 @@ jobs:
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
 
+      - name: Set environment variables for API tests
+        run: |
+          echo "BASEURL=${{ secrets.BASEURL }}" >> $GITHUB_ENV
+          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> $GITHUB_ENV
+          echo "ENV=dev" >> $GITHUB_ENV # Define o ambiente (por exemplo, dev)
+
+      - name: Ensure .env file is available
+        run: |
+          mkdir -p helper/env
+          echo "BASEURL=${{ secrets.BASEURL }}" > helper/env/.env.dev
+          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> helper/env/.env.dev
+          echo "ENV=dev" >> helper/env/.env.dev # Adiciona a variável ENV ao arquivo
+
       - name: Run Cucumber tests
         run: npm test
 
