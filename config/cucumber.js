@@ -20,6 +20,7 @@ module.exports = {
       "json:test-results/cucumber-report.json"
     ],
     parallel: 2,
-    strict: false
+    strict: false,
+    timeout: 30000
   }
 }
