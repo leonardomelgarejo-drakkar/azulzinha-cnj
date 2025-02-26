@@ -116,8 +116,8 @@ Given('o usuário não preenche o CPF para o réu', async function () {
   requestData = JSON.stringify(processo);
 });
 
-Given('o usuário não preenche o CPF para o depositante', async function () {
-  processo = ProcessoFactory.geraProcessoComCPFDepositanteVazio();
+Given('o usuário não preenche o CNPJ para o depositante', async function () {
+  processo = ProcessoFactory.geraProcessoComCNPJDepositanteVazio();
   requestData = JSON.stringify(processo);
 });
 

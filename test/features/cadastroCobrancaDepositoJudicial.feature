@@ -17,7 +17,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And a resposta contém a mensagem "O processo não pode ser um campo vazio"
 
-  @deposito-judicial @debug
+  @deposito-judicial
   Scenario: 03-Tentativa de cadastrar cobrança deposito judicial com código pequeno do processo
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o código do processo com um caractere
@@ -107,7 +107,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And o endpoint de pagamento é retornado corretamente
   
-  @deposito-judicial
+  @deposito-judicial @debug
   Scenario: 13-Tentativa de cadastrar cobrança com nome do réu muito longo
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o nome do réu com muitos caracteres
@@ -152,7 +152,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
-  @deposito-judicial
+  @deposito-judicial @debug
   Scenario: 18-Tentativa de cadastrar cobrança com nome do depositante muito longo
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o nome do depositante com muitos caracteres
@@ -162,13 +162,13 @@ Feature: Cadastro Cobranca Deposito Judicial
     And a resposta contém a mensagem "Nome do Réu é muito longo"
 
   @deposito-judicial
-  Scenario: 19-Tentativa de cadastrar cobrança com CPF vazio para o depositante
+  Scenario: 19-Tentativa de cadastrar cobrança com CNPJ vazio para o depositante
     Given o usuário preenche todos os campos obrigatórios
-    And o usuário não preenche o CPF para o depositante
+    And o usuário não preenche o CNPJ para o depositante
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O CPF informado não é válido."
+    And a resposta contém a mensagem "O CNPJ informado não é válido."
 
   @deposito-judicial
   Scenario: 20-Tentativa de cadastrar cobrança com CNPJ do depositante inválido

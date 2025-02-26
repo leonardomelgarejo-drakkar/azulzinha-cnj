@@ -131,7 +131,7 @@ export class ProcessoFactory {
       .build();
   }
 
-  static geraProcessoComCPFDepositanteVazio(): ProcessoJudicial {
+  static geraProcessoComCNPJDepositanteVazio(): ProcessoJudicial {
     return new ProcessoJudicial.Builder()
       .setDepositante({
         nome: "QA Depositante",

@@ -22,7 +22,7 @@ export class DataRequest {
 
     let nomeBase = prefixo + randomName;
 
-    return (nomeBase.padEnd(100, 'X')).substring(0, 100);
+    return (nomeBase.padEnd(110, 'X')).substring(0, 110);
 }
 
   static generateValidCPF(): string {
