@@ -46,7 +46,6 @@ jobs:
           echo "BASEURL=${{ secrets.BASEURL }}" >> $GITHUB_ENV
           echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> $GITHUB_ENV
           echo "ENV=dev" >> $GITHUB_ENV
-          
 
       - name: Ensure .env file is available
         run: |
@@ -55,8 +54,15 @@ jobs:
           echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> helper/env/.env.dev
           echo "ENV=dev" >> helper/env/.env.dev # Adiciona a variável ENV ao arquivo
 
-      - name: Run Cucumber tests
-        run: npm test
+          - name: Run Cucumber tests
+          run: |
+            if [ -z "$CUCUMBER_TAGS" ]; then
+              npm test
+            else
+              npm test -- --tags "$CUCUMBER_TAGS"
+            fi
+          env:
+            CUCUMBER_TAGS: ${{ github.event.inputs.tags }}        
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
