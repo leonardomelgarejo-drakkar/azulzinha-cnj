@@ -1,0 +1,112 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;02-tentativa-de-cadastrar-cobrança-com-código-do-processo-vazio",
+        "keyword": "Scenario",
+        "line": 12,
+        "name": "02-Tentativa de cadastrar cobrança com código do processo vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 13,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:19"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6268752
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "o usuário não preenche o código do processo",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1631999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 15,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:169"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5009203409,
+              "error_message": "Error: function timed out, ensure the promise resolves within 5000 milliseconds\n    at Timeout.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/node_modules/@cucumber/cucumber/src/time.ts:52:14)\n    at listOnTimeout (node:internal/timers:569:17)\n    at processTimers (node:internal/timers:512:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 16,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:202"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:206"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "a resposta contém a mensagem \"O processo não pode ser um campo vazio\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:216"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@deposito-judicial",
+            "line": 11
+          },
+          {
+            "name": "@codigo-processo-vazio",
+            "line": 11
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "cadastro-cobranca-deposito-judicial",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Cadastro Cobranca Deposito Judicial",
+    "tags": [],
+    "uri": "test/features/cadastroCobrancaDepositoJudicial.feature"
+  }
+]
