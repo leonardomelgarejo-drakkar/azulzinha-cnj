@@ -17,8 +17,8 @@ permissions:
   pages: write
 
 jobs:
-  build:
-    timeout-minutes: 30  
+  test:
+    timeout-minutes: 60  
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository
@@ -44,12 +44,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.node-version }}-
 
-      - name: Ensure .env file is available
-        run: |
-          mkdir -p helper/env
-          echo "BASEURL=${{ secrets.BASEURL }}" > helper/env/.env.dev
-          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> helper/env/.env.dev
-          echo "ENV=dev" >> helper/env/.env.dev
+      - name: Ensure test-results directory exists
+        run: mkdir -p test-results
 
       - name: Set environment variables for API tests
         run: |
@@ -57,20 +53,19 @@ jobs:
           echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> $GITHUB_ENV
           echo "ENV=dev" >> $GITHUB_ENV
 
-  test:
-    needs: build
-    timeout-minutes: 60
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Ensure test-results directory exists
-        run: mkdir -p test-results
+      - name: Ensure .env file is available
+        run: |
+          mkdir -p helper/env
+          echo "BASEURL=${{ secrets.BASEURL }}" > helper/env/.env.dev
+          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> helper/env/.env.dev
+          echo "ENV=dev" >> helper/env/.env.dev
 
       - name: Run Cucumber tests
         run: |
           if [ -z "${{ github.event.inputs.tags }}" ]; then
             npm test
           else
-            npm test --tags "${{ github.event.inputs.tags }}"
+            npm test --TAGS="${{ github.event.inputs.tags }}"
           fi
         env:
           BASEURL: ${{ secrets.BASEURL }}
