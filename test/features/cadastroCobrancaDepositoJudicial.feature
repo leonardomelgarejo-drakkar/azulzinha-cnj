@@ -17,7 +17,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And a resposta contém a mensagem "O processo não pode ser um campo vazio"
 
-  @deposito-judicial
+  @deposito-judicial @debug
   Scenario: 03-Tentativa de cadastrar cobrança deposito judicial com código pequeno do processo
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o código do processo com um caractere
@@ -78,7 +78,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O CPF não pode ser um campo vazio"
+    And a resposta contém a mensagem "O CPF informado não é válido."
 
   @deposito-judicial
   Scenario: 10-Tentativa de cadastrar cobrança com tipo e número do documento do autor divergente
@@ -268,7 +268,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And a resposta contém a mensagem "Campo Valor não pode ser menor ou igual a zero"
 
-  @deposito-judicial @debug
+  @deposito-judicial
   Scenario: 31-Tentativa de cadastrar cobrança com observação do depósito vazia
     Given o usuário preenche todos os campos obrigatórios
     And o usuário não preenche a observação do depósito
