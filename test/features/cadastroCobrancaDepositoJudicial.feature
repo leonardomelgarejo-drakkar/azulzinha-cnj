@@ -232,7 +232,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
-  @deposito-judicial
+  @deposito-judicial @id-deposito-vazio
   Scenario: 27-Tentativa de cadastrar cobrança com id do depósito vazio
     Given o usuário preenche todos os campos obrigatórios
     And o usuário não preenche o id do deposito
@@ -250,7 +250,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
-  @deposito-judicial @valor-deposito-vazio
+  @deposito-judicial @valor-deposito-vazio @e2e-test 
   Scenario: 29-Tentativa de cadastrar cobrança com valor do depósito vazio
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o valor do depósito com zero
@@ -259,7 +259,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And a resposta contém a mensagem "Campo Valor não pode ser menor ou igual a zero"
 
-  @deposito-judicial @valor-deposito-negativo
+  @deposito-judicial @valor-deposito-negativo @e2e-test 
   Scenario: 30-Tentativa de cadastrar cobrança com valor do depósito negativo
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o valor do depósito com número negativo
