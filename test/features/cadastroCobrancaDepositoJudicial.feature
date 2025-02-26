@@ -123,7 +123,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O CPF não pode ser um campo vazio"
+    And a resposta contém a mensagem "O CPF informado não é válido."
 
   @deposito-judicial
   Scenario: 15-Tentativa de cadastrar cobrança com CPF do réu inválido
@@ -168,7 +168,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O CPF não pode ser um campo vazio"
+    And a resposta contém a mensagem "O CPF informado não é válido."
 
   @deposito-judicial
   Scenario: 20-Tentativa de cadastrar cobrança com CNPJ do depositante inválido
