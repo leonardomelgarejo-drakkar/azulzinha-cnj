@@ -195,7 +195,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O email do depositante não pode ser um campo vazio"
+    And a resposta contém a mensagem "Email do depositante está vazio ou não é válido."
 
   @deposito-judicial
   Scenario: 23-Tentativa de cadastrar cobrança com e-mail do depositante inválido
