@@ -45,7 +45,8 @@ jobs:
         run: |
           echo "BASEURL=${{ secrets.BASEURL }}" >> $GITHUB_ENV
           echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> $GITHUB_ENV
-          echo "ENV=dev" >> $GITHUB_ENV # Define o ambiente (por exemplo, dev)
+          echo "ENV=dev" >> $GITHUB_ENV
+          
 
       - name: Ensure .env file is available
         run: |
