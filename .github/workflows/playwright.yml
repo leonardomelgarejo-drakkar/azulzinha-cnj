@@ -5,6 +5,12 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Tags para rodar os testes'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -52,21 +58,20 @@ jobs:
           mkdir -p helper/env
           echo "BASEURL=${{ secrets.BASEURL }}" > helper/env/.env.dev
           echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> helper/env/.env.dev
-          echo "ENV=dev" >> helper/env/.env.dev # Adiciona a variável ENV ao arquivo
+          echo "ENV=dev" >> helper/env/.env.dev
 
       - name: Run Cucumber tests
         run: |
-            if [ -z "$CUCUMBER_TAGS" ]; then
-              npm test
-            else
-              npm test -- --tags "$CUCUMBER_TAGS"
-            fi
+          if [ -z "${{ github.event.inputs.tags }}" ]; then
+            npm test
+          else
+            npm test -- --tags "${{ github.event.inputs.tags }}"
+          fi
         env:
-            CUCUMBER_TAGS: ${{ github.event.inputs.tags }}
-            BASEURL: ${{ secrets.BASEURL }}
-            RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-            ENV: dev
-        shell: bash           
+          BASEURL: ${{ secrets.BASEURL }}
+          RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
+          ENV: dev
+        shell: bash
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
