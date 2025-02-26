@@ -71,6 +71,7 @@ jobs:
           BASEURL: ${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV: dev
+          npm_config_TAGS: "${{ github.event.inputs.tags }}"
         shell: bash
 
       - name: Upload Cucumber Test Report
