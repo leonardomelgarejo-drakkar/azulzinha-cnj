@@ -36,7 +36,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And a resposta contém a mensagem "O tamanho do código do processo deve ser de 20 caracteres"
 
 @deposito-judicial
-  Scenario: 05-Tentativa de cadastrar cobrança deposito judicial com nome do autor vázio
+  Scenario: 05-Tentativa de cadastrar cobrança deposito judicial com nome do autor vazio
     Given o usuário preenche todos os campos obrigatórios
     And o usuário não preenche o nome do autor
     When a requisição de inclusão é realizada 1 vez es
@@ -107,7 +107,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And o endpoint de pagamento é retornado corretamente
   
-  @deposito-judicial @debug
+  @deposito-judicial
   Scenario: 13-Tentativa de cadastrar cobrança com nome do réu muito longo
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o nome do réu com muitos caracteres
@@ -152,14 +152,14 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o tempo de resposta é abaixo de 5000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
-  @deposito-judicial @debug
+  @deposito-judicial
   Scenario: 18-Tentativa de cadastrar cobrança com nome do depositante muito longo
     Given o usuário preenche todos os campos obrigatórios
     And o usuário preenche o nome do depositante com muitos caracteres
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "Nome do Réu é muito longo"
+    And a resposta contém a mensagem "Nome do Depositante é muito longo"
 
   @deposito-judicial
   Scenario: 19-Tentativa de cadastrar cobrança com CNPJ vazio para o depositante
@@ -195,7 +195,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O email do depositante não pode ser um campo vázio"
+    And a resposta contém a mensagem "O email do depositante não pode ser um campo vazio"
 
   @deposito-judicial
   Scenario: 23-Tentativa de cadastrar cobrança com e-mail do depositante inválido
@@ -204,7 +204,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O e-mail do depositante está inválido"
+    And a resposta contém a mensagem "Email do depositante está vazio ou não é válido."
 
   @deposito-judicial
   Scenario: 24-Tentativa de cadastrar cobrança com telefone do depositante vazio
@@ -213,7 +213,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O telefone do depositante não pode ser um campo vázio"
+    And a resposta contém a mensagem "O telefone do depositante deve ser válido."
 
   @deposito-judicial
   Scenario: 25-Tentativa de cadastrar cobrança com telefone do depositante inválido
@@ -222,7 +222,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O telefone do depositante está inválido"
+    And a resposta contém a mensagem "Email do depositante está vazio ou não é válido."
 
   @deposito-judicial
   Scenario: 26-Tentativa de cadastrar cobrança de depósito judicial duas vezes
@@ -239,7 +239,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
     And o tempo de resposta é abaixo de 5000 milisegundos
-    And a resposta contém a mensagem "O id do depósito não pode ser um campo vazio"
+    And a resposta contém a mensagem "O ID do depósito não pode estar vazio."
 
   @deposito-judicial
   Scenario: 28-Tentativa de cadastrar cobrança com finalidade do depósito vazia
