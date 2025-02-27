@@ -1,4 +1,4 @@
-![CI Status](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/playwright.yml/badge.svg)
+[![pages-build-deployment](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/pages/pages-build-deployment)
 
 # Projeto de automação de testes de API e WEB do projeto Azulzinha - CNJ
 
