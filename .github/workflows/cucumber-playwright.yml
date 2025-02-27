@@ -1,0 +1,104 @@
+name: Azulzinha - CNJ Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Tags para rodar os testes'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  test:
+    timeout-minutes: 60  
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up test data
+        run: |
+          mkdir -p helper/util/test-data
+          cat > helper/util/test-data/registerUser.json <<EOF
+          {
+            "userName": "${{ secrets.USER_NAME }}",
+            "password": "${{ secrets.PASSWORD }}"
+          }
+          EOF
+
+      - name: Set up Node.js and cache dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies and Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      - name: Ensure test-results directory exists
+        run: mkdir -p test-results
+
+      - name: Set environment variables
+        run: |
+          echo "BASEURL=${{ secrets.BASEURL }}" >> $GITHUB_ENV
+          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> $GITHUB_ENV
+          echo "ENV=dev" >> $GITHUB_ENV
+          echo "TAGS=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
+
+      - name: Ensure .env file is available
+        run: |
+          mkdir -p helper/env
+          cat > helper/env/.env.dev <<EOF
+          BASEURL=${{ secrets.BASEURL }}
+          RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
+          ENV=dev
+          EOF
+
+      - name: Run Cucumber tests
+        run: npm test --TAGS="${{ env.TAGS }}"
+        env:
+          BASEURL: ${{ secrets.BASEURL }}
+          RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
+          ENV: dev
+
+      - name: Upload Cucumber Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cucumber-test-report
+          path: test-results
+          retention-days: 5
+
+  deploy-report:
+    needs: test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download Test Report
+        uses: actions/download-artifact@v4
+        with:
+          name: cucumber-test-report
+          path: test-results
+
+      - name: Rename and organize reports
+        run: |
+          cp test-results/cucumber-report.html test-results/index.html
+          cp test-results/cucumber-report.json test-results/report.json
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: test-results
+          publish_branch: gh-pages
+          force_orphan: true
+          allow_empty_commit: true
