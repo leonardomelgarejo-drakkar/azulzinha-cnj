@@ -26,50 +26,53 @@ jobs:
 
       - name: Set up test data
         run: |
-          mkdir -p helper/util/test-data
-          cat > helper/util/test-data/registerUser.json <<EOF
-          {
-            "userName": "${{ secrets.USER_NAME }}",
-            "password": "${{ secrets.PASSWORD }}"
-          }
-          EOF
+          if [ ! -f helper/util/test-data/registerUser.json ]; then
+            mkdir -p helper/util/test-data
+            echo "{\"userName\":\"${{ secrets.USER_NAME }}\", \"password\":\"${{ secrets.PASSWORD }}\"}" > helper/util/test-data/registerUser.json
+          fi
 
-      - name: Set up Node.js and cache dependencies
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install dependencies and Playwright
+      - name: Setup Node.js and Playwright
         run: |
-          npm ci
           npx playwright install --with-deps
+          npm ci
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}-${{ hashFiles('package.json') }}-${{ matrix.node-version }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
 
-      - name: Set environment variables
+      - name: Set environment variables for API tests
         run: |
           echo "BASEURL=${{ secrets.BASEURL }}" >> $GITHUB_ENV
           echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> $GITHUB_ENV
           echo "ENV=dev" >> $GITHUB_ENV
-          echo "TAGS=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
 
       - name: Ensure .env file is available
         run: |
           mkdir -p helper/env
-          cat > helper/env/.env.dev <<EOF
-          BASEURL=${{ secrets.BASEURL }}
-          RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-          ENV=dev
-          EOF
+          echo "BASEURL=${{ secrets.BASEURL }}" > helper/env/.env.dev
+          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> helper/env/.env.dev
+          echo "ENV=dev" >> helper/env/.env.dev
 
       - name: Run Cucumber tests
-        run: npm test --TAGS="${{ env.TAGS }}"
+        run: |
+          if [ -z "${{ github.event.inputs.tags }}" ]; then
+            npm test
+          else
+            npm test --TAGS="${{ github.event.inputs.tags }}"
+          fi
         env:
           BASEURL: ${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV: dev
+          npm_config_TAGS: "${{ github.event.inputs.tags }}"
+        shell: bash
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
@@ -89,10 +92,11 @@ jobs:
           name: cucumber-test-report
           path: test-results
 
-      - name: Rename and organize reports
-        run: |
-          cp test-results/cucumber-report.html test-results/index.html
-          cp test-results/cucumber-report.json test-results/report.json
+      - name: Rename Cucumber Report to index.html
+        run: cp test-results/cucumber-report.html test-results/index.html
+
+      - name: Ensure JSON is accessible
+        run: cp test-results/cucumber-report.json test-results/report.json
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
