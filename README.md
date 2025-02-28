@@ -16,12 +16,14 @@ Este projeto contempla a automação de testes de API e WEB do projeto Azulzinha
 
 ## Como rodar os testes
 
-Execução local - A execução dos testes é orquestrada pelo Cucumber-JS, ou seja, via tags relacionadas a específicos cenários de testes, que possuem o padrão @ + objetivo (exemplo: @smoke-test). Para este projeto, rodar os comandos a seguir:
+### Execução local
+
+A execução dos testes é orquestrada pelo Cucumber-JS, ou seja, via tags relacionadas a específicos cenários de testes, que possuem o padrão @ + objetivo (exemplo: @smoke-test). Para este projeto, rodar os comandos a seguir:
 
   * Rodar todos os testes (não é necessário informar uma tag): 
   ``npm test``
 
-  * Rodar o grupo de cenarios de testes desejado (Informe a tag desejada): 
+  * Rodar o grupo de cenários de testes desejado (Informe a tag desejada): 
   ``npm test --TAGS="@smoke-test"``
 
   * Rodar o grupo de cenários de testes desejado e ignorar o grupo não desejado (Informe as tags desejadas): 
@@ -33,11 +35,24 @@ Execução local - A execução dos testes é orquestrada pelo Cucumber-JS, ou s
   * Rodar os grupos de cenários de testes A e B (Informe as tags desejadas): 
   ``npm test --TAGS="@smoke-test and @funcional-test"``
 
-## 📊 Relatório de Testes  
+### Execução Remota por Tags (GitHub Actions)
+
+Com a inclusão do `workflow_dispatch`, é agora possível rodar o workflow remotamente por tags, utilizando os parâmetros de entrada. Siga os passos abaixo:
+
+1. Acesse a aba de **Actions** do repositório no GitHub.
+2. Selecione o workflow **Azulzinha - CNJ Tests**.
+3. Clique no botão **Run workflow**.
+4. No campo de entrada `tags`, insira as tags desejadas para rodar os testes, por exemplo: `@smoke-test`. Caso nada seja preenchido, todos os cenários de testes serão executados.
+5. Clique em **Run workflow** para iniciar a execução.
+6. Após a conclusão deste workflow, o workflow de pages build and deployment é automaticamente acionado, resultando na geração do relatório de testes acessível em: https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/.
+
+Este recurso permite que você execute os testes remotamente sem precisar modificar o código localmente, apenas configurando as tags através da interface do GitHub Actions.
+
+### 📊 Relatório de Testes  
 
 Os relatórios de testes são gerados pelo **Cucumber-JS** de duas formas:  
 
-### 📍 Execução Local  
+#### 📍 Execução Local  
 Ao rodar os testes (conforme tópico anterior), dois arquivos são criados na pasta `test-result`:  
 
 - **`cucumber-report.json`** – Contém a estrutura base e os metadados do relatório.  
@@ -51,8 +66,8 @@ Ao rodar os testes (conforme tópico anterior), dois arquivos são criados na pa
 
 Para visualizar o relatório HTML, basta abrir o arquivo `cucumber-report.html` no navegador. 🚀
 
-### 📍 Execução Remota   
-A geração de relatórios para execuções remotas está em fase de manutenção e será integrada à pipeline CI/CD. O objetivo é disponibilizá-los via GitHub Actions.  
+#### 📍 Execução Remota   
+A geração de relatórios para execuções remotas está em fase de manutenção e será integrada à pipeline CI/CD. O objetivo é disponibilizá-los via GitHub Actions.
 
 O relatório gerado pode ser acessado em [Cucumber Report HTML](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/).  
 
