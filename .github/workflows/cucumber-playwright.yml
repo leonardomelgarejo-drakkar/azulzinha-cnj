@@ -28,21 +28,27 @@ jobs:
         run: |
           if [ ! -f helper/util/test-data/registerUser.json ]; then
             mkdir -p helper/util/test-data
-            echo "{\"userName\":\"${{ secrets.USER_NAME }}\", \"password\":\"${{ secrets.PASSWORD }}\"}" > helper/util/test-data/registerUser.json
+            echo '{"userName":"${{ secrets.USER_NAME }}", "password":"${{ secrets.PASSWORD }}"}' > helper/util/test-data/registerUser.json
           fi
 
-      - name: Setup Node.js and Playwright
-        run: |
-          npx playwright install --with-deps
-          npm ci
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}-${{ hashFiles('package.json') }}-${{ matrix.node-version }}
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node-version }}-
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
@@ -56,23 +62,20 @@ jobs:
       - name: Ensure .env file is available
         run: |
           mkdir -p helper/env
-          echo "BASEURL=${{ secrets.BASEURL }}" > helper/env/.env.dev
-          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> helper/env/.env.dev
-          echo "ENV=dev" >> helper/env/.env.dev
+          cat <<EOF > helper/env/.env.dev
+          BASEURL=${{ secrets.BASEURL }}
+          RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
+          ENV=dev
+          EOF
 
       - name: Run Cucumber tests
-        run: |
-          if [ -z "${{ github.event.inputs.tags }}" ]; then
-            npm test
-          else
-            npm test --TAGS="${{ github.event.inputs.tags }}"
-          fi
         env:
           BASEURL: ${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV: dev
           npm_config_TAGS: "${{ github.event.inputs.tags }}"
-        shell: bash
+        run: |
+          npm test $( [ -n "${{ github.event.inputs.tags }}" ] && echo "--TAGS=${{ github.event.inputs.tags }}" )
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
@@ -93,10 +96,16 @@ jobs:
           path: test-results
 
       - name: Rename Cucumber Report to index.html
-        run: cp test-results/cucumber-report.html test-results/index.html
+        run: |
+          if [ -f test-results/cucumber-report.html ]; then
+            cp test-results/cucumber-report.html test-results/index.html
+          fi
 
       - name: Ensure JSON is accessible
-        run: cp test-results/cucumber-report.json test-results/report.json
+        run: |
+          if [ -f test-results/cucumber-report.json ]; then
+            cp test-results/cucumber-report.json test-results/report.json
+          fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -105,4 +114,4 @@ jobs:
           publish_dir: test-results
           publish_branch: gh-pages
           force_orphan: true
-          allow_empty_commit: true
+          keep_files: true
