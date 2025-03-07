@@ -261,6 +261,16 @@ export class ProcessoFactory {
       .build()
   }
 
+  static geraProcessoComValorDeposito(valor: number): ProcessoJudicial {
+    return new ProcessoJudicial.Builder()
+      .setDeposito({
+        id: DataRequest.generateDepositoId(),
+        finalidade: "GARANTIA",
+        valor: valor,
+        observacoes: "TESTQA"})
+      .build()
+  }
+
   static geraProcessoComValorDepositoZero(): ProcessoJudicial {
     return new ProcessoJudicial.Builder()
       .setDeposito({

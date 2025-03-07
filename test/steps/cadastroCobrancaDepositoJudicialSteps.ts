@@ -1,19 +1,10 @@
 import { Given, Then, When } from "@cucumber/cucumber";
-import { APIRequestContext, APIResponse, expect, request } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { ProcessoFactory } from "../../factory/processoFactory";
 import { ProcessoJudicial } from "../../factory/models/processoJudicial";
-import { getHeaders } from "../../helper/util/requestConfig";
+import { cadastrarDepositoJudicial } from "../../helper/util/cadastroCobrancaHelper";
 
-let baseURL: string;
-let resourcePath: string;
-let url: string;
-let context: APIRequestContext;
 let requestData: string;
-let response: APIResponse;
-let responseBody: any;
-let requestTime: any;
-let requestStartTime: any;
-let requestEndTime: any;
 let processo: ProcessoJudicial;
 
 Given('o usuário preenche todos os campos obrigatórios', async function () {
@@ -166,53 +157,27 @@ Given('o usuário preenche o nome do depositante com muitos caracteres', async f
   requestData = JSON.stringify(processo);
 });
 
-When('a requisição de inclusão é realizada {int} vez es', async function (quantidadeExecucoes) {
-  baseURL = process.env.BASEURL;
-  resourcePath = process.env.RESOURCE_PATH_DEPOSITO_JUDICIAL;
-  url = `${baseURL}${resourcePath}`;
-  console.log("URL: " + url);
-
-  context = await request.newContext({
-    baseURL: url,
-  });
-
-  this.context = context;
-
-  for (let i = 0; i < quantidadeExecucoes; i++) {
-    requestStartTime = performance.now();
-
-    response = await this.context.post("", {
-      headers: getHeaders(),
-      data: requestData,
-      timeout: (30 * 1000)
-    });
-
-    requestEndTime = performance.now();
-    requestTime = Number((requestEndTime - requestStartTime).toFixed(2));
-
-    this.attach(`Execução número ${i + 1} - Raw Request: ${JSON.stringify(requestData, null, 2)}`, 'application/json');
-    this.attach(`Execução número ${i + 1} - Status Code: ${response.status()}`, 'text/plain');
-    this.attach(`Execução número ${i + 1} - Response: ${JSON.stringify(await response.json(), null, 2)}`, 'application/json');
-    this.attach(`Execução número ${i + 1} - Tempo de Execução: ${requestTime} ms`, 'text/plain');
-  }
-
-  responseBody = await response.json();
+When('a requisição de inclusão é realizada {int} vez es', async function (quantidadeExecucoes: number) {
+  const { response, responseBody, requestTime } = await cadastrarDepositoJudicial(requestData, quantidadeExecucoes, this);
+  this.response = response;
+  this.responseBody = responseBody;
+  this.requestTime = requestTime;
 });
 
 Then('a resposta contém o status code {int}', async function (expectedStatusCode) {
-  expect(response.status()).toBe(expectedStatusCode);
+  expect(this.response.status()).toBe(expectedStatusCode);
 });
 
 Then('o tempo de resposta é abaixo de {int} milisegundos', async function (expectedResponseTime) {
-  expect(requestTime).toBeLessThan(expectedResponseTime);
+  expect(this.requestTime).toBeLessThan(expectedResponseTime);
 });
 
 Then('o endpoint de pagamento é retornado corretamente', async function () {
-  expect(responseBody).toHaveProperty("endpointPagamento");
-  expect(responseBody.endpointPagamento).toContain("https://dev.azulzinhapay.fiserv.com/CNJ/pagaid/");
-  expect(responseBody.endpointPagamento.length).toBe(83);
+  expect(this.responseBody).toHaveProperty("endpointPagamento");
+  expect(this.responseBody.endpointPagamento).toContain("https://dev.azulzinhapay.fiserv.com/CNJ/pagaid/");
+  expect(this.responseBody.endpointPagamento.length).toBe(83);
 });
 
 Then('a resposta contém a mensagem {string}', async function (expectedErroMessage) {
-  expect(responseBody.Errors[0]).toContain(expectedErroMessage);
+  expect(this.responseBody.Errors[0]).toContain(expectedErroMessage);
 });
