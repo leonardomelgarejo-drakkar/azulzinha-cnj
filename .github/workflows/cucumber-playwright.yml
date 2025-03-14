@@ -77,8 +77,8 @@ jobs:
           ENV: dev
           npm_config_TAGS: "${{ github.event.inputs.tags }}"
         run: |
-          set -e  # Faz o script falhar se qualquer comando retornar erro
           npm test $( [ -n "${{ github.event.inputs.tags }}" ] && echo "--TAGS=${{ github.event.inputs.tags }}" ) --exit
+          if grep -q "failed" output.log; then exit 1; fi
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
