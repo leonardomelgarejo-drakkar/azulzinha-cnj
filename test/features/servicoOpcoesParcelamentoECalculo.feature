@@ -1,6 +1,6 @@
 Feature: Cadastro Cobranca Deposito Judicial
 
-  @calculo-parcelamento @1x @UI
+  @ui @calculo-parcelamento @1x
   Scenario: 01-Verificar cálculo do parcelamento em 1 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -9,7 +9,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.001,51'
       #  And o valor do serviço de conveniência de R$'1,50'
   
-  @calculo-parcelamento @2x @UI
+  @ui @calculo-parcelamento @2x
   Scenario: 02-Verificar cálculo do parcelamento em 2 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -18,7 +18,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.002,51'
       #  And o valor do serviço de conveniência de R$'2,50'
 
-  @calculo-parcelamento @3x @UI
+  @ui @calculo-parcelamento @3x
   Scenario: 03-Verificar cálculo do parcelamento em 3 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -27,7 +27,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.015,51'
       #  And o valor do serviço de conveniência de R$'15,50'
 
-  @calculo-parcelamento @4x @UI
+  @ui @calculo-parcelamento @4x
   Scenario: 04-Verificar cálculo do parcelamento em 4 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -36,7 +36,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.021,11'
       #  And o valor do serviço de conveniência de R$'21,10'
 
-  @calculo-parcelamento @5x @UI
+  @ui @calculo-parcelamento @5x
   Scenario: 05-Verificar cálculo do parcelamento em 5 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -45,7 +45,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.035,51'
       #  And o valor do serviço de conveniência de R$'35,50'
 
-  @calculo-parcelamento @6x @UI
+  @ui @calculo-parcelamento @6x
   Scenario: 06-Verificar cálculo do parcelamento em 6 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -54,7 +54,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.045,51'
       #  And o valor do serviço de conveniência de R$'45,50'
 
-  @calculo-parcelamento @7x @UI
+  @ui @calculo-parcelamento @7x
   Scenario: 07-Verificar cálculo do parcelamento em 7 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -63,7 +63,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.055,51'
       #  And o valor do serviço de conveniência de R$'55,50'
 
-  @calculo-parcelamento @8x @UI
+  @ui @calculo-parcelamento @8x
   Scenario: 08-Verificar cálculo do parcelamento em 8 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -72,7 +72,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.075,21'
       #  And o valor do serviço de conveniência de R$'75,20'
 
-  @calculo-parcelamento @9x @UI
+  @ui @calculo-parcelamento @9x
   Scenario: 09-Verificar cálculo do parcelamento em 9 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -81,7 +81,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.085,51'
       #  And o valor do serviço de conveniência de R$'85,50'
 
-  @calculo-parcelamento @10x @UI
+  @ui @calculo-parcelamento @10x
   Scenario: 10-Verificar cálculo do parcelamento em 10 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -90,7 +90,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.085,51'
       #  And o valor do serviço de conveniência de R$'85,50'
 
-  @calculo-parcelamento @11x @UI
+  @ui @calculo-parcelamento @11x
   Scenario: 11-Verificar cálculo do parcelamento em 11 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -99,7 +99,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.122,21'
       #  And o valor do serviço de conveniência de R$'122,20'
 
-  @calculo-parcelamento @12x @UI
+  @ui @calculo-parcelamento @12x
   Scenario: 12-Verificar cálculo do parcelamento em 12 vez
      Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -108,7 +108,7 @@ Feature: Cadastro Cobranca Deposito Judicial
        And o valor total fica R$'1.155,51'
       #  And o valor do serviço de conveniência de R$'155,50'
 
-  @calculo-parcelamento @todas-parcelas @e2e-test @smoke-test @UI
+  @ui @calculo-parcelamento @todas-parcelas @e2e-test @smoke-test
   Scenario Outline: Verificar cálculo do parcelamento em <parcelas> vez(es)
     Given que a cobrança de depósito judicial de valor R$'<valorDeposito>' foi cadastrada com sucesso
     When o usuário acessa o link do cadastro judicial
