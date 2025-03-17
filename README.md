@@ -133,8 +133,6 @@ Se você quiser gerar o relatório HTML localmente, siga estes passos usando o *
 |   |   types
 |   |   ├── env.d.ts
 |   |   util
-|   |   ├── test-data
-│   │   |   └── registerUser.json
 |   |   ├── DataRequests.ts
 |   |   ├── requestConfig.ts
 |   |   wrapper
@@ -231,20 +229,13 @@ Atualmente, a pipeline CI inclui os seguintes steps:
 
 ## Ajustes para Execucao Local
 
-
-Ajustes para o Arquivo registerUser.json:
-Para garantir que o arquivo registerUser.json seja criado corretamente no seu ambiente local, execute o seguinte comando no terminal:
-
-```bash
-   mkdir -p helper/util/test-data
-   echo "{\"userName\":\"<YOUR_USER_NAME>\", \"password\":\"<YOUR_PASSWORD>\"}" > helper/util/test-data/registerUser.json
-```
-
 Ajustes para o Arquivo .env.dev:
 Certifique-se de criar o arquivo .env.dev no diretório helper/env com as seguintes variáveis de ambiente:
 
 ```bash
    mkdir -p helper/env
+   echo "USER_NAME=User example" > helper/env/.env.dev
+   echo "PASSWORD=Password example" > helper/env/.env.dev
    echo "BASEURL=http://example.com" > helper/env/.env.dev
    echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=/resourceExemple" >> helper/env/.env.dev
    echo "ENV=dev" >> helper/env/.env.dev

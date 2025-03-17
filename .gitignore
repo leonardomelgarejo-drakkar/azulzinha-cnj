@@ -9,6 +9,5 @@ report/features
 @rerun.txt
 index.html
 .vscode
-helper/util/test-data/registerUser.json
 helper/env/.env.dev
 helper/env/.env.test

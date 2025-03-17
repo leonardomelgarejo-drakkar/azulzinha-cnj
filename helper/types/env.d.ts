@@ -6,6 +6,8 @@ declare global {
       ENV: "dev";
       BASEURL: string;
       RESOURCE_PATH_DEPOSITO_JUDICIAL: string;
+      USER_NAME: string;
+      PASSWORD: string;
     }
   }
 }

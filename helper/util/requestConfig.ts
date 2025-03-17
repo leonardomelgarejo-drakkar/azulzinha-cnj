@@ -1,7 +1,5 @@
-import * as data from "./test-data/registerUser.json";
-
 export const getHeaders = () => ({
   "Accept": "application/json",
   "Content-Type": "application/json",
-  "Authorization": `Basic ${Buffer.from(`${data.userName}:${data.password}`).toString("base64")}`
+  "Authorization": `Basic ${Buffer.from(`${process.env.USER_NAME}:${process.env.PASSWORD}`).toString("base64")}`
 });

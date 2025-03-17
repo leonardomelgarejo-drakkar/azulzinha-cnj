@@ -26,13 +26,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up test data
-        run: |
-          if [ ! -f helper/util/test-data/registerUser.json ]; then
-            mkdir -p helper/util/test-data
-            echo '{"userName":"${{ secrets.USER_NAME }}", "password":"${{ secrets.PASSWORD }}"}' > helper/util/test-data/registerUser.json
-          fi
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -65,6 +58,8 @@ jobs:
         run: |
           mkdir -p helper/env
           cat <<EOF > helper/env/.env.dev
+          USER_NAME=${{ secrets.USER_NAME }}
+          PASSWORD=${{ secrets.PASSWORD }}
           BASEURL=${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV=dev
