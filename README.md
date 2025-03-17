@@ -1,4 +1,4 @@
-[![pages-build-deployment](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/pages/pages-build-deployment)
+[![Azulzinha - CNJ Pipeline](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/cucumber-playwright.yml/badge.svg)](https://github.com/leonardomelgarejo-drakkar/azulzinha-cnj/actions/workflows/cucumber-playwright.yml)
 
 # Projeto de automação de testes de API e WEB do projeto Azulzinha - CNJ
 
