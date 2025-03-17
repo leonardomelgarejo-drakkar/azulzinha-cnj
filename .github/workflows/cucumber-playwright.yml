@@ -95,6 +95,7 @@ jobs:
 
   deploy-report:
     needs: test
+    if: always()  # ✅ Garantindo execução mesmo se os testes falharem
     runs-on: ubuntu-22.04
     steps:
       - name: Download Test Report
