@@ -44,7 +44,7 @@ Com a inclusão do `workflow_dispatch`, é agora possível rodar o workflow remo
 3. Clique no botão **Run workflow**.
 4. No campo de entrada `tags`, insira as tags desejadas para rodar os testes, por exemplo: `@smoke-test`. Caso nada seja preenchido, todos os cenários de testes serão executados.
 5. Clique em **Run workflow** para iniciar a execução.
-6. Após a conclusão deste workflow, o workflow de pages build and deployment é automaticamente acionado, resultando na geração do relatório de testes acessível em: https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/.
+6. Após a conclusão deste workflow, o workflow de pages build and deployment é automaticamente acionado, resultando na geração do relatório de testes acessível em: [Cucumber Report HTML](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/).
 
 Este recurso permite que você execute os testes remotamente sem precisar modificar o código localmente, apenas configurando as tags através da interface do GitHub Actions.
 
