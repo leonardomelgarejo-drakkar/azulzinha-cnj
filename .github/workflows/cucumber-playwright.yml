@@ -1,10 +1,10 @@
-name: Azulzinha - CNJ Tests
+name: Azulzinha - CNJ Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       tags:
@@ -30,11 +30,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
-          path: node_modules
+          path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -72,8 +73,17 @@ jobs:
           ENV: dev
           npm_config_TAGS: "${{ github.event.inputs.tags }}"
         run: |
-          npm test $( [ -n "${{ github.event.inputs.tags }}" ] && echo "--TAGS=${{ github.event.inputs.tags }}" ) --exit
-          if grep -q "failed" output.log; then exit 1; fi
+          TAGS_OPTION=""
+          if [[ -n "${{ github.event.inputs.tags }}" ]]; then
+            TAGS_OPTION="--TAGS=${{ github.event.inputs.tags }}"
+          fi
+          
+          npm test $TAGS_OPTION --exit | tee output.log
+          
+          if grep -q "failed" output.log; then
+            echo "Testes falharam!"
+            exit 1
+          fi
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
@@ -93,16 +103,20 @@ jobs:
           name: cucumber-test-report
           path: test-results
 
-      - name: Rename Cucumber Report to index.html
+      - name: Rename Cucumber Report to index.html (if exists)
         run: |
           if [ -f test-results/cucumber-report.html ]; then
             cp test-results/cucumber-report.html test-results/index.html
+          else
+            echo "Arquivo cucumber-report.html não encontrado. Pulando renomeação."
           fi
 
       - name: Ensure JSON is accessible
         run: |
           if [ -f test-results/cucumber-report.json ]; then
             cp test-results/cucumber-report.json test-results/report.json
+          else
+            echo "Arquivo cucumber-report.json não encontrado."
           fi
 
       - name: Deploy to GitHub Pages
