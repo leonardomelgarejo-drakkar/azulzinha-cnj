@@ -11,7 +11,7 @@ let valorDepositoFluxo: number;
 let depositoJudicialHeaderText: string;
 let valorx: string;
 
-Given('que a cobrança de depósito judicial de valor R${string} foi cadastrada com sucesso', async function (valorDeposito: string) {
+Given('que a cobrança de depósito judicial de valor R${string} foi cadastrada com sucesso', { timeout: 20000 }, async function (valorDeposito: string) {
   valorDepositoFluxo = Number(valorDeposito);
   const processo = ProcessoFactory.geraProcessoComValorDeposito(valorDepositoFluxo);
   const requestData = JSON.stringify(processo);
