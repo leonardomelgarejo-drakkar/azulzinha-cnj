@@ -40,14 +40,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Delete package-lock.json
-        run: rm -f package-lock.json
-            
-      - name: Recreate package-lock.json
-        run: npm install --package-lock-only
+      - name: Force clean dependencies
+        run: |
+            rm -rf node_modules package-lock.json
             
       - name: Install dependencies
-        run: npm ci
+        run: npm install --package-lock-only && npm ci
 
       - name: Cache Playwright Browsers (Chromium)
         uses: actions/cache@v3
