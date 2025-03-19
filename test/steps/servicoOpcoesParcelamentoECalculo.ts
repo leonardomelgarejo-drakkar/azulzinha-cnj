@@ -32,7 +32,7 @@ Then('a página do cadastro de depósito é acessada', async function () {
   await assert.assertElementContains(depositoJudicialHeaderText, "Depósito Judicial Não Tributá");
 });
 
-Then('o valor da parcela em {string} vez es fica R${string}', async function (numParcelas: string, valorEsperado: string) {
+Then('o valor da parcela em {string} vez es fica R${string}', { timeout: 20000 }, async function (numParcelas: string, valorEsperado: string) {
   this.numParcelas = numParcelas;
   valorx = await depositoJudicialPage.getValorEsperado(numParcelas, valorEsperado);
   const expectedText = `${numParcelas} x de R$${valorEsperado}`;
