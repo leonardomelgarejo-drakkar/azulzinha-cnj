@@ -40,12 +40,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Clear npm cache
-        run: npm cache clean --force
-
-      - name: Remove cached Node modules
-        run: rm -rf ~/.npm ~/.cache/ms-playwright
-
       - name: Install dependencies
         run: npm ci
 
@@ -62,12 +56,6 @@ jobs:
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
-
-      - name: Set environment variables for API tests
-        run: |
-          echo "BASEURL=${{ secrets.BASEURL }}" >> $GITHUB_ENV
-          echo "RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}" >> $GITHUB_ENV
-          echo "ENV=dev" >> $GITHUB_ENV
 
       - name: Ensure .env file is available
         run: |
