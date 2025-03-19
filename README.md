@@ -40,7 +40,7 @@ A execução dos testes é orquestrada pelo Cucumber-JS, ou seja, via tags relac
 Com a inclusão do `workflow_dispatch`, é agora possível rodar o workflow remotamente por tags, utilizando os parâmetros de entrada. Siga os passos abaixo:
 
 1. Acesse a aba de **Actions** do repositório no GitHub.
-2. Selecione o workflow **Azulzinha - CNJ Tests**.
+2. Selecione o workflow **Azulzinha - CNJ Pipeline**.
 3. Clique no botão **Run workflow**.
 4. No campo de entrada `tags`, insira as tags desejadas para rodar os testes, por exemplo: `@smoke-test`. Caso nada seja preenchido, todos os cenários de testes serão executados.
 5. Clique em **Run workflow** para iniciar a execução.
@@ -113,7 +113,7 @@ Se você quiser gerar o relatório HTML localmente, siga estes passos usando o *
 ```plaintext
 ├── .github
 │   ├── workflows
-│   │   └── playwright.yml
+│   │   └── cucumber-playwright.yml
 │   config
 |   ├── cucumber.js
 |   factory
@@ -124,26 +124,34 @@ Se você quiser gerar o relatório HTML localmente, siga estes passos usando o *
 |   |   ├── pessoa.ts
 |   |   └── processoJudicial.ts
 |   helper
+|   ├── browsers
 |   ├── env
 |   |   ├── .env.dev
-|   |   ├── .env.test
 |   |   ├── env.ts
 |   |   report
 |   |   ├── init.ts
 |   |   types
 |   |   ├── env.d.ts
 |   |   util
-|   |   ├── DataRequests.ts
+|   |   ├── cadastroCobrancaHelper.ts
+|   |   ├── dataRequests.ts
+|   |   ├── logger.ts
 |   |   ├── requestConfig.ts
 |   |   wrapper
-|   |   └── assert.ts
+|   |   ├── assert.ts
+|   |   └── playwrightWrappers.ts
 |   hooks
 |   ├── hooks.ts
+|   ├── pageFixture.ts
+|   pages
+|   ├── depositoJudicialPage.ts
 |   test
 |   ├── features
 |   |   ├── cadastroCobrancaDepositoJudicial.feature
+|   |   ├── servicoOpcoesParcelamentoECalculo.feature
 |   ├── steps
-|   |   └── cadastroCobrancaDepositoJudicialSteps.ts
+|   |   ├── cadastroCobrancaDepositoJudicialSteps.ts
+|   |   └── servicoOpcoesParcelamentoECalculo.ts
 |   .gitignore
 |   .package-lock.json
 |   README.md
@@ -186,7 +194,11 @@ Recurso para otimizar os recursos do Playwright
 
 ### hooks
 
-Recurso para gestão centralizada de pré-condições e pós-condições na execução dos testes.
+Recursos para gestão centralizada de pré-condições e pós-condições na execução dos testes.
+
+### pages
+
+Recursos para gestão centralizada e mapeamento de elementos estáticos e dinâmicos nas páginas html utilizadas no ciclo de vida do software durante a execução dos testes.
 
 ### test
 
@@ -210,6 +222,7 @@ O arquivo tsconfig.json é usado para configurar o compilador TypeScript (tsc).
 * Data Provider
 * Builder
 * Request and Response Specification
+* Page Objects
 
 ## Pipeline
 

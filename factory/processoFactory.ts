@@ -1,5 +1,5 @@
 import { ProcessoJudicial } from "../factory/models/processoJudicial";
-import { DataRequest } from "../helper/util/DataRequest";
+import { DataRequest } from "../helper/util/dataRequest";
 
 export class ProcessoFactory {
   
