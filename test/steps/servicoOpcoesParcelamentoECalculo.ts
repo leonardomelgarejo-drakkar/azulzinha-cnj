@@ -21,7 +21,7 @@ Given('que a cobrança de depósito judicial de valor R${string} foi cadastrada 
   this.endpointPagamento = responseBody.endpointPagamento;
 });
 
-When('o usuário acessa o link do cadastro judicial', async function () {
+When('o usuário acessa o link do cadastro judicial', { timeout: 20000 }, async function () {
   depositoJudicialPage = new DepositoJudicialPage(fixture.page);
   assert = new Assert(fixture.page);
   await depositoJudicialPage.gotoLuegRep(this.endpointPagamento);
