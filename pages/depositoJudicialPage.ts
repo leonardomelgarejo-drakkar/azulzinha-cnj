@@ -1,5 +1,5 @@
 import { type Page } from '@playwright/test';
-import PlaywrightWrapper from '../helper/wrapper/PlaywrightWrappers';
+import PlaywrightWrapper from '../helper/wrapper/playwrightWrappers';
 
 export default class DepositoJudicialPage {
 
