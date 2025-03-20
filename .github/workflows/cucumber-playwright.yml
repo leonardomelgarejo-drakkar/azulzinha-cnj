@@ -12,7 +12,7 @@ on:
         required: false
         default: ''
   schedule:
-    - cron: "0 12 * * 1-5"
+    - cron: "0 11 * * 1-5"
 
 permissions:
   contents: write
@@ -97,7 +97,7 @@ jobs:
 
   deploy-report:
     needs: test
-    if: always()  # ✅ Garantindo execução mesmo se os testes falharem
+    if: always()
     runs-on: ubuntu-22.04
     steps:
       - name: Download Test Report
