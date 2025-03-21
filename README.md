@@ -139,7 +139,8 @@ Se você quiser gerar o relatório HTML localmente, siga estes passos usando o *
 |   |   ├── requestConfig.ts
 |   |   wrapper
 |   |   ├── assert.ts
-|   |   └── playwrightWrappers.ts
+|   |   ├── playwrightWrappers.ts
+|   |   globalConfig.ts 
 |   hooks
 |   ├── hooks.ts
 |   ├── pageFixture.ts
