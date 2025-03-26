@@ -1,5 +1,12 @@
-export const getHeaders = () => ({
-  "Accept": "application/json",
-  "Content-Type": "application/json",
-  "Authorization": `Basic ${Buffer.from(`${process.env.USER_NAME}:${process.env.PASSWORD}`).toString("base64")}`
-});
+export const getHeaders = () => {
+  const user = process.env.USER_NAME;
+  const pass = process.env.PASSWORD;
+  const authRaw = `${user}:${pass}`;
+  const authBase64 = Buffer.from(authRaw).toString("base64");
+
+  return {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": `Basic ${authBase64}`
+  };
+};

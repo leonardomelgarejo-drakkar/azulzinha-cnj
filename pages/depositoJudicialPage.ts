@@ -17,7 +17,7 @@ export default class DepositoJudicialPage {
     valor: "R$1.001,51"
   }
 
-  async gotoLuegRep(BASEURL: string){
+  async goto(BASEURL: string){
     await this.base.goto(BASEURL);
   }
 

@@ -174,8 +174,8 @@ Then('o tempo de resposta é abaixo de {int} milisegundos', async function (expe
 
 Then('o endpoint de pagamento é retornado corretamente', async function () {
   expect(this.responseBody).toHaveProperty("endpointPagamento");
-  expect(this.responseBody.endpointPagamento).toContain("https://dev.azulzinhapay.fiserv.com/CNJ/pagaid/");
-  expect(this.responseBody.endpointPagamento.length).toBe(83);
+  expect(this.responseBody.endpointPagamento).toContain("https://qa.azulzinhapay.fiserv.com/CNJ/pagaid/");
+  expect(this.responseBody.endpointPagamento.length).toBe(84);
 });
 
 Then('a resposta contém a mensagem {string}', async function (expectedErroMessage) {

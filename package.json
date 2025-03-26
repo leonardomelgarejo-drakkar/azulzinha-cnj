@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "npx ts-node helper/report/init.ts",
-    "test": "cross-env ENV=dev FORCE_COLOR=0 cucumber-js --config=config/cucumber.js || true"
+    "test": "cross-env ENV=test FORCE_COLOR=0 cucumber-js --config=config/cucumber.js || true"
   },
   "keywords": [],
   "author": "",
