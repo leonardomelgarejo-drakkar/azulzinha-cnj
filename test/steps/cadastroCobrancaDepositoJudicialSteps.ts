@@ -3,6 +3,7 @@ import { expect } from "@playwright/test";
 import { ProcessoFactory } from "../../factory/processoFactory";
 import { ProcessoJudicial } from "../../factory/models/processoJudicial";
 import { cadastrarDepositoJudicial } from "../../helper/util/cadastroCobrancaHelper";
+import { timeout } from "../../helper/globalConfig";
 
 let requestData: string;
 let processo: ProcessoJudicial;
@@ -157,7 +158,7 @@ Given('o usuário preenche o nome do depositante com muitos caracteres', async f
   requestData = JSON.stringify(processo);
 });
 
-When('a requisição de inclusão é realizada {int} vez es', async function (quantidadeExecucoes: number) {
+When('a requisição de inclusão é realizada {int} vez es', { timeout: timeout }, async function (quantidadeExecucoes: number) {
   const { response, responseBody, requestTime } = await cadastrarDepositoJudicial(requestData, quantidadeExecucoes, this);
   this.response = response;
   this.responseBody = responseBody;
