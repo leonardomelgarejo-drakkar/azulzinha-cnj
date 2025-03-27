@@ -276,3 +276,21 @@ Feature: Cadastro Cobranca Deposito Judicial
     Then a resposta contém o status code 200
     And o tempo de resposta é abaixo de 5000 milisegundos
     And o endpoint de pagamento é retornado corretamente
+
+  @api @deposito-judicial @urlretorno-preenchida
+  Scenario: 32-Tentativa de cadastrar cobrança com a url retorno preenchida
+    Given o usuário preenche todos os campos obrigatórios
+    And o usuário preenche a urlRetorno
+    When a requisição de inclusão é realizada 1 vez es
+    Then a resposta contém o status code 200
+    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o endpoint de pagamento é retornado corretamente
+
+  @api @deposito-judicial @urlretorno-vazia
+  Scenario: 33-Tentativa de cadastrar cobrança com a url retorno vazia
+    Given o usuário preenche todos os campos obrigatórios
+    And o usuário não preenche a urlRetorno
+    When a requisição de inclusão é realizada 1 vez es
+    Then a resposta contém o status code 200
+    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o endpoint de pagamento é retornado corretamente

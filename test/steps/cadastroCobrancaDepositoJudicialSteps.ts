@@ -43,6 +43,16 @@ Given('o usuário não preenche a observação do depósito', async function () 
   requestData = JSON.stringify(processo);
 });
 
+Given('o usuário preenche a urlRetorno', async function () {
+  processo = ProcessoFactory.geraProcessoComUrlRetornoPreenchida();
+  requestData = JSON.stringify(processo);
+});
+
+Given('o usuário não preenche a urlRetorno', async function () {
+  processo = ProcessoFactory.geraProcessoComUrlRetornoVazia();
+  requestData = JSON.stringify(processo);
+});
+
 Given('o usuário preenche o código do processo com um caractere', async function () {
   processo = ProcessoFactory.geraProcessoComCodigoProcessoComUmCaracter();
   requestData = JSON.stringify(processo);

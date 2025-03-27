@@ -300,4 +300,16 @@ export class ProcessoFactory {
         observacoes: ""})
       .build()
   }
+
+  static geraProcessoComUrlRetornoPreenchida(): ProcessoJudicial {
+    return new ProcessoJudicial.Builder()
+      .setUrlRetorno("https://novodepositojudicial.caixa.gov/br/lalala")
+      .build()
+  }
+
+  static geraProcessoComUrlRetornoVazia(): ProcessoJudicial {
+    return new ProcessoJudicial.Builder()
+      .setUrlRetorno("")
+      .build()
+  }
 }

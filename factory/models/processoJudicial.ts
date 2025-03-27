@@ -6,7 +6,8 @@ export class ProcessoJudicial {
     public autor: any,
     public reu: any,
     public depositante: any,
-    public deposito: any
+    public deposito: any,
+    public urlRetorno
   ) {}
 
   static Builder = class {
@@ -31,6 +32,7 @@ export class ProcessoJudicial {
       valor: 1000.00,
       observacoes: "TESTQA"
     };
+    private urlRetorno: any = "https://novodepositojudicial.caixa.gov/br/lalala";
 
     setProcesso(processo: string) {
       this.processo = processo;
@@ -57,8 +59,13 @@ export class ProcessoJudicial {
       return this;
     }
 
+    setUrlRetorno(urlRetorno: any) {
+      this.urlRetorno = urlRetorno;
+      return this;
+    }
+
     build() {
-      return new ProcessoJudicial(this.processo, this.autor, this.reu, this.depositante, this.deposito);
+      return new ProcessoJudicial(this.processo, this.autor, this.reu, this.depositante, this.deposito, this.urlRetorno);
     }
   };
 }
