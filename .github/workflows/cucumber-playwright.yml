@@ -59,7 +59,7 @@ jobs:
       - name: Ensure .env file is available
         run: |
           mkdir -p helper/env
-          cat <<EOF > helper/env/.env.dev
+          cat <<EOF > helper/env/.env.test
           USER_NAME=${{ secrets.USER_NAME }}
           PASSWORD=${{ secrets.PASSWORD }}
           BASEURL=${{ secrets.BASEURL }}
@@ -71,7 +71,7 @@ jobs:
         env:
           BASEURL: ${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-          ENV: dev
+          ENV: test
           npm_config_TAGS: "${{ github.event.inputs.tags }}"
         run: |
           TAGS_OPTION=""
