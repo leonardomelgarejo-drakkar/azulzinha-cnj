@@ -64,7 +64,7 @@ jobs:
           PASSWORD=${{ secrets.PASSWORD }}
           BASEURL=${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-          ENV=dev
+          ENV=test
           EOF
 
       - name: Run Cucumber tests
