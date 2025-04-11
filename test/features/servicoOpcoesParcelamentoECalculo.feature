@@ -2,11 +2,11 @@ Feature: Cadastro Cobranca Deposito Judicial
 
   @ui @calculo-parcelamento @1x
   Scenario: 01-Verificar cálculo do parcelamento em 1 vez
-     Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
+     Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
       Then a página do cadastro de depósito é acessada
-       And o valor da parcela em '1' vez es fica R$'1.001,51'
-       And o valor total fica R$'1.001,51'
+       And o valor da parcela em '1' vez es fica R$'526,10'
+       And o valor total fica R$'526,10'
   
   @ui @calculo-parcelamento @2x
   Scenario: 02-Verificar cálculo do parcelamento em 2 vez
@@ -18,11 +18,11 @@ Feature: Cadastro Cobranca Deposito Judicial
 
   @ui @calculo-parcelamento @3x
   Scenario: 03-Verificar cálculo do parcelamento em 3 vez
-     Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
+     Given que a cobrança de depósito judicial de valor R$'526.' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
       Then a página do cadastro de depósito é acessada
-       And o valor da parcela em '3' vez es fica R$'338,50'
-       And o valor total fica R$'1.015,51'
+       And o valor da parcela em '3' vez es fica R$'177,81'
+       And o valor total fica R$'533,45'
 
   @ui @calculo-parcelamento @4x
   Scenario: 04-Verificar cálculo do parcelamento em 4 vez
@@ -34,11 +34,11 @@ Feature: Cadastro Cobranca Deposito Judicial
 
   @ui @calculo-parcelamento @5x
   Scenario: 05-Verificar cálculo do parcelamento em 5 vez
-     Given que a cobrança de depósito judicial de valor R$'1000.01' foi cadastrada com sucesso
+     Given que a cobrança de depósito judicial de valor R$'525.31' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
       Then a página do cadastro de depósito é acessada
-       And o valor da parcela em '5' vez es fica R$'207,10'
-       And o valor total fica R$'1.035,51'
+       And o valor da parcela em '5' vez es fica R$'105,06'
+       And o valor total fica R$'525,31'
 
   @ui @calculo-parcelamento @6x
   Scenario: 06-Verificar cálculo do parcelamento em 6 vez
