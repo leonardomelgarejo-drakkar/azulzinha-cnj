@@ -104,12 +104,12 @@ Given('o usuário preenche o tipo do documento com CNPJ e o número como CPF par
 });
 
 Given('o usuário preenche o tipo do documento com CNPJ e o número como CPF para o réu', async function () {
-  processo = ProcessoFactory.geraProcessoComDocumentoDepositanteDivergente();
+  processo = ProcessoFactory.geraProcessoComDocumentoReuDivergente();
   requestData = JSON.stringify(processo);
 });
 
 Given('o usuário preenche o tipo do documento com CNPJ e o número como CPF para o depositante', async function () {
-  processo = ProcessoFactory.geraProcessoComDocumentoReuDivergente();
+  processo = ProcessoFactory.geraProcessoComDocumentoDepositanteDivergente();
   requestData = JSON.stringify(processo);
 });
 
