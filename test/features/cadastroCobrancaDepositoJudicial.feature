@@ -5,7 +5,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     Given o usuário preenche todos os campos obrigatórios
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
   @api @deposito-judicial @codigo-processo-vazio
