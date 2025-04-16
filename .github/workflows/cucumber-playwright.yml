@@ -118,26 +118,33 @@ jobs:
             
               if [[ "$MATCHING_TASK_STATUS" == "closed" ]]; then
                 echo "♻️ Reabrindo tarefa fechada (closed)..."
-                curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
+                  
+                # Primeiro, tentar reabrir e desarquivar a tarefa
+                echo "🔄 Enviando requisição para alterar status para BACKLOG e desarquivar a tarefa..."
+                RESPONSE=$(curl -s -w "%{http_code}" -o response.txt -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
                   -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                   -H "Content-Type: application/json" \
-                  -d '{"status": "backlog", "archived": false}'
-            
-                echo "🔄 Alterando status para BACKLOG..."
-                curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
-                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
-                  -H "Content-Type: application/json" \
-                  -d '{"status": "backlog"}'
-            
+                  -d '{"status": "backlog", "archived": false}')
+        
+                HTTP_CODE="${RESPONSE:(-3)}"
+                RESPONSE_BODY=$(<response.txt)
+        
+                if [[ "$HTTP_CODE" == "200" ]]; then
+                  echo "✅ Status alterado para BACKLOG e tarefa desarquivada com sucesso!"
+                else
+                  echo "⚠️ Falha ao tentar reabrir e desarquivar a tarefa. Código HTTP: $HTTP_CODE"
+                  echo "📦 Resposta da API: $RESPONSE_BODY"
+                fi
+                
               elif [[ "$MATCHING_TASK_STATUS" == "in uat" ]]; then
                 echo "♻️ Alterando status da tarefa de IN UAT para BACKLOG..."
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
                   -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                   -H "Content-Type: application/json" \
                   -d '{"status": "backlog"}'
-            
+                
               else
-                echo "⚠️ Bug já existe com status ativo – sem alterações."
+                echo "⚠️ Bug já existe com status ativo ($MATCHING_TASK_STATUS) – sem alterações."
                 continue
               fi
             else
@@ -149,7 +156,7 @@ jobs:
                 | .steps[]
                 | "- " + .keyword + .name + " (" + .result.status + ")"
                   + (if .result.error_message then "\n  💥 " + (.result.error_message | gsub("\n"; " ") | gsub("\r"; "")) else "" end)' test-results/cucumber-report.json)
-          
+            
               DESCRIPTION=$(printf "Falha no cenário automatizado: \"%s\"\n\n🔗 Workflow: %s/%s/actions/runs/%s\n\n📋 Passos:\n%s" \
                 "$SCENARIO" "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}" "$STEPS")
             
