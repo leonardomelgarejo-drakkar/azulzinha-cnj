@@ -144,8 +144,8 @@ jobs:
                   '{
                     name: $name,
                     description: $description,
-                    status: "open",
-                    priority: 3
+                    priority: 3,
+                    custom_item_id: 1003
                   }')"
             fi
           done
