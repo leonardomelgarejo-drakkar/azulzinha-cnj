@@ -123,8 +123,6 @@ jobs:
                   -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                   -H "Content-Type: application/json" \
                   -d '{"status": "backlog"}'
-        
-              # Para qualquer status ativo, não altere e continue
               else
                 echo "⚠️ Bug já existe com status ativo ($MATCHING_TASK_STATUS) – sem alterações."
                 continue
@@ -143,7 +141,8 @@ jobs:
               DESCRIPTION=$(printf "Falha no cenário automatizado: \"%s\"\n\n🔗 Workflow: %s/%s/actions/runs/%s\n\n📋 Passos:\n%s" \
                 "$SCENARIO" "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}" "$STEPS")
         
-              curl -s -X POST "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
+              echo "📝 Criando nova tarefa no ClickUp..."
+              NEW_TASK_RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
                 -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                 -H "Content-Type: application/json" \
                 -d "$(jq -n \
@@ -155,9 +154,22 @@ jobs:
                     status: "backlog",
                     priority: 3,
                     custom_item_id: 1003
-                  }')"
+                  }')")
+        
+              NEW_TASK_ID=$(echo "$NEW_TASK_RESPONSE" | jq -r '.id')
+        
+              # Verifica se o arquivo existe e anexa
+              if [ -f test-results/cucumber-report.html ]; then
+                echo "📎 Anexando cucumber-report.html à tarefa $NEW_TASK_ID..."
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_TASK_ID/attachment" \
+                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
+                  -F "attachment=@test-results/cucumber-report.html"
+              else
+                echo "⚠️ Arquivo cucumber-report.html não encontrado – pulando anexo."
+              fi
+        
             fi
-          done             
+          done                  
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
