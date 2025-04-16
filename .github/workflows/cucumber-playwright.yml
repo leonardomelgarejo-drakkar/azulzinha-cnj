@@ -121,7 +121,7 @@ jobs:
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
                   -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                   -H "Content-Type: application/json" \
-                  -d '{"archived": false}'
+                  -d '{"status": "backlog"}'
         
                 echo "🔄 Alterando status para BACKLOG..."
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
