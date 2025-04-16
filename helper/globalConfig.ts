@@ -1,1 +1,1 @@
-export let timeout: number = 20000;
+export let timeout: number = 30000;

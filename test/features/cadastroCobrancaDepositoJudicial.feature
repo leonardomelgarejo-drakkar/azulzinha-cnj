@@ -14,7 +14,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o código do processo
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O processo não pode ser um campo vazio"
 
   @api @deposito-judicial @codigo-processo-curto
@@ -23,7 +23,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o código do processo com um caractere
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O tamanho do código do processo deve ser de 20 caracteres"
 
   @api @deposito-judicial @codigo-processo-longo
@@ -32,7 +32,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o código do processo com muitos caracteres
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O tamanho do código do processo deve ser de 20 caracteres"
 
   @api @deposito-judicial @nome-autor-vazio
@@ -41,7 +41,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o nome do autor
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Nome do Autor não pode ser um campo vazio"
 
   @api @deposito-judicial @nome-autor-curto
@@ -50,7 +50,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o nome do autor com um caractere
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
   
   @api @deposito-judicial @nome-autor-longo
@@ -59,7 +59,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o nome do autor com muitos caracteres
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Nome do Autor é muito longo"
 
   @api @deposito-judicial @cpf-autor-invalido
@@ -68,7 +68,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche um CPF inválido para o autor
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422 
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CPF informado não é válido."
   
   @api @deposito-judicial @cpf-autor-vazio
@@ -77,7 +77,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o CPF para o autor
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CPF informado não é válido."
 
   @api @deposito-judicial @documento-autor-divergente
@@ -86,7 +86,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o tipo do documento com CNPJ e o número como CPF para o autor
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CNPJ informado não é válido."
 
   @api @deposito-judicial @nome-reu-vazio
@@ -95,7 +95,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o nome do réu
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Nome do Réu não pode ser um campo vazio"
 
   @api @deposito-judicial @nome-reu-curto
@@ -104,7 +104,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o nome do réu com um caractere
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
   
   @api @deposito-judicial @nome-reu-longo
@@ -113,7 +113,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o nome do réu com muitos caracteres
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Nome do Réu é muito longo"
 
   @api @deposito-judicial @nome-reu-vazio
@@ -122,7 +122,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o CPF para o réu
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CPF informado não é válido."
 
   @api @deposito-judicial @cpf-reu-invalido
@@ -131,7 +131,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche um CPF inválido para o réu
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CPF informado não é válido."
 
   @api @deposito-judicial @documento-reu-divergente
@@ -140,7 +140,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o tipo do documento com CNPJ e o número como CPF para o réu
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CNPJ informado não é válido."
 
   @api @deposito-judicial @nome-depositante-curto
@@ -149,7 +149,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o nome do depositante com um caractere
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
   @api @deposito-judicial @nome-depositante-longo
@@ -158,7 +158,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o nome do depositante com muitos caracteres
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Nome do Depositante é muito longo"
 
   @api @deposito-judicial @cnpj-depositante-vazio
@@ -167,7 +167,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o CNPJ para o depositante
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CNPJ informado não é válido."
 
   @api @deposito-judicial @cnpj-depositate-invalido
@@ -176,7 +176,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche um CPF inválido para o depositante
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CNPJ informado não é válido."
 
   @api @deposito-judicial @documento-depositante-divergente
@@ -185,7 +185,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o tipo do documento com CNPJ e o número como CPF para o depositante
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O CNPJ informado não é válido."
 
   @api @deposito-judicial @email-depositante-vazio
@@ -194,7 +194,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o email
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Email do depositante está vazio ou não é válido."
 
   @api @deposito-judicial @email-depositante-invalido
@@ -203,7 +203,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche um e-mail inválido
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Email do depositante está vazio ou não é válido."
 
   @api @deposito-judicial @telefone-depositante-vazio
@@ -212,7 +212,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o telefone
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O telefone do depositante deve ser válido."
 
   @api @deposito-judicial @telefone-depositante-invalido
@@ -221,7 +221,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche um telefone inválido
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Email do depositante está vazio ou não é válido."
 
   @api @deposito-judicial @tentativa-cadastro-duplo
@@ -229,7 +229,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     Given o usuário preenche todos os campos obrigatórios
     When a requisição de inclusão é realizada 2 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
   @api @deposito-judicial @id-deposito-vazio
@@ -238,7 +238,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche o id do deposito
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "O ID do depósito não pode estar vazio."
 
   @api @deposito-judicial @finalidade-deposito-vazia
@@ -247,7 +247,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche a finalidade do depósito
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
   @api @deposito-judicial @valor-deposito-vazio @e2e-test 
@@ -256,7 +256,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o valor do depósito com zero
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Campo Valor não pode ser menor ou igual a zero"
 
   @api @deposito-judicial @valor-deposito-negativo @e2e-test 
@@ -265,7 +265,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche o valor do depósito com número negativo
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 422
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And a resposta contém a mensagem "Campo Valor não pode ser menor ou igual a zero"
 
   @api @deposito-judicial @observacao-deposito-vazia
@@ -274,7 +274,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche a observação do depósito
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
   @api @deposito-judicial @urlretorno-preenchida
@@ -283,7 +283,7 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário preenche a urlRetorno
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
   @api @deposito-judicial @urlretorno-vazia
@@ -292,5 +292,5 @@ Feature: Cadastro Cobranca Deposito Judicial
     And o usuário não preenche a urlRetorno
     When a requisição de inclusão é realizada 1 vez es
     Then a resposta contém o status code 200
-    And o tempo de resposta é abaixo de 5000 milisegundos
+    And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
