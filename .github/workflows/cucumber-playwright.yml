@@ -90,37 +90,36 @@ jobs:
         if: failure()
         run: |
           echo "🔍 Buscando cenários com falha no relatório JSON..."
-            
+        
           readarray -t FAILED_SCENARIOS < <(jq -r '.[]?.elements[]? | select(.steps[].result.status=="failed") | .name' test-results/cucumber-report.json | sort -u)
-            
+        
           if [ ${#FAILED_SCENARIOS[@]} -eq 0 ]; then
             echo "✅ Nenhum cenário com falha encontrado."
             exit 0
           fi
-            
+        
           for SCENARIO in "${FAILED_SCENARIOS[@]}"; do
             echo "🔍 Verificando tarefas existentes para: $SCENARIO"
-            
+        
             EXISTING_TASKS=$(curl -s -G "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
               --data-urlencode "search=$SCENARIO" \
               --data-urlencode "include_closed=true" \
               -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
               -H "Content-Type: application/json")
-            
+        
             MATCHING_TASK=$(echo "$EXISTING_TASKS" | jq -r --arg scenario "$SCENARIO" '
               .tasks[] | select(.name | test($scenario)) | {id: .id, status: .status.status}')
-            
+        
             MATCHING_TASK_ID=$(echo "$MATCHING_TASK" | jq -r '.id')
             MATCHING_TASK_STATUS=$(echo "$MATCHING_TASK" | jq -r '.status')
-            
+        
             if [ -n "$MATCHING_TASK_ID" ]; then
               echo "🔎 Tarefa encontrada: ID=$MATCHING_TASK_ID com status=$MATCHING_TASK_STATUS"
-            
+        
               if [[ "$MATCHING_TASK_STATUS" == "closed" ]]; then
-                echo "♻️ Reabrindo tarefa fechada (closed)..."
+                echo "♻️ Tarefa fechada encontrada, tentando reabrir..."
                   
-                # Primeiro, tentar reabrir e desarquivar a tarefa
-                echo "🔄 Enviando requisição para alterar status para BACKLOG e desarquivar a tarefa..."
+                # Tentando reabrir e desarquivar a tarefa
                 RESPONSE=$(curl -s -w "%{http_code}" -o response.txt -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
                   -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                   -H "Content-Type: application/json" \
@@ -135,31 +134,34 @@ jobs:
                   echo "⚠️ Falha ao tentar reabrir e desarquivar a tarefa. Código HTTP: $HTTP_CODE"
                   echo "📦 Resposta da API: $RESPONSE_BODY"
                 fi
-                
+        
               elif [[ "$MATCHING_TASK_STATUS" == "in uat" ]]; then
                 echo "♻️ Alterando status da tarefa de IN UAT para BACKLOG..."
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
                   -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                   -H "Content-Type: application/json" \
                   -d '{"status": "backlog"}'
-                
+        
+              elif [[ "$MATCHING_TASK_STATUS" == "backlog" ]]; then
+                echo "⚠️ A tarefa já está no status BACKLOG – sem alterações necessárias."
+        
               else
                 echo "⚠️ Bug já existe com status ativo ($MATCHING_TASK_STATUS) – sem alterações."
                 continue
               fi
             else
               echo "🐞 Nenhuma tarefa encontrada – criando nova para o cenário: $SCENARIO"
-            
+        
               STEPS=$(jq -r --arg scenario "$SCENARIO" '
                 .[]?.elements[]?
                 | select(.name == $scenario)
                 | .steps[]
                 | "- " + .keyword + .name + " (" + .result.status + ")"
                   + (if .result.error_message then "\n  💥 " + (.result.error_message | gsub("\n"; " ") | gsub("\r"; "")) else "" end)' test-results/cucumber-report.json)
-            
+        
               DESCRIPTION=$(printf "Falha no cenário automatizado: \"%s\"\n\n🔗 Workflow: %s/%s/actions/runs/%s\n\n📋 Passos:\n%s" \
                 "$SCENARIO" "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}" "$STEPS")
-            
+        
               curl -s -X POST "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
                 -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                 -H "Content-Type: application/json" \
