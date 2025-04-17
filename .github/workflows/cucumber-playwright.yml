@@ -123,6 +123,23 @@ jobs:
                   -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
                   -H "Content-Type: application/json" \
                   -d '{"status": "backlog"}'
+        
+                echo "💬 Adicionando comentário com o passo que falhou..."
+        
+                FAILED_STEP=$(jq -r --arg scenario "$SCENARIO" '
+                  .[]?.elements[]?
+                  | select(.name == $scenario)
+                  | .steps[]
+                  | select(.result.status == "failed")
+                  | .keyword + .name + " 💥 " + (.result.error_message // "Erro não especificado")' test-results/cucumber-report.json)
+        
+                COMMENT_TEXT=$(printf "🔄 Bug reaberto no pipeline.\n\n📋 Passo que falhou:\n%s" "$FAILED_STEP")
+        
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID/comment" \
+                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
+                  -H "Content-Type: application/json" \
+                  -d "$(jq -n --arg text "$COMMENT_TEXT" '{ notify_all: true, comment_text: $text }')"
+        
               else
                 echo "⚠️ Bug já existe com status ativo ($MATCHING_TASK_STATUS) – sem alterações."
                 continue
@@ -158,7 +175,6 @@ jobs:
         
               NEW_TASK_ID=$(echo "$NEW_TASK_RESPONSE" | jq -r '.id')
         
-              # Verifica se o arquivo existe e anexa
               if [ -f test-results/cucumber-report.html ]; then
                 echo "📎 Anexando cucumber-report.html à tarefa $NEW_TASK_ID..."
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_TASK_ID/attachment" \
@@ -167,9 +183,8 @@ jobs:
               else
                 echo "⚠️ Arquivo cucumber-report.html não encontrado – pulando anexo."
               fi
-        
             fi
-          done                  
+          done        
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
