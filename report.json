@@ -1,0 +1,3982 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;01-tentativa-de-cadastrar-cobrança-de-depósito-judicial-completa",
+        "keyword": "Scenario",
+        "line": 4,
+        "name": "01-Tentativa de cadastrar cobrança de depósito judicial completa",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 5,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8084818
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 6,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2051584367
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNDcyMjkwMDczNVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMTQ3NTUzNTIxMDBcIn19LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBNYXJpYSBTYW50b3NcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI5OTg2NjE1MTUxNFwifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ2Nzk3MDYwNDZcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvOWRjZWM3MmUtMTFiMS00NTE1LWEzZTItMzYxYzA4ZjBkMDY0Igp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyMDQzLjIgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 7,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2723052
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "o tempo de resposta é abaixo de 20000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2680152
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3215609
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 3
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 3
+          },
+          {
+            "name": "@completo",
+            "line": 3
+          },
+          {
+            "name": "@e2e-test",
+            "line": 3
+          },
+          {
+            "name": "@smoke-test",
+            "line": 3
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;02-tentativa-de-cadastrar-cobrança-com-código-do-processo-vazio",
+        "keyword": "Scenario",
+        "line": 12,
+        "name": "02-Tentativa de cadastrar cobrança com código do processo vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 13,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 329955
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 14,
+            "name": "o usuário não preenche o código do processo",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1647868
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 15,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 295468485
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJcIixcImF1dG9yXCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBSb2JlcnRvIExpbWFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCIzMTk3MzE1NDEzN1wifX0sXCJyZXVcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMTQxMzU4NjQ0OTBcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElEMTMzNjUzNzg5XCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBwcm9jZXNzbyBuw6NvIHBvZGUgc2VyIHVtIGNhbXBvIHZhemlvIgogIF0sCiAgIlN0YXR1c0NvZGUiOiA0MjIKfQ==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyODguOTcgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 16,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 624362
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 17,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 530237
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 18,
+            "name": "a resposta contém a mensagem \"O processo não pode ser um campo vazio\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2573082
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 11
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 11
+          },
+          {
+            "name": "@codigo-processo-vazio",
+            "line": 11
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;03-tentativa-de-cadastrar-cobrança-deposito-judicial-com-código-do-processo-curto",
+        "keyword": "Scenario",
+        "line": 21,
+        "name": "03-Tentativa de cadastrar cobrança deposito judicial com código do processo curto",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 22,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 255325
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "o usuário preenche o código do processo com um caractere",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:56"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1223929
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 24,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 178838527
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCIxXCIsXCJhdXRvclwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgSm/Do28gU2lsdmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI0MTEzMjQ2NTMwM1wifX0sXCJyZXVcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjQ0NzY0ODI3ODMyXCJ9fSxcImRlcG9zaXRhbnRlXCI6e1wibm9tZVwiOlwiUUEgRGVwb3NpdGFudGVcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDE5OTMxMjIyOVwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyB0YW1hbmhvIGRvIGPDs2RpZ28gZG8gcHJvY2Vzc28gZGV2ZSBzZXIgZGUgMjAgY2FyYWN0ZXJlcyIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNzYuMzcgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 25,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 401457
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 26,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 388714
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 27,
+            "name": "a resposta contém a mensagem \"O tamanho do código do processo deve ser de 20 caracteres\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 394775
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 20
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 20
+          },
+          {
+            "name": "@codigo-processo-curto",
+            "line": 20
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;04-tentativa-de-cadastrar-cobrança-deposito-judicial-com-código-do-processo-muito-longo",
+        "keyword": "Scenario",
+        "line": 30,
+        "name": "04-Tentativa de cadastrar cobrança deposito judicial com código do processo muito longo",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 31,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 275594
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 32,
+            "name": "o usuário preenche o código do processo com muitos caracteres",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:61"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2126650
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 33,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 162524529
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNzQ0MDE1NDI3NDgzNjI5MjI0ODM3MzA4MTI2MTk5MTMxNTUzMTkxODgwODUyMTI1NTAxOTUxODI3MDk0NDQwNTE0NTk5MjE5MDc2MzI2OTc3NDA1ODU0ODM4OTc3Njc4NzYzN1wiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIE1hcmlhIFNhbnRvc1wiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjk1ODYzOTY1ODQzXCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQW5hIFNvdXphXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNjI5MjEyNDMyMDJcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElENDMxMTgwOTk1XCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyB0YW1hbmhvIGRvIGPDs2RpZ28gZG8gcHJvY2Vzc28gZGV2ZSBzZXIgZGUgMjAgY2FyYWN0ZXJlcyIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTkuNzggbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 34,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 365961
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 35,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 304407
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 36,
+            "name": "a resposta contém a mensagem \"O tamanho do código do processo deve ser de 20 caracteres\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 409852
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 29
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 29
+          },
+          {
+            "name": "@codigo-processo-longo",
+            "line": 29
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;05-tentativa-de-cadastrar-cobrança-deposito-judicial-com-nome-do-autor-vazio",
+        "keyword": "Scenario",
+        "line": 39,
+        "name": "05-Tentativa de cadastrar cobrança deposito judicial com nome do autor vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 40,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 209590
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 41,
+            "name": "o usuário não preenche o nome do autor",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:66"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1541161
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 42,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 171503977
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMDYzMzYwNzQ0MFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI2Mzk0NTk4NTUwMVwifX0sXCJyZXVcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIENhcmxvcyBPbGl2ZWlyYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjg0NzQ1MjQ1NTU2XCJ9fSxcImRlcG9zaXRhbnRlXCI6e1wibm9tZVwiOlwiUUEgRGVwb3NpdGFudGVcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDUyMTAzMDU4N1wiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTm9tZSBkbyBBdXRvciBuw6NvIHBvZGUgc2VyIHVtIGNhbXBvIHZhemlvIgogIF0sCiAgIlN0YXR1c0NvZGUiOiA0MjIKfQ==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNjguNjggbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 43,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 345303
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 321769
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 45,
+            "name": "a resposta contém a mensagem \"Nome do Autor não pode ser um campo vazio\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 336767
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 38
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 38
+          },
+          {
+            "name": "@nome-autor-vazio",
+            "line": 38
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;06-tentativa-de-cadastrar-cobrança-deposito-judicial-com-nome-do-autor-curto",
+        "keyword": "Scenario",
+        "line": 48,
+        "name": "06-Tentativa de cadastrar cobrança deposito judicial com nome do autor curto",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 49,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 243192
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 50,
+            "name": "o usuário preenche o nome do autor com um caractere",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:71"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 872945
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 51,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 167613945
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DOTA4ODU4NjM2OFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJBXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMTExODM2OTExNDlcIn0sXCJlLW1haWxcIjpcInFhLmF1dG9yQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTRcIn0sXCJyZXVcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEFuYSBTb3V6YVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjE1NjczMTMxNTkzXCJ9fSxcImRlcG9zaXRhbnRlXCI6e1wibm9tZVwiOlwiUUEgRGVwb3NpdGFudGVcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDUyMTQwODgxOFwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvYmIwNGYyY2QtZDc1MS00Y2MwLWEyZGYtYTBjZDM4OGM4NjQ3Igp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNjUuMTUgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 52,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 341986
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 53,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 315177
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 54,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 556375
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 47
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 47
+          },
+          {
+            "name": "@nome-autor-curto",
+            "line": 47
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;07-tentativa-de-cadastrar-cobrança-com-nome-do-autor-muito-longo",
+        "keyword": "Scenario",
+        "line": 57,
+        "name": "07-Tentativa de cadastrar cobrança com nome do autor muito longo",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 58,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 210713
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 59,
+            "name": "o usuário preenche o nome do autor com muitos caracteres",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:76"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 902391
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 60,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 175474740
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMjQzOTY0NjgyNVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjEzOTQ4NzI3NjM1XCJ9LFwiZS1tYWlsXCI6XCJxYS5hdXRvckB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE0XCJ9LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBSb2JlcnRvIExpbWFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI1Mzg3OTIyNTI1N1wifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ3ODUzMjk3OTVcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTm9tZSBkbyBBdXRvciDDqSBtdWl0byBsb25nbyIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNjkuNTQgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 61,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 539604
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 62,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 348720
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 63,
+            "name": "a resposta contém a mensagem \"Nome do Autor é muito longo\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 415244
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 56
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 56
+          },
+          {
+            "name": "@nome-autor-longo",
+            "line": 56
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;08-tentativa-de-cadastrar-cobrança-com-cpf-do-autor-inválido",
+        "keyword": "Scenario",
+        "line": 66,
+        "name": "08-Tentativa de cadastrar cobrança com CPF do autor inválido",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 67,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 226573
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 68,
+            "name": "o usuário preenche um CPF inválido para o autor",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:81"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1301263
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 69,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 188525349
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DOTUyMTUxNDUzNVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEFuYSBTb3V6YVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjEyMzQ1Njc4XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQW5hIFNvdXphXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNjY3NDExNTM4MDJcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElEOTg2ODY5MzEzXCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBDUEYgaW5mb3JtYWRvIG7Do28gw6kgdsOhbGlkby4iCiAgXSwKICAiU3RhdHVzQ29kZSI6IDQyMgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxODYuNCBtcw==",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 70,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 328532
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 71,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 276163
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 72,
+            "name": "a resposta contém a mensagem \"O CPF informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 355862
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 65
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 65
+          },
+          {
+            "name": "@cpf-autor-invalido",
+            "line": 65
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;09-tentativa-de-cadastrar-cobrança-com-cpf-vazio-para-o-autor",
+        "keyword": "Scenario",
+        "line": 75,
+        "name": "09-Tentativa de cadastrar cobrança com CPF vazio para o autor",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 76,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 154658
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 77,
+            "name": "o usuário não preenche o CPF para o autor",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:96"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 706356
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 78,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 257319569
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNjI1ODMwNTQ1OFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEFuYSBTb3V6YVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIlwifX0sXCJyZXVcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIENhcmxvcyBPbGl2ZWlyYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjE4NjYxODE2NzAwXCJ9fSxcImRlcG9zaXRhbnRlXCI6e1wibm9tZVwiOlwiUUEgRGVwb3NpdGFudGVcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDA0NDg4MDE0NVwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBDUEYgaW5mb3JtYWRvIG7Do28gw6kgdsOhbGlkby4iCiAgXSwKICAiU3RhdHVzQ29kZSI6IDQyMgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyNTUuMTEgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 79,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 292294
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 80,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 380649
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 81,
+            "name": "a resposta contém a mensagem \"O CPF informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 282365
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 74
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 74
+          },
+          {
+            "name": "@cpf-autor-vazio",
+            "line": 74
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;10-tentativa-de-cadastrar-cobrança-com-tipo-e-número-do-documento-do-autor-divergente",
+        "keyword": "Scenario",
+        "line": 84,
+        "name": "10-Tentativa de cadastrar cobrança com tipo e número do documento do autor divergente",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 85,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 173783
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 86,
+            "name": "o usuário preenche o tipo do documento com CNPJ e o número como CPF para o autor",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:101"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1139132
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 87,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 170113783
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNTMxNjI0NDAxMlwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjU0NjYxNTI4ODkxXCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQ2FybG9zIE9saXZlaXJhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNDU0NTk1MzQ4NDRcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElENTk5OTM5OTk0XCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvNTI3ZDFjNDUtOGIxOS00MzE0LWFlYTktNjUyZjlhM2NjNGUwIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNjcuODggbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 88,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 1935775,
+              "error_message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 422\nReceived: 200\n    at Proxy.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/node_modules/playwright/lib/matchers/expect.js:254:37)\n    at World.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:179:34)\n    at step (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:33:23)\n    at Object.next (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:14:53)\n    at /home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:8:71\n    at __awaiter (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:4:12)\n    at World.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:351:12)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 89,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 90,
+            "name": "a resposta contém a mensagem \"O CNPJ informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 83
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 83
+          },
+          {
+            "name": "@documento-autor-divergente",
+            "line": 83
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;11-tentativa-de-cadastrar-cobrança-com-nome-do-réu-vazio",
+        "keyword": "Scenario",
+        "line": 93,
+        "name": "11-Tentativa de cadastrar cobrança com nome do réu vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 94,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 177951
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 95,
+            "name": "o usuário não preenche o nome do réu",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:146"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 635584
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 96,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 156619127
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMDE1NjkyNDc0OFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjU1OTkxNDc2NjU5XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjY4MTQzODI1NzEwXCJ9LFwiZS1tYWlsXCI6XCJxYS5yZXVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNVwifSxcImRlcG9zaXRhbnRlXCI6e1wibm9tZVwiOlwiUUEgRGVwb3NpdGFudGVcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDI0NDQ0Nzc2NlwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTm9tZSBkbyBSw6l1IG7Do28gcG9kZSBzZXIgdW0gY2FtcG8gdmF6aW8iCiAgXSwKICAiU3RhdHVzQ29kZSI6IDQyMgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTQuMzMgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 97,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 341836
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 98,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 311729
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 99,
+            "name": "a resposta contém a mensagem \"Nome do Réu não pode ser um campo vazio\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 305889
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 92
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 92
+          },
+          {
+            "name": "@nome-reu-vazio",
+            "line": 92
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;12-tentativa-de-cadastrar-cobrança-com-nome-do-réu-curto",
+        "keyword": "Scenario",
+        "line": 102,
+        "name": "12-Tentativa de cadastrar cobrança com nome do réu curto",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 103,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 179884
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 104,
+            "name": "o usuário preenche o nome do réu com um caractere",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:151"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 714811
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 105,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 225740409
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMzE2MjU3MjQ0NVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjUzNzI3NzgyNDU1XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIkFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCIxMjQ5MzE0MjQwM1wifSxcImUtbWFpbFwiOlwicWEucmV1QHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTVcIn0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ4NTE5NjExMjFcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvODZiMjk4MTEtOGNkYi00NTcwLWJlMDgtNTE2YTQzMGY5ZDg0Igp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyMjMuNDQgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 106,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 332880
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 107,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 311990
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 108,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 516180
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 101
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 101
+          },
+          {
+            "name": "@nome-reu-curto",
+            "line": 101
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;13-tentativa-de-cadastrar-cobrança-com-nome-do-réu-muito-longo",
+        "keyword": "Scenario",
+        "line": 111,
+        "name": "13-Tentativa de cadastrar cobrança com nome do réu muito longo",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 112,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 184734
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 113,
+            "name": "o usuário preenche o nome do réu com muitos caracteres",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:161"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 787897
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 114,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 179583533
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNjA1MjEwODU5MFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMTg5NjU1ODcxMjNcIn19LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBSb2JlcnRvIExpbWFYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI4Mzg5NDgyNTMzMlwifSxcImUtbWFpbFwiOlwicWEucmV1QHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTVcIn0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQyNjQ0NzAyMTFcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTm9tZSBkbyBSw6l1IMOpIG11aXRvIGxvbmdvIgogIF0sCiAgIlN0YXR1c0NvZGUiOiA0MjIKfQ==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNzQuODggbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 115,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 313713
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 116,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 365640
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 117,
+            "name": "a resposta contém a mensagem \"Nome do Réu é muito longo\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 386218
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 110
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 110
+          },
+          {
+            "name": "@nome-reu-longo",
+            "line": 110
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;14-tentativa-de-cadastrar-cobrança-com-cpf-vazio-para-o-réu",
+        "keyword": "Scenario",
+        "line": 120,
+        "name": "14-Tentativa de cadastrar cobrança com CPF vazio para o réu",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 121,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 197258
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 122,
+            "name": "o usuário não preenche o CPF para o réu",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:116"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 648519
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 123,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 243325134
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNTE4MjE1ODE1OFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjM0NDk1MzU5NDM2XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgUm9iZXJ0byBMaW1hXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiXCJ9fSxcImRlcG9zaXRhbnRlXCI6e1wibm9tZVwiOlwiUUEgRGVwb3NpdGFudGVcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDQ2NTk5NDE1OFwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBDUEYgaW5mb3JtYWRvIG7Do28gw6kgdsOhbGlkby4iCiAgXSwKICAiU3RhdHVzQ29kZSI6IDQyMgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyNDEuMTggbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 124,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 326287
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 125,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 316789
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 126,
+            "name": "a resposta contém a mensagem \"O CPF informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 318232
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 119
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 119
+          },
+          {
+            "name": "@nome-reu-vazio",
+            "line": 119
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;15-tentativa-de-cadastrar-cobrança-com-cpf-do-réu-inválido",
+        "keyword": "Scenario",
+        "line": 129,
+        "name": "15-Tentativa de cadastrar cobrança com CPF do réu inválido",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 130,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 168504
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 131,
+            "name": "o usuário preenche um CPF inválido para o réu",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:86"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 707568
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 132,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 189168244
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNTYwMDEwMzExMlwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIENhcmxvcyBPbGl2ZWlyYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjMzOTE5NTE0OTQ3XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQW5hIFNvdXphXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMTIzNDU2NzhcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElENzkyODgzMzgwXCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBDUEYgaW5mb3JtYWRvIG7Do28gw6kgdsOhbGlkby4iCiAgXSwKICAiU3RhdHVzQ29kZSI6IDQyMgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxODcuMDkgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 133,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 399254
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 134,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 305119
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 135,
+            "name": "a resposta contém a mensagem \"O CPF informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 335995
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 128
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 128
+          },
+          {
+            "name": "@cpf-reu-invalido",
+            "line": 128
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;16-tentativa-de-cadastrar-cobrança-com-tipo-e-número-do-documento-do-réu-divergente",
+        "keyword": "Scenario",
+        "line": 138,
+        "name": "16-Tentativa de cadastrar cobrança com tipo e número do documento do réu divergente",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 139,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 170127
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 140,
+            "name": "o usuário preenche o tipo do documento com CNPJ e o número como CPF para o réu",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:106"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 903232
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 141,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 295586063
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNzYxODEzMzQyOVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEFuYSBTb3V6YVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjY4NjczOTg1NTM2XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgUm9iZXJ0byBMaW1hXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjExOTM5Nzc3MzgwXCJ9fSxcImRlcG9zaXRhbnRlXCI6e1wibm9tZVwiOlwiUUEgRGVwb3NpdGFudGVcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDA0MzAxNjc2NFwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvMTMxZWMzNWMtNTYwYy00MjA5LWE4NzYtMDRkMmJiNTA3NjUyIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyOTMuNDggbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 142,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 473563,
+              "error_message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 422\nReceived: 200\n    at Proxy.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/node_modules/playwright/lib/matchers/expect.js:254:37)\n    at World.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:179:34)\n    at step (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:33:23)\n    at Object.next (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:14:53)\n    at /home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:8:71\n    at __awaiter (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:4:12)\n    at World.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:351:12)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 143,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 144,
+            "name": "a resposta contém a mensagem \"O CNPJ informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 137
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 137
+          },
+          {
+            "name": "@documento-reu-divergente",
+            "line": 137
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;17-tentativa-de-cadastrar-cobrança-com-nome-do-depositante-curto",
+        "keyword": "Scenario",
+        "line": 147,
+        "name": "17-Tentativa de cadastrar cobrança com nome do depositante curto",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 148,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 172881
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 149,
+            "name": "o usuário preenche o nome do depositante com um caractere",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:156"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 788227
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 150,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 200051783
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNDYyNDMxMDA2N1wiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjI2MTQ3NjM2NDA1XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgSm/Do28gU2lsdmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI4NTU5NDM4NDQwNVwifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIkFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNOUEpcIixcIm51bWVyb1wiOlwiOTc4NTU0OTUwMDAxNzJcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDg4Nzk3MzI2NFwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvNzJiMTdlNTMtM2RjNS00ZmE2LThmZmUtMDZiMjFlMWE1MWNhIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxOTcuNjMgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 151,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 319475
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 152,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 317271
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 153,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 663495
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 146
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 146
+          },
+          {
+            "name": "@nome-depositante-curto",
+            "line": 146
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;18-tentativa-de-cadastrar-cobrança-com-nome-do-depositante-muito-longo",
+        "keyword": "Scenario",
+        "line": 156,
+        "name": "18-Tentativa de cadastrar cobrança com nome do depositante muito longo",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 157,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 158245
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 158,
+            "name": "o usuário preenche o nome do depositante com muitos caracteres",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:166"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1062077
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 159,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 208315247
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNzMwMDY5NjA5MVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIE1hcmlhIFNhbnRvc1wiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjEzMTM3MTU3NzgxXCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQW5hIFNvdXphXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMTc0NTI1NTI1NzFcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEFuYSBTb3V6YVhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElEMTMyNDE2Mzg0XCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTm9tZSBkbyBEZXBvc2l0YW50ZSDDqSBtdWl0byBsb25nbyIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyMDYuMTIgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 160,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 270223
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 161,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 244365
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 162,
+            "name": "a resposta contém a mensagem \"Nome do Depositante é muito longo\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 285341
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 155
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 155
+          },
+          {
+            "name": "@nome-depositante-longo",
+            "line": 155
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;19-tentativa-de-cadastrar-cobrança-com-cnpj-vazio-para-o-depositante",
+        "keyword": "Scenario",
+        "line": 165,
+        "name": "19-Tentativa de cadastrar cobrança com CNPJ vazio para o depositante",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 166,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 129380
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 167,
+            "name": "o usuário não preenche o CNPJ para o depositante",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:121"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 665219
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 168,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 161724891
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNzAxNzA5Njg1OVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIE1hcmlhIFNhbnRvc1wiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjM4MTg5Mzg3NDEzXCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgSm/Do28gU2lsdmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI1MjkzOTg2NjUxMVwifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElENzg4MDAzNjA2XCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBDTlBKIGluZm9ybWFkbyBuw6NvIMOpIHbDoWxpZG8uIgogIF0sCiAgIlN0YXR1c0NvZGUiOiA0MjIKfQ==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTkuOTIgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 169,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 262639
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 170,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 232632
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 171,
+            "name": "a resposta contém a mensagem \"O CNPJ informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 240878
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 164
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 164
+          },
+          {
+            "name": "@cnpj-depositante-vazio",
+            "line": 164
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;20-tentativa-de-cadastrar-cobrança-com-cnpj-do-depositante-inválido",
+        "keyword": "Scenario",
+        "line": 174,
+        "name": "20-Tentativa de cadastrar cobrança com CNPJ do depositante inválido",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 175,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 129100
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 176,
+            "name": "o usuário preenche um CPF inválido para o depositante",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:91"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 651903
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 177,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 182909189
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNjI2MTI3MjQ2N1wiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjY4NDI3MzUyNTQ5XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQ2FybG9zIE9saXZlaXJhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMTI4ODkzOTU4MjBcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCIxMjM0NTZcIn0sXCJlLW1haWxcIjpcInFhLmRlcG9zaXRhbnRlQHRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDgxMDUwMzUzN1wiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBDTlBKIGluZm9ybWFkbyBuw6NvIMOpIHbDoWxpZG8uIgogIF0sCiAgIlN0YXR1c0NvZGUiOiA0MjIKfQ==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxODAuOSBtcw==",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 178,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 280251
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 179,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 231682
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 180,
+            "name": "a resposta contém a mensagem \"O CNPJ informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 234476
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 173
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 173
+          },
+          {
+            "name": "@cnpj-depositate-invalido",
+            "line": 173
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;21-tentativa-de-cadastrar-cobrança-com-tipo-e-número-do-documento-do-depositante-divergente",
+        "keyword": "Scenario",
+        "line": 183,
+        "name": "21-Tentativa de cadastrar cobrança com tipo e número do documento do depositante divergente",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 184,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 139620
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 185,
+            "name": "o usuário preenche o tipo do documento com CNPJ e o número como CPF para o depositante",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:111"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 952152
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 186,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 154529498
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNDk3ODc4ODExN1wiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNDQ4OTc5Njk3ODZcIn19LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBDYXJsb3MgT2xpdmVpcmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI3MjQ0NzI1NDM0MlwifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjgyMzYzMzgyNzQ5XCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ3MzA3MDAzNjNcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvNjFlMWFhODctYjk2Mi00N2E4LWEwYjktZTljNDcwMWY5NTEzIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTIuNjYgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 187,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 533813,
+              "error_message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 422\nReceived: 200\n    at Proxy.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/node_modules/playwright/lib/matchers/expect.js:254:37)\n    at World.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:179:34)\n    at step (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:33:23)\n    at Object.next (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:14:53)\n    at /home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:8:71\n    at __awaiter (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:4:12)\n    at World.<anonymous> (/home/runner/work/azulzinha-cnj/azulzinha-cnj/test/steps/cadastroCobrancaDepositoJudicialSteps.ts:351:12)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 188,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 189,
+            "name": "a resposta contém a mensagem \"O CNPJ informado não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 182
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 182
+          },
+          {
+            "name": "@documento-depositante-divergente",
+            "line": 182
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;22-tentativa-de-cadastrar-cobrança-com-e-mail-do-depositante-vazio",
+        "keyword": "Scenario",
+        "line": 192,
+        "name": "22-Tentativa de cadastrar cobrança com e-mail do depositante vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 193,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 138938
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 194,
+            "name": "o usuário não preenche o email",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:126"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 501914
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 195,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 200443413
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNTY3NzgwNDIxN1wiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIE1hcmlhIFNhbnRvc1wiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjMzNDM1MjU5MzYxXCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgTWFyaWEgU2FudG9zXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMjMzNTUzMzY3MzRcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwiXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDM5MTE5NzExOVwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiRW1haWwgZG8gZGVwb3NpdGFudGUgZXN0w6EgdmF6aW8gb3UgbsOjbyDDqSB2w6FsaWRvLiIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxOTguNzUgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 196,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 216883
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 197,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 226040
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 198,
+            "name": "a resposta contém a mensagem \"Email do depositante está vazio ou não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 204060
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 191
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 191
+          },
+          {
+            "name": "@email-depositante-vazio",
+            "line": 191
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;23-tentativa-de-cadastrar-cobrança-com-e-mail-do-depositante-inválido",
+        "keyword": "Scenario",
+        "line": 201,
+        "name": "23-Tentativa de cadastrar cobrança com e-mail do depositante inválido",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 202,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 101889
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 203,
+            "name": "o usuário preenche um e-mail inválido",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:136"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 567798
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 204,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 169454019
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMjk1ODEyMzE3NlwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNDIxMzIyNzQ3MjBcIn19LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBDYXJsb3MgT2xpdmVpcmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI2OTY3NjI3OTEwMlwifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZXRlc3QuY29tXCIsXCJ0ZWxlZm9uZVwiOlwiNTE5ODUzMTkzMTZcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDQ0NjI4NjcyM1wiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiRW1haWwgZG8gZGVwb3NpdGFudGUgZXN0w6EgdmF6aW8gb3UgbsOjbyDDqSB2w6FsaWRvLiIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNjcuNzQgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 205,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 242792
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 206,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 194673
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 207,
+            "name": "a resposta contém a mensagem \"Email do depositante está vazio ou não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 305518
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 200
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 200
+          },
+          {
+            "name": "@email-depositante-invalido",
+            "line": 200
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;24-tentativa-de-cadastrar-cobrança-com-telefone-do-depositante-vazio",
+        "keyword": "Scenario",
+        "line": 210,
+        "name": "24-Tentativa de cadastrar cobrança com telefone do depositante vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 211,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 146282
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 212,
+            "name": "o usuário não preenche o telefone",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:131"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 469094
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 213,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 391632685
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNzg5NTc0ODc2N1wiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIENhcmxvcyBPbGl2ZWlyYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjEzODU0NzE5NDg1XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgUm9iZXJ0byBMaW1hXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMjM0NzM1MTk1ODhcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCJcIn0sXCJkZXBvc2l0b1wiOntcImlkXCI6XCJURVNUUUFERVBJRDYzNTM1NzM0NFwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyB0ZWxlZm9uZSBkbyBkZXBvc2l0YW50ZSBkZXZlIHNlciB2w6FsaWRvLiIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAzODkuNjIgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 214,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 319375
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 215,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 328131
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 216,
+            "name": "a resposta contém a mensagem \"O telefone do depositante deve ser válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 431534
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 209
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 209
+          },
+          {
+            "name": "@telefone-depositante-vazio",
+            "line": 209
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;25-tentativa-de-cadastrar-cobrança-com-telefone-do-depositante-inválido",
+        "keyword": "Scenario",
+        "line": 219,
+        "name": "25-Tentativa de cadastrar cobrança com telefone do depositante inválido",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 220,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 166139
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 221,
+            "name": "o usuário preenche um telefone inválido",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:141"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 712596
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 222,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 159020080
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMDEyNjc3MDc0OVwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjUyODM0NTY4MzgzXCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgTWFyaWEgU2FudG9zXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNTg0MTM5NTc0MjdcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGV0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjEyMzQ1XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ0MjU3NTIwNDdcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiRW1haWwgZG8gZGVwb3NpdGFudGUgZXN0w6EgdmF6aW8gb3UgbsOjbyDDqSB2w6FsaWRvLiIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTYuOTkgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 223,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 313113
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 224,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 284238
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 225,
+            "name": "a resposta contém a mensagem \"Email do depositante está vazio ou não é válido.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 301060
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 218
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 218
+          },
+          {
+            "name": "@telefone-depositante-invalido",
+            "line": 218
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;26-tentativa-de-cadastrar-cobrança-de-depósito-judicial-duas-vezes",
+        "keyword": "Scenario",
+        "line": 228,
+        "name": "26-Tentativa de cadastrar cobrança de depósito judicial duas vezes",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 229,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 161651
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 230,
+            "name": "a requisição de inclusão é realizada 2 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 380965953
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DODM0Mzc1OTIzNFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNzQ4Mjk2NzY4MDlcIn19LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBDYXJsb3MgT2xpdmVpcmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCIyNDIzNDM5ODQ5N1wifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQwODczMzk2OTdcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvZjk3ODZiZGUtZGYyYS00ZTkxLWI1ZTEtZTkwZjY2YzNlN2QyIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNzkuNTEgbXM=",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDIgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DODM0Mzc1OTIzNFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNzQ4Mjk2NzY4MDlcIn19LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBDYXJsb3MgT2xpdmVpcmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCIyNDIzNDM5ODQ5N1wifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQwODczMzk2OTdcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDIgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDIgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvYzJmZTYwM2QtZjE2Ny00MGM3LWJhNjItMTk1YmZiYzgwYzlhIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDIgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxOTguOCBtcw==",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 231,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 331478
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 232,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 247331
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 233,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 578306
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 227
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 227
+          },
+          {
+            "name": "@tentativa-cadastro-duplo",
+            "line": 227
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;27-tentativa-de-cadastrar-cobrança-com-id-do-depósito-vazio",
+        "keyword": "Scenario",
+        "line": 236,
+        "name": "27-Tentativa de cadastrar cobrança com id do depósito vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 237,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 176337
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 238,
+            "name": "o usuário não preenche o id do deposito",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 696716
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 239,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 160300457
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNjk3Mjg5Mzk5NFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIENhcmxvcyBPbGl2ZWlyYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjk2NTI3ODEyMTU5XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQW5hIFNvdXphXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNDY2NDg5NTUxODBcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlwiLFwiZmluYWxpZGFkZVwiOlwiR0FSQU5USUFcIixcInZhbG9yXCI6MTAwMCxcIm9ic2VydmFjb2VzXCI6XCJURVNUUUFcIn0sXCJ1cmxSZXRvcm5vXCI6XCJodHRwczovL25vdm9kZXBvc2l0b2p1ZGljaWFsLmNhaXhhLmdvdi9ici9sYWxhbGFcIn0i",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiTyBJRCBkbyBkZXDDs3NpdG8gbsOjbyBwb2RlIGVzdGFyIHZhemlvLiIKICBdLAogICJTdGF0dXNDb2RlIjogNDIyCn0=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTguNDIgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 240,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 332448
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 241,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 288677
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 242,
+            "name": "a resposta contém a mensagem \"O ID do depósito não pode estar vazio.\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 300549
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 235
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 235
+          },
+          {
+            "name": "@id-deposito-vazio",
+            "line": 235
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;28-tentativa-de-cadastrar-cobrança-com-finalidade-do-depósito-vazia",
+        "keyword": "Scenario",
+        "line": 245,
+        "name": "28-Tentativa de cadastrar cobrança com finalidade do depósito vazia",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 246,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 188521
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 247,
+            "name": "o usuário não preenche a finalidade do depósito",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:26"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 711454
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 248,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 171522198
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNTI4MDAwNDkxMFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjQ3Nzc2ODQ3NjgyXCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgSm/Do28gU2lsdmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI3NDE3NjE3MjIwN1wifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ2NzcwODIzNzJcIixcImZpbmFsaWRhZGVcIjpcIlwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvYTU3ZTVhZTgtYzllNS00MTZhLTg3NWUtOTUyMjcxZjU0ZTQ4Igp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNjkuNiBtcw==",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 249,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 233956
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 250,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 225650
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 251,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 409332
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 244
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 244
+          },
+          {
+            "name": "@finalidade-deposito-vazia",
+            "line": 244
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;29-tentativa-de-cadastrar-cobrança-com-valor-do-depósito-vazio",
+        "keyword": "Scenario",
+        "line": 254,
+        "name": "29-Tentativa de cadastrar cobrança com valor do depósito vazio",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 255,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 107839
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 256,
+            "name": "o usuário preenche o valor do depósito com zero",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:31"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 619233
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 257,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 202346047
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DOTI2Njk3MjY4NFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIENhcmxvcyBPbGl2ZWlyYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjU0MjU1NDk1ODA3XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQ2FybG9zIE9saXZlaXJhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNDMzNTk2MTkyODVcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElEMzQ0NjY3Mjk1XCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjowLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiQ2FtcG8gVmFsb3IgbsOjbyBwb2RlIHNlciBtZW5vciBvdSBpZ3VhbCBhIHplcm8iCiAgXSwKICAiU3RhdHVzQ29kZSI6IDQyMgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAyMDAuODMgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 258,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 229377
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 259,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 275583
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 260,
+            "name": "a resposta contém a mensagem \"Campo Valor não pode ser menor ou igual a zero\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 307382
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 253
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 253
+          },
+          {
+            "name": "@valor-deposito-vazio",
+            "line": 253
+          },
+          {
+            "name": "@e2e-test",
+            "line": 253
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;30-tentativa-de-cadastrar-cobrança-com-valor-do-depósito-negativo",
+        "keyword": "Scenario",
+        "line": 263,
+        "name": "30-Tentativa de cadastrar cobrança com valor do depósito negativo",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 264,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 184674
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 265,
+            "name": "o usuário preenche o valor do depósito com número negativo",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:36"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 797484
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 266,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 178472424
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMTA3ODQ3MTQyOFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEpvw6NvIFNpbHZhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiNjIyNzUxMzU3MTVcIn19LFwicmV1XCI6e1wibm9tZVwiOlwiVEVTVFFBTkFNRSBNYXJpYSBTYW50b3NcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI1ODcyNjI2ODM1M1wifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ4MDExMjEzMjRcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOi0xLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogNDIy",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJFcnJvcnMiOiBbCiAgICAiQ2FtcG8gVmFsb3IgbsOjbyBwb2RlIHNlciBtZW5vciBvdSBpZ3VhbCBhIHplcm8iCiAgXSwKICAiU3RhdHVzQ29kZSI6IDQyMgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNzYuNSBtcw==",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 267,
+            "name": "a resposta contém o status code 422",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 352546
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 268,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 311530
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 269,
+            "name": "a resposta contém a mensagem \"Campo Valor não pode ser menor ou igual a zero\"",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:192"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 295500
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 262
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 262
+          },
+          {
+            "name": "@valor-deposito-negativo",
+            "line": 262
+          },
+          {
+            "name": "@e2e-test",
+            "line": 262
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;31-tentativa-de-cadastrar-cobrança-com-observação-do-depósito-vazia",
+        "keyword": "Scenario",
+        "line": 272,
+        "name": "31-Tentativa de cadastrar cobrança com observação do depósito vazia",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 273,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 166349
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 274,
+            "name": "o usuário não preenche a observação do depósito",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:41"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 690696
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 275,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 157936991
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMjQwODM4MzQyNFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIENhcmxvcyBPbGl2ZWlyYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjk4Mjk0MzI2OTY4XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgTWFyaWEgU2FudG9zXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMzg3MzM5MjQ2MTlcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElEODM3OTM4OTg2XCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvMWExOWY0N2MtNjlhOC00MWNiLWFlODMtZTFmZmFiMDgwODI4Igp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTYgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 276,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 340224
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 277,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 291082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 278,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 530458
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 271
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 271
+          },
+          {
+            "name": "@observacao-deposito-vazia",
+            "line": 271
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;32-tentativa-de-cadastrar-cobrança-com-a-url-retorno-preenchida",
+        "keyword": "Scenario",
+        "line": 281,
+        "name": "32-Tentativa de cadastrar cobrança com a url retorno preenchida",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 282,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 202416
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 283,
+            "name": "o usuário preenche a urlRetorno",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:46"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 646425
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 284,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 156186636
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMDkwMDA0NDgzOFwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIEFuYSBTb3V6YVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjYxODQzNzI4OTA3XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQW5hIFNvdXphXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMjk1NTI1OTY3NTBcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElEMDgxMDUzMTcwXCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcImh0dHBzOi8vbm92b2RlcG9zaXRvanVkaWNpYWwuY2FpeGEuZ292L2JyL2xhbGFsYVwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvYWRhYmUwYTYtYWVmMy00Y2JlLTlkZjEtNTkwNjZmNmVmMDMzIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTQuMzEgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 285,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 303665
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 286,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 310519
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 287,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 494701
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 280
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 280
+          },
+          {
+            "name": "@urlretorno-preenchida",
+            "line": 280
+          }
+        ],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;33-tentativa-de-cadastrar-cobrança-com-a-url-retorno-vazia",
+        "keyword": "Scenario",
+        "line": 290,
+        "name": "33-Tentativa de cadastrar cobrança com a url retorno vazia",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 291,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 182149
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 292,
+            "name": "o usuário não preenche a urlRetorno",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:51"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 606489
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 293,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 156454595
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DMTMwMjAwNjQ4M1wiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjMyNjk2MTU5MTQ5XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgQ2FybG9zIE9saXZlaXJhXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDUEZcIixcIm51bWVyb1wiOlwiMzE4MTE5ODI3NzhcIn19LFwiZGVwb3NpdGFudGVcIjp7XCJub21lXCI6XCJRQSBEZXBvc2l0YW50ZVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ05QSlwiLFwibnVtZXJvXCI6XCI5Nzg1NTQ5NTAwMDE3MlwifSxcImUtbWFpbFwiOlwicWEuZGVwb3NpdGFudGVAdGVzdC5jb21cIixcInRlbGVmb25lXCI6XCI1MTk4NTMxOTMxNlwifSxcImRlcG9zaXRvXCI6e1wiaWRcIjpcIlRFU1RRQURFUElEMDg4MjYzNzUzXCIsXCJmaW5hbGlkYWRlXCI6XCJHQVJBTlRJQVwiLFwidmFsb3JcIjoxMDAwLFwib2JzZXJ2YWNvZXNcIjpcIlRFU1RRQVwifSxcInVybFJldG9ybm9cIjpcIlwifSI=",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvMjE1NmU1OTQtOTIzOC00ZDk3LTg2YTktYzhiNTc3OWJjZWI0Igp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiAxNTQuNDMgbXM=",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 294,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 330264
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 295,
+            "name": "o tempo de resposta é abaixo de 5000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 307082
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 296,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 568137
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 289
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 289
+          },
+          {
+            "name": "@urlretorno-vazia",
+            "line": 289
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "cadastro-cobranca-deposito-judicial",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Cadastro Cobranca Deposito Judicial",
+    "tags": [],
+    "uri": "test/features/cadastroCobrancaDepositoJudicial.feature"
+  }
+]
