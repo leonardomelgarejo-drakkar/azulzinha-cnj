@@ -59,19 +59,19 @@ jobs:
       - name: Ensure .env file is available
         run: |
           mkdir -p helper/env
-          cat <<EOF > helper/env/.env.test
+          cat <<EOF > helper/env/.env.devtes
           USER_NAME=${{ secrets.USER_NAME }}
           PASSWORD=${{ secrets.PASSWORD }}
           BASEURL=${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-          ENV=test
+          ENV=dev
           EOF
 
       - name: Run Cucumber tests
         env:
           BASEURL: ${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-          ENV: test
+          ENV: dev
           npm_config_TAGS: "${{ github.event.inputs.tags }}"
         run: |
           TAGS_OPTION=""
