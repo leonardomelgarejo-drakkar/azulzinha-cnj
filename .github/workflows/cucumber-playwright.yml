@@ -62,14 +62,14 @@ jobs:
           cat <<EOF > helper/env/.env.dev
           USER_NAME=${{ secrets.USER_NAME_DEV }}
           PASSWORD=${{ secrets.PASSWORD_DEV }}
-          BASEURL_DEV=${{ secrets.BASEURL_DEV }}
+          BASEURL=${{ secrets.BASEURL_DEV }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV=dev
           EOF
 
       - name: Run Cucumber tests
         env:
-          BASEURL_DEV: ${{ secrets.BASEURL_DEV }}
+          BASEURL: ${{ secrets.BASEURL_DEV }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV: dev
           npm_config_TAGS: "${{ github.event.inputs.tags }}"
