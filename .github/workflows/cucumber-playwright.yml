@@ -233,7 +233,7 @@ jobs:
                       name: $name,
                       description: $description,
                       status: $status,
-                      custom_item_id: 1004
+                      custom_item_id: 1005
                     }')")
                 
             SCENARIO_ID=$(echo "$RESPONSE" | jq -r '.id')
@@ -245,55 +245,58 @@ jobs:
         if: ${{ always() }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          LIST_ID:       ${{ secrets.CLICKUP_TEST_LIST_ID }}
         run: |
           echo "🔍 Reportando Test Cases como subtasks…"
           declare -A PARENT
-        
+  
           # 1) Carrega FEATURE → PARENT_ID criados no passo anterior
           while IFS='|' read -r FEATURE ID; do
             PARENT["$FEATURE"]=$ID
           done < tmp/scenario_ids.csv
-        
+  
           # 2) Lista todos os cenários
           readarray -t SCENARIOS < <(jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u)
-        
+  
           for SCENARIO in "${SCENARIOS[@]}"; do
-            # 3) Usa jq para descobrir a feature que contém este cenário
+            # 3) Acha a feature-pai via jq
             FEATURE=$(jq -r --arg s "$SCENARIO" '
               .[] 
               | select([.elements[].name] | index($s)) 
               | .name
             ' test-results/cucumber-report.json)
-        
+  
             PARENT_ID=${PARENT["$FEATURE"]}
-        
+  
             if [ -z "$PARENT_ID" ]; then
               echo "⚠️ Pai não encontrado para $SCENARIO (feature: $FEATURE), pulando."
               continue
             fi
-        
-            # 4) Determina status do cenário
+  
+            # 4) Status do cenário
             if jq -e --arg s "$SCENARIO" '.[] | .elements[] | select(.name==$s) | .steps[].result.status=="failed"' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
             else
               STATUS="test complete"
             fi
-        
+  
             echo "📋 Criando Subtask Test Case: $SCENARIO → $STATUS (parent: $PARENT_ID)"
-            curl -s -X POST "https://api.clickup.com/api/v2/task/$PARENT_ID/subtask" \
+            curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
               -H "Authorization: $CLICKUP_TOKEN" \
               -H "Content-Type: application/json" \
               -d "$(jq -n \
-                    --arg name "Test Case: $SCENARIO" \
-                    --arg description "Cenário \"$SCENARIO\" finalizado com status: $STATUS." \
-                    --arg status "$STATUS" \
+                    --arg name        "Test Case: $SCENARIO" \
+                    --arg description "Cenário \"$SCENARIO\": $STATUS." \
+                    --arg status      "$STATUS" \
+                    --arg parent      "$PARENT_ID" \
                     '{
                       name: $name,
                       description: $description,
                       status: $status,
-                      custom_item_id: 1005
+                      parent: $parent,
+                      custom_item_id: 1006
                     }')"
-          done            
+          done  
 
   #     - name: Upload Cucumber Test Report
   #       uses: actions/upload-artifact@v4
