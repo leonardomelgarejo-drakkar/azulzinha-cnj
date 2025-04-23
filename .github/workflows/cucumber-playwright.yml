@@ -206,19 +206,20 @@ jobs:
       - name: Reportar Test Scenarios no ClickUp
         if: ${{ always() }}
         env:
-          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          LIST_ID:      ${{ secrets.CLICKUP_TEST_LIST_ID }}
+            CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+            LIST_ID:      ${{ secrets.CLICKUP_TEST_LIST_ID }}
         run: |
           echo "🔍 Reportando Test Scenarios..."
-          # Extrai nome de cada feature do JSON
-          FEATURES=$(jq -r '.[].name' test-results/cucumber-report.json)
-          for FEATURE in $FEATURES; do
-            # se algum step falhou na feature, marca como rejected
+          # lê cada nome completo de feature numa array, sem cortar espaços
+          readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
+          for FEATURE in "${FEATURES[@]}"; do
+            # determina status
             if jq -e --arg f "$FEATURE" '.[] | select(.name==$f) | .elements[].steps[].result.status=="failed"' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
             else
               STATUS="test complete"
             fi
+        
             echo "📋 Criando Test Scenario: $FEATURE → $STATUS"
             curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
               -H "Authorization: $CLICKUP_TOKEN" \
@@ -233,7 +234,7 @@ jobs:
                       status: $status,
                       custom_item_id: 1003
                     }')"
-          done
+          done          
   
       - name: Reportar Test Cases no ClickUp
         if: ${{ always() }}
