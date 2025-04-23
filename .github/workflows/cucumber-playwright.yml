@@ -233,7 +233,7 @@ jobs:
                       name: $name,
                       description: $description,
                       status: $status,
-                      custom_item_id: 1005
+                      custom_item_id: 1007
                     }')")
                 
             SCENARIO_ID=$(echo "$RESPONSE" | jq -r '.id')
@@ -294,7 +294,7 @@ jobs:
                       description: $description,
                       status: $status,
                       parent: $parent,
-                      custom_item_id: 1006
+                      custom_item_id: 1008
                     }')"
           done  
 
