@@ -186,6 +186,69 @@ jobs:
             fi
           done        
 
+      - name: Reportar Test Scenarios no ClickUp
+        if: always()
+        env:
+          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          LIST_ID:      ${{ secrets.CLICKUP_TEST_LIST_ID }}
+        run: |
+          echo "🔍 Reportando Test Scenarios..."
+          # Extrai nome de cada feature do JSON
+          FEATURES=$(jq -r '.[].name' test-results/cucumber-report.json)
+          for FEATURE in $FEATURES; do
+            # se algum step falhou na feature, marca como rejected
+            if jq -e --arg f "$FEATURE" '.[] | select(.name==$f) | .elements[].steps[].result.status=="failed"' test-results/cucumber-report.json >/dev/null; then
+              STATUS="rejected"
+            else
+              STATUS="test complete"
+            fi
+            echo "📋 Criando Test Scenario: $FEATURE → $STATUS"
+            curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+              -H "Authorization: $CLICKUP_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                    --arg name "Test Scenario: $FEATURE" \
+                    --arg description "Feature \"$FEATURE\" finalizada com status: $STATUS." \
+                    --arg status "$STATUS" \
+                    '{
+                      name: $name,
+                      description: $description,
+                      status: $status,
+                      custom_item_id: 1003
+                    }')"
+          done
+  
+      - name: Reportar Test Cases no ClickUp
+        if: always()
+        env:
+          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          LIST_ID:      ${{ secrets.CLICKUP_TEST_LIST_ID }}
+        run: |
+          echo "🔍 Reportando Test Cases..."
+          # Extrai nome de cada cenário
+          readarray -t SCENARIOS < <(jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u)
+          for SCENARIO in "${SCENARIOS[@]}"; do
+            if jq -e --arg s "$SCENARIO" '.[].elements[] | select(.name==$s) | .steps[].result.status=="failed"' test-results/cucumber-report.json >/dev/null; then
+              STATUS="rejected"
+            else
+              STATUS="test complete"
+            fi
+            echo "📋 Criando Test Case: $SCENARIO → $STATUS"
+            curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+              -H "Authorization: $CLICKUP_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n \
+                    --arg name "Test Case: $SCENARIO" \
+                    --arg description "Cenário \"$SCENARIO\" finalizado com status: $STATUS." \
+                    --arg status "$STATUS" \
+                    '{
+                      name: $name,
+                      description: $description,
+                      status: $status,
+                      custom_item_id: 1003
+                    }')"
+          done
+
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
         if: always()
