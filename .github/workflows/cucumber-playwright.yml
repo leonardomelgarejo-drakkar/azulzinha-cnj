@@ -193,6 +193,12 @@ jobs:
           echo "▶️ CLICKUP_TEST_LIST_ID = ${{ secrets.CLICKUP_TEST_LIST_ID }}"
           echo "▶️ CLICKUP_API_TOKEN     = ${{ secrets.CLICKUP_API_TOKEN }}"
 
+      - name: Check List exists
+        if: ${{ always() }}
+        run: |
+          curl -i -H "Authorization: $CLICKUP_TOKEN" \
+            "https://api.clickup.com/api/v2/list/$LIST_ID"
+
       - name: Reportar Test Scenarios no ClickUp
         if: ${{ always() }}
         env:
