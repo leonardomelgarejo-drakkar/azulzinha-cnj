@@ -184,24 +184,7 @@ jobs:
                 echo "⚠️ Arquivo cucumber-report.html não encontrado – pulando anexo."
               fi
             fi
-          done        
-
-      - name: Debug CLICKUP_TEST_LIST_ID e token
-        # para garantir que execute sempre, use a expressão correta:
-        if: ${{ always() }}
-        run: |
-          echo "▶️ CLICKUP_TEST_LIST_ID = ${{ secrets.CLICKUP_TEST_LIST_ID }}"
-          echo "▶️ CLICKUP_API_TOKEN     = ${{ secrets.CLICKUP_API_TOKEN }}"
-
-      - name: Check List exists
-        if: ${{ always() }}
-        env:
-          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          LIST_ID:      ${{ secrets.CLICKUP_TEST_LIST_ID }}
-        run: |
-          echo "🔎 Verificando lista $LIST_ID..."
-          curl -i -H "Authorization: $CLICKUP_TOKEN" \
-            "https://api.clickup.com/api/v2/list/$LIST_ID"
+          done
 
       - name: Reportar Test Scenarios no ClickUp
         if: ${{ always() }}
