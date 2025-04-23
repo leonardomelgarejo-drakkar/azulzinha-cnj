@@ -187,12 +187,14 @@ jobs:
           done        
 
       - name: Debug CLICKUP_TEST_LIST_ID e token
+        # para garantir que execute sempre, use a expressão correta:
+        if: ${{ always() }}
         run: |
-          echo "List ID = ${{ secrets.CLICKUP_TEST_LIST_ID }}"
-          echo "Token   = ${{ secrets.CLICKUP_API_TOKEN }}"
+          echo "▶️ CLICKUP_TEST_LIST_ID = ${{ secrets.CLICKUP_TEST_LIST_ID }}"
+          echo "▶️ CLICKUP_API_TOKEN     = ${{ secrets.CLICKUP_API_TOKEN }}"
 
       - name: Reportar Test Scenarios no ClickUp
-        if: always()
+        if: ${{ always() }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
           LIST_ID:      ${{ secrets.CLICKUP_TEST_LIST_ID }}
@@ -224,7 +226,7 @@ jobs:
           done
   
       - name: Reportar Test Cases no ClickUp
-        if: always()
+        if: ${{ always() }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
           LIST_ID:      ${{ secrets.CLICKUP_TEST_LIST_ID }}
