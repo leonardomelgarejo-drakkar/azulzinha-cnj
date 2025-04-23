@@ -186,6 +186,11 @@ jobs:
             fi
           done        
 
+      - name: Debug CLICKUP_TEST_LIST_ID e token
+        run: |
+          echo "List ID = ${{ secrets.CLICKUP_TEST_LIST_ID }}"
+          echo "Token   = ${{ secrets.CLICKUP_API_TOKEN }}"
+
       - name: Reportar Test Scenarios no ClickUp
         if: always()
         env:
