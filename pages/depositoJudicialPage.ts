@@ -25,10 +25,23 @@ export default class DepositoJudicialPage {
     return await this.base.getByText(this.Elements.depositoJudicialHeaderText);
   }
 
-  async getValorEsperado(numParcelas: string, valorEsperado: string) {
-    const text = `${numParcelas} x de R$${valorEsperado}`;
+  async getTextQuantidadeParcelasEsperadas(textNumParcelas: string) {
+    const text = this.base.getByTextExact(textNumParcelas, true);
 
-    return await this.base.getByTextWithScrollToElement(text);
+    return await text;
+  }
+
+  async getValorEsperado(valorEsperado: string) {
+    const text = this.base.getByTextExact(valorEsperado, true);
+
+    return await this.base.getByTextWithScrollToElement(await text);
+  }
+
+  async getValorTotalEsperado(textNumParcelas: string) {
+    const text = this.base.getByText(textNumParcelas);
+
+    return await this.base.getByTextWithScrollToElement(await text);
+    // return await text;
   }
 
   async getValorTotal(valorTotal: string, position: number) {

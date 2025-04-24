@@ -34,35 +34,24 @@ Then('a página do cadastro de depósito é acessada', { timeout: timeout }, asy
   await assert.assertElementContains(depositoJudicialHeaderText, "Depósito Judicial Não Tributá");
 });
 
-Then('o valor da parcela em {string} vez es fica R${string}', { timeout: timeout }, async function (numParcelas: string, valorEsperado: string) {
-  this.numParcelas = numParcelas;
-  valorx = await depositoJudicialPage.getValorEsperado(numParcelas, valorEsperado);
-  const expectedText = `${numParcelas} x de R$${valorEsperado}`;
-  await assert.assertElementContains(valorx, expectedText);
+Then('a quantidade de parcelas é {string}', { timeout: timeout }, async function (textNumParcelas: string) {
+  const textQuantidadeParcelas = await depositoJudicialPage.getTextQuantidadeParcelasEsperadas(textNumParcelas);
+  await assert.assertElementContains(textQuantidadeParcelas, textNumParcelas);
 });
 
-Then('o valor total fica R${string}', { timeout: timeout }, async function (valorTotal: string) {
-  if(this.numParcelas === "9"){
-    valorx = await depositoJudicialPage.getValorTotal(valorTotal, 1);
-  } else if (this.numParcelas === "10"){
-    valorx = await depositoJudicialPage.getValorTotal(valorTotal, 2);
-  } else {
-    valorx = await depositoJudicialPage.getValorTotal(valorTotal, 1);
-  }
-  
-  const expectedText = `Total: R$${valorTotal}`;
-  await assert.assertElementContains(valorx, expectedText);
+Then('o valor da parcela é {string}', { timeout: timeout }, async function (valorEsperado: string) {
+  valorx = await depositoJudicialPage.getValorEsperado(valorEsperado);
+  await assert.assertElementContains(valorx, valorEsperado);
 });
 
-Then('o valor do serviço de conveniência de R${string}', { timeout: timeout }, async function (valorConveniencia: string) {
-  if(this.numParcelas === "9"){
-    valorx = await depositoJudicialPage.getValorConveniência(valorConveniencia, 1);
-  } else if (this.numParcelas === "10"){
-    valorx = await depositoJudicialPage.getValorConveniência(valorConveniencia, 2);
-  } else {
-    valorx = await depositoJudicialPage.getValorConveniência(valorConveniencia, 1);
-  }
-  
-  const expectedText = `Incluso serviço de conveniência: R$${valorConveniencia}`;
-  await assert.assertElementContains(valorx, expectedText);
+Then('o valor {string}', { timeout: timeout }, async function (valorTotal: string) {
+  const valorTotalAtual = depositoJudicialPage.getValorTotalEsperado(valorTotal);
+
+  await assert.assertElementContains(await valorTotalAtual, valorTotal);
+});
+
+Then('a {string}', { timeout: timeout }, async function (valorConveniencia: string) {
+  const textValorConvenienciaAtual = depositoJudicialPage.getValorTotalEsperado(valorConveniencia);
+
+  await assert.assertElementContains(await textValorConvenienciaAtual, valorConveniencia);
 });

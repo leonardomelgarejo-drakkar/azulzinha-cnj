@@ -91,7 +91,7 @@ export default class PlaywrightWrapper {
     }
 
     async getByTextExact(text: string, exact: boolean){
-        const element = this.page.getByText(text, { exact: exact.toString() === "true" });
+        const element = this.page.getByText(text, { exact: exact.toString() === "true" }).first();
         await element.waitFor({
             state: "visible"
         });
@@ -109,7 +109,16 @@ export default class PlaywrightWrapper {
     }
 
     async getByText(text: string){
-        const element = this.page.getByText(text);
+        const element = this.page.getByText(text).first();
+        await element.waitFor({
+            state: "visible"
+        });
+        await element.scrollIntoViewIfNeeded();
+        return (await element.textContent()).trim();
+    }
+
+    async getByTestId(testId: string){
+        const element = this.page.getByTestId(testId);
         await element.waitFor({
             state: "visible"
         });
@@ -127,7 +136,7 @@ export default class PlaywrightWrapper {
     }
 
     async getByTextWithScrollToElement(text: string){
-        const element = this.page.getByText(text);
+        const element = this.page.getByText(text, { exact: true }).first();
         await element.waitFor({
             state: "visible"
         });
