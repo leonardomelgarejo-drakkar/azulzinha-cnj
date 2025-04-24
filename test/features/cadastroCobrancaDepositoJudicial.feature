@@ -4,7 +4,7 @@ Feature: Cadastro Cobranca Deposito Judicial
   Scenario: 01-Tentativa de cadastrar cobrança de depósito judicial completa
     Given o usuário preenche todos os campos obrigatórios
     When a requisição de inclusão é realizada 1 vez es
-    Then a resposta contém o status code 203
+    Then a resposta contém o status code 200
     And o tempo de resposta é abaixo de 20000 milisegundos
     And o endpoint de pagamento é retornado corretamente
 
