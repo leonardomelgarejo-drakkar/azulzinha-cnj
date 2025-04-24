@@ -313,46 +313,46 @@ jobs:
             fi
           done
 
-  #     - name: Upload Cucumber Test Report
-  #       uses: actions/upload-artifact@v4
-  #       if: always()
-  #       with:
-  #         name: cucumber-test-report
-  #         path: test-results
-  #         retention-days: 5
+      - name: Upload Cucumber Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cucumber-test-report
+          path: test-results
+          retention-days: 5
 
-  # deploy-report:
-  #   needs: test
-  #   if: always()
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: Download Test Report
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: cucumber-test-report
-  #         path: test-results
+  deploy-report:
+    needs: test
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download Test Report
+        uses: actions/download-artifact@v4
+        with:
+          name: cucumber-test-report
+          path: test-results
 
-  #     - name: Rename Cucumber Report to index.html (if exists)
-  #       run: |
-  #         if [ -f test-results/cucumber-report.html ]; then
-  #           cp test-results/cucumber-report.html test-results/index.html
-  #         else
-  #           echo "Arquivo cucumber-report.html não encontrado. Pulando renomeação."
-  #         fi
+      - name: Rename Cucumber Report to index.html (if exists)
+        run: |
+          if [ -f test-results/cucumber-report.html ]; then
+            cp test-results/cucumber-report.html test-results/index.html
+          else
+            echo "Arquivo cucumber-report.html não encontrado. Pulando renomeação."
+          fi
 
-  #     - name: Ensure JSON is accessible
-  #       run: |
-  #         if [ -f test-results/cucumber-report.json ]; then
-  #           cp test-results/cucumber-report.json test-results/report.json
-  #         else
-  #           echo "Arquivo cucumber-report.json não encontrado."
-  #         fi
+      - name: Ensure JSON is accessible
+        run: |
+          if [ -f test-results/cucumber-report.json ]; then
+            cp test-results/cucumber-report.json test-results/report.json
+          else
+            echo "Arquivo cucumber-report.json não encontrado."
+          fi
 
-  #     - name: Deploy to GitHub Pages
-  #       uses: peaceiris/actions-gh-pages@v4
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         publish_dir: test-results
-  #         publish_branch: gh-pages
-  #         force_orphan: true
-  #         keep_files: true
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: test-results
+          publish_branch: gh-pages
+          force_orphan: true
+          keep_files: true
