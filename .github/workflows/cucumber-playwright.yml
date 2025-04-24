@@ -200,13 +200,18 @@ jobs:
           readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
           for FEATURE in "${FEATURES[@]}"; do
             # Se **qualquer** step falhou, STATUS=rejected
-            if jq -e --arg f "$FEATURE" '.[] 
-                | select(.name==$f) 
-                | .elements[].steps[].result.status=="failed"' test-results/cucumber-report.json >/dev/null; then
-              STATUS="rejected"
-            else
-              STATUS="test complete"
-            fi
+            if jq -e --arg f "$FEATURE" '
+              [ .[] 
+                | select(.name==$f)
+                | .elements[] 
+                | .steps[] 
+                | select(.result.status=="failed") 
+              ] | length > 0
+          ' test-results/cucumber-report.json >/dev/null; then
+            STATUS="rejected"
+          else
+            STATUS="test complete"
+          fi
             
             echo "📋 Criando Test Scenario: $FEATURE → $STATUS"
             RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
@@ -255,10 +260,14 @@ jobs:
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
   
             # 4) determina status: se qualquer step falhou → rejected
-            if jq -e --arg s "$SCENARIO" '.[] 
+            if jq -e --arg s "$SCENARIO" '
+              [ .[] 
                 | .elements[] 
                 | select(.name==$s) 
-                | .steps[].result.status=="failed"' test-results/cucumber-report.json >/dev/null; then
+                | .steps[] 
+                | select(.result.status=="failed") 
+              ] | length > 0
+            ' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
             else
               STATUS="test complete"
