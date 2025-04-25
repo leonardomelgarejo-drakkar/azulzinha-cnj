@@ -280,7 +280,6 @@ jobs:
               --data-urlencode "include_closed=true" \
               -H "Authorization: $CLICKUP_TOKEN" \
               -H "Content-Type: application/json")
-
             TASK_ID=$(echo "$EXISTING" | jq -r \
               --arg name   "$TASK_NAME" \
               --arg parent "$PARENT_ID" \
@@ -290,16 +289,23 @@ jobs:
 
             # 3) determina status
             if jq -e --arg s "$SCENARIO" '
-                [ .[] | .elements[] | select(.name==$s) | .steps[] | select(.result.status=="failed") ] | length > 0
+                [ .[] 
+                  | .elements[] 
+                  | select(.name==$s) 
+                  | .steps[] 
+                  | select(.result.status=="failed") 
+                ] | length > 0
               ' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
             else
               STATUS="test complete"
             fi
 
-            # 4) extrai e formata os passos Gherkin, excluindo Before/After, e inclui a mensagem de erro para o passo com falha
+            # 4) extrai e formata passos + mensagem de erro, EXCLUINDO Before/After
             RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
-              .[] | .elements[] | select(.name==$s)
+              .[] 
+              | .elements[] 
+              | select(.name==$s)
               | .steps[]
               | select((.keyword | test("^(Before|After)";"i")) | not)
               | (
@@ -310,8 +316,6 @@ jobs:
                     end)
                 )
             ' test-results/cucumber-report.json)
-
-            # indentar cada linha em 5 espaços
             SCENARIO_STEPS=$(printf "%s\n" "$RAW_STEPS" | sed 's/^/     /')
 
             # 5) monta a descrição
@@ -324,7 +328,7 @@ jobs:
               echo "🔄 Task existente ID=$TASK_ID – sem alterações."
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
-              curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+              CREATE_RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
                 -d "$(jq -n \
@@ -339,9 +343,31 @@ jobs:
                         status: $status,
                         parent: $parent,
                         custom_item_id: $custom_item_id
-                      }')"
-            fi
+                      }')")
+              TASK_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
 
+              # 7) anexa o(s) vídeo(s) .webm referenciado(s) no JSON
+              VIDEO_URIS=$(jq -r --arg s "$SCENARIO" '
+                .[] 
+                | .elements[] 
+                | select(.name==$s)
+                | .embeddings[]?
+                | select(.mime_type=="video/webm")
+                | .uri
+              ' test-results/cucumber-report.json)
+
+              for URI in $VIDEO_URIS; do
+                VIDEO_PATH="test-results/$URI"
+                if [ -f "$VIDEO_PATH" ]; then
+                  echo "📎 Anexando vídeo de evidência '$VIDEO_PATH'..."
+                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                    -H "Authorization: $CLICKUP_TOKEN" \
+                    -F "attachment=@$VIDEO_PATH"
+                else
+                  echo "⚠️ Vídeo não encontrado em '$VIDEO_PATH'"
+                fi
+              done
+            fi
           done  
 
       - name: Upload Cucumber Test Report
