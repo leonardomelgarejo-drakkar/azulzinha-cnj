@@ -264,9 +264,17 @@ jobs:
             PARENT["$FEATURE"]=$ID
           done < tmp/scenario_ids.csv
 
-          # 2) percorre cada cenário único
-          readarray -t SCENARIOS < <(jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u)
-          for SCENARIO in "${SCENARIOS[@]}"; do
+          # 2) lista cenários e vídeos (em ordem de criação)
+          readarray -t SCENARIOS < <(
+            jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u
+          )
+          readarray -t VIDEO_FILES < <(
+            ls -1rt test-results/report/videos/*.webm 2>/dev/null || true
+          )
+
+          # 3) para cada cenário
+          for idx in "${!SCENARIOS[@]}"; do
+            SCENARIO="${SCENARIOS[idx]}"
             FEATURE=$(jq -r --arg s "$SCENARIO" '
               .[] | select([.elements[].name] | index($s)) | .name
             ' test-results/cucumber-report.json)
@@ -281,35 +289,35 @@ jobs:
               -H "Authorization: $CLICKUP_TOKEN" \
               -H "Content-Type: application/json")
             TASK_ID=$(echo "$EXISTING" | jq -r \
-              --arg name   "$TASK_NAME" \
+              --arg name "$TASK_NAME" \
               --arg parent "$PARENT_ID" \
-              '.tasks[] | select(.name == $name and (.parent|tostring) == $parent) | .id // empty')
+              '.tasks[] | select(.name==$name and (.parent|tostring)==$parent) | .id // empty')
 
-            # 3) determina status
+            # 4) determina status
             if jq -e --arg s "$SCENARIO" '
-                [ .[] | .elements[] | select(.name==$s) | .steps[] | select(.result.status=="failed") ] | length>0
+                [ .[] | .elements[] | select(.name==$s) | .steps[] 
+                  | select(.result.status=="failed") ] | length>0
               ' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
             else
               STATUS="test complete"
             fi
 
-            # 4) extrai e formata passos + mensagem de erro, excluindo Before/After
+            # 5) formata passos excluindo Before/After
             RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
-              | .steps[] | select((.keyword | test("^(Before|After)";"i"))|not)
+              | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
               | .keyword + " " + .name
-                + (if .result.status=="failed"
-                    then "\n" + (.result.error_message|gsub("\r?\n"; "\n"))
-                    else ""
-                  end)
+                + (if .result.status=="failed" 
+                    then "\n" + (.result.error_message|gsub("\r?\n";"\n")) 
+                    else "" end)
             ' test-results/cucumber-report.json)
             SCENARIO_STEPS=$(printf "%s\n" "$RAW_STEPS" | sed 's/^/     /')
 
-            # 5) descrição
+            # 6) monta descrição
             DESCRIPTION=$(printf "Scenario: %s\n%s" "$SCENARIO" "$SCENARIO_STEPS")
 
-            # 6) cria ou log
+            # 7) cria task se não existir
             if [ -n "$TASK_ID" ]; then
               echo "🔄 Task existente ID=$TASK_ID – sem alterações."
             else
@@ -317,33 +325,25 @@ jobs:
               CREATE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
-                -d "$(jq -n --arg name "$TASK_NAME" --arg description "$DESCRIPTION" \
-                          --arg status "$STATUS" --arg parent "$PARENT_ID" \
-                          --argjson custom_item_id 1010 \
-                        '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')")
+                -d "$(jq -n \
+                      --arg name "$TASK_NAME" \
+                      --arg description "$DESCRIPTION" \
+                      --arg status "$STATUS" \
+                      --arg parent "$PARENT_ID" \
+                      --argjson custom_item_id 1010 \
+                      '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')")
               TASK_ID=$(echo "$CREATE" | jq -r '.id')
+            fi
 
-              # 7) anexa apenas o vídeo .webm específico do cenário
-              echo "▶️ Procurando URI de vídeo para '$SCENARIO' no JSON..."
-              VIDEO_URIS=$(jq -r --arg s "$SCENARIO" '
-                .[]?.elements[]?
-                | select(.name==$s)
-                | .embeddings[]?
-                | select(.mime_type=="video/webm")
-                | .uri
-              ' test-results/cucumber-report.json)
-
-              for URI in $VIDEO_URIS; do
-                VIDEO_PATH="test-results/${URI}"
-                if [ -f "$VIDEO_PATH" ]; then
-                  echo "📎 Anexando vídeo de evidência '$VIDEO_PATH'..."
-                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                    -H "Authorization: $CLICKUP_TOKEN" \
-                    -F "attachment=@$VIDEO_PATH"
-                else
-                  echo "⚠️ Vídeo não encontrado em '$VIDEO_PATH'"
-                fi
-              done
+            # 8) anexa o vídeo correspondente (mesmo índice do cenário)
+            VIDEO_PATH="${VIDEO_FILES[${idx}]}"
+            if [ -n "$VIDEO_PATH" ] && [ -f "$VIDEO_PATH" ]; then
+              echo "📎 Anexando vídeo de evidência '$VIDEO_PATH'..."
+              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                -H "Authorization: $CLICKUP_TOKEN" \
+                -F "attachment=@$VIDEO_PATH"
+            else
+              echo "⚠️ Nenhum vídeo correspondente encontrado para '$SCENARIO'"
             fi
           done  
 
