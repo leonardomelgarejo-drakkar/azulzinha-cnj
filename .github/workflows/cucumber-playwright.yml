@@ -297,10 +297,12 @@ jobs:
               STATUS="test complete"
             fi
 
-            # 4) extrai e formata apenas os passos Gherkin
+            # 4) extrai e formata apenas os passos Gherkin, excluindo Before/After
             SCENARIO_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
-              | .steps[] | "\( .keyword) \( .name)"
+              | .steps[]
+              | select(.keyword != "Before" and .keyword != "After")
+              | "\(.keyword) \(.name)"
             ' test-results/cucumber-report.json | sed 's/^/     /')
 
             # 5) monta a descrição
