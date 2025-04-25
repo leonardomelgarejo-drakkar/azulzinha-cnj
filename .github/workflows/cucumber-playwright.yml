@@ -301,7 +301,7 @@ jobs:
             RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[]
-              | select(.keyword != "Before" and .keyword != "After")
+              | select((.keyword | test("^(Before|After)";"i")) | not)
               | (
                   .keyword + " " + .name
                   + (if .result.status=="failed"
