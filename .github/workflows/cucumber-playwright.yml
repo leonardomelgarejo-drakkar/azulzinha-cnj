@@ -257,7 +257,6 @@ jobs:
           LIST_ID:       ${{ secrets.CLICKUP_TEST_LIST_ID }}
         run: |
           echo "🔍 Reportando Test Cases como subtasks…"
-          mkdir -p tmp
           declare -A PARENT
 
           # 1) carrega FEATURE→PARENT_ID
@@ -289,24 +288,33 @@ jobs:
                 | select(.name == $name and (.parent|tostring) == $parent)
                 | .id // empty')
 
-            # 3) extrai status e todos os passos Given/When/Then
+            # 3) determina status (rejected/test complete)
             if jq -e --arg s "$SCENARIO" '
-                [ .[] | .elements[] | select(.name==$s) | .steps[] | select(.result.status=="failed") ] | length > 0
+                [ .[] 
+                  | .elements[] 
+                  | select(.name==$s) 
+                  | .steps[] 
+                  | select(.result.status=="failed") 
+                ] | length > 0
               ' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
             else
               STATUS="test complete"
             fi
 
+            # 4) extrai e formata os passos Gherkin
             SCENARIO_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[]?.elements[]?
               | select(.name==$s)
-              | "• " + .keyword + " " + .name
-            ' test-results/cucumber-report.json | sed 's/^/    /')
+              | .keyword + " " + .name
+            ' test-results/cucumber-report.json | sed 's/^/     /')
 
-            DESCRIPTION="Cenário \"$SCENARIO\" → *$STATUS*\n\n📋 Passos do cenário:\n$SCENARIO_STEPS"
+            # 5) monta a descrição no padrão solicitado
+            DESCRIPTION=$(printf "Scenario: %s\n%s" \
+              "$SCENARIO" \
+              "$SCENARIO_STEPS")
 
-            # 4) cria ou comenta
+            # 6) cria ou adiciona comentário
             if [ -n "$TASK_ID" ]; then
               echo "🔄 Task existente ID=$TASK_ID"
               if [ "$STATUS" = "rejected" ]; then
@@ -321,7 +329,7 @@ jobs:
 
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
-              RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+              curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
                 -d "$(jq -n \
@@ -336,26 +344,8 @@ jobs:
                         status: $status,
                         parent: $parent,
                         custom_item_id: $custom_item_id
-                      }')")
-              TASK_ID=$(echo "$RESPONSE" | jq -r '.id')
+                      }')"
             fi
-
-            # 5) Anexa relatório HTML
-            if [ -f test-results/cucumber-report.html ]; then
-              echo "📎 Anexando relatório HTML ao Test Case $TASK_ID..."
-              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                -H "Authorization: $CLICKUP_TOKEN" \
-                -F "attachment=@test-results/cucumber-report.html"
-            fi
-
-            # 6) Anexa qualquer vídeo .mp4 em test-results/videos/
-            for VIDEO in test-results/videos/*.mp4; do
-              [ -f "$VIDEO" ] || continue
-              echo "📎 Anexando vídeo de evidência '$VIDEO'..."
-              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                -H "Authorization: $CLICKUP_TOKEN" \
-                -F "attachment=@$VIDEO"
-            done
 
           done  
 
