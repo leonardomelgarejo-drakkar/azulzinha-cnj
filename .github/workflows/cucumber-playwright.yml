@@ -257,14 +257,15 @@ jobs:
           LIST_ID:       ${{ secrets.CLICKUP_TEST_LIST_ID }}
         run: |
           echo "🔍 Reportando Test Cases como subtasks…"
+          mkdir -p tmp
           declare -A PARENT
 
-          # carrega FEATURE→PARENT_ID
+          # 1) carrega FEATURE→PARENT_ID
           while IFS='|' read -r FEATURE ID; do
             PARENT["$FEATURE"]=$ID
           done < tmp/scenario_ids.csv
 
-          # para cada cenário
+          # 2) para cada cenário
           readarray -t SCENARIOS < <(jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u)
           for SCENARIO in "${SCENARIOS[@]}"; do
             FEATURE=$(jq -r --arg s "$SCENARIO" '
@@ -288,7 +289,7 @@ jobs:
                 | select(.name == $name and (.parent|tostring) == $parent)
                 | .id // empty')
 
-            # determina status
+            # 3) determina status e extrai passos puros do Cucumber
             if jq -e --arg s "$SCENARIO" '
                 [ .[] 
                   | .elements[] 
@@ -302,26 +303,31 @@ jobs:
               STATUS="test complete"
             fi
 
-            # extrai passos do cenário
-            STEPS=$(jq -r --arg s "$SCENARIO" '
-              .[] 
-              | .elements[] 
-              | select(.name==$s) 
-              | "- " + .keyword + .name + " (" + .result.status + ")" +
-                (if .result.error_message then "\n    💥 " + (.result.error_message | gsub("\n"; " ")) else "" end)
+            SCENARIO_STEPS=$(jq -r --arg s "$SCENARIO" '
+              .[]?.elements[]?
+              | select(.name==$s)
+              | "    " + .keyword + " " + .name
             ' test-results/cucumber-report.json)
 
-            DESCRIPTION=$(printf "Cenário: %s\nStatus: %s\n\n📋 Passos do Cucumber:\n%s" \
-              "$SCENARIO" "$STATUS" "$STEPS")
-
+            # 4) Se já existe, comenta em caso de failure; senão, cria
             if [ -n "$TASK_ID" ]; then
-              echo "🔄 Atualizando descrição de Task existente ID=$TASK_ID..."
-              curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
-                -H "Authorization: $CLICKUP_TOKEN" \
-                -H "Content-Type: application/json" \
-                -d "$(jq -n --arg desc "$DESCRIPTION" '{description: $desc}')"
+              echo "🔄 Task existente ID=$TASK_ID"
+              if [ "$STATUS" = "rejected" ]; then
+                COMMENT="❗ Cenário com falha:\n$SCENARIO_STEPS"
+                echo "💬 Adicionando comentário de falha..."
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d "$(jq -n --arg text "$COMMENT" '{ notify_all: true, comment_text: $text }')"
+              else
+                echo "✅ Já concluído sem falhas – sem ação."
+              fi
+
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
+              DESCRIPTION=$(printf "Cenário \"%s\" finalizado com status: %s.\n\n📋 Passos do cenário:\n%s" \
+                "$SCENARIO" "$STATUS" "$SCENARIO_STEPS")
+
               RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
@@ -341,16 +347,34 @@ jobs:
               TASK_ID=$(echo "$RESPONSE" | jq -r '.id')
             fi
 
-            # anexa somente o vídeo de evidência
-            VIDEO=$(find test-results/videos -type f -name "*${SCENARIO// /_*}*.mp4" | head -n1)
-            if [ -n "$VIDEO" ]; then
+            # 5) Anexa HTML e, se disponível no JSON, o vídeo de evidência
+            if [ -f test-results/cucumber-report.html ]; then
+              echo "📎 Anexando relatório HTML ao Test Case $TASK_ID..."
+              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                -H "Authorization: $CLICKUP_TOKEN" \
+                -F "attachment=@test-results/cucumber-report.html"
+            fi
+
+            # extrai base64 de vídeo do JSON e faz attach
+            VIDEO_B64=$(jq -r --arg s "$SCENARIO" '
+              .[]?.elements[]?
+              | select(.name==$s)
+              | .embeddings[]?
+              | select(.mime_type=="video/mp4")
+              | .data // empty
+            ' test-results/cucumber-report.json)
+
+            if [ -n "$VIDEO_B64" ]; then
+              FILE_NAME="tmp/${SCENARIO//[^a-zA-Z0-9]/_}.mp4"
+              echo "$VIDEO_B64" | base64 --decode > "$FILE_NAME"
               echo "📎 Anexando vídeo de evidência ao Test Case $TASK_ID..."
               curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
                 -H "Authorization: $CLICKUP_TOKEN" \
-                -F "attachment=@$VIDEO"
+                -F "attachment=@$FILE_NAME"
             else
-              echo "⚠️ Vídeo de evidência não encontrado – pulando anexo."
+              echo "⚠️ Nenhum vídeo de evidência encontrado para $SCENARIO"
             fi
+
           done  
 
       - name: Upload Cucumber Test Report
