@@ -288,15 +288,6 @@ jobs:
                 | select(.name == $name and (.parent|tostring) == $parent)
                 | .id // empty')
 
-            # monta lista completa de passos do cenário
-            FULL_STEPS=$(jq -r --arg s "$SCENARIO" '
-              .[] 
-              | .elements[] 
-              | select(.name==$s) 
-              | "- " + .keyword + .name + " (" + .result.status + ")" +
-                (if .result.error_message then "\n    💥 " + (.result.error_message | gsub("\n"; " ")) else "" end)
-            ' test-results/cucumber-report.json)
-
             # determina status
             if jq -e --arg s "$SCENARIO" '
                 [ .[] 
@@ -311,27 +302,26 @@ jobs:
               STATUS="test complete"
             fi
 
+            # extrai passos do cenário
+            STEPS=$(jq -r --arg s "$SCENARIO" '
+              .[] 
+              | .elements[] 
+              | select(.name==$s) 
+              | "- " + .keyword + .name + " (" + .result.status + ")" +
+                (if .result.error_message then "\n    💥 " + (.result.error_message | gsub("\n"; " ")) else "" end)
+            ' test-results/cucumber-report.json)
+
+            DESCRIPTION=$(printf "Cenário: %s\nStatus: %s\n\n📋 Passos do Cucumber:\n%s" \
+              "$SCENARIO" "$STATUS" "$STEPS")
+
             if [ -n "$TASK_ID" ]; then
-              echo "🔄 Task existente ID=$TASK_ID"
-              # adiciona comentário com todos os passos
-              echo "💬 Adicionando passos do cenário como comentário..."
-              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
+              echo "🔄 Atualizando descrição de Task existente ID=$TASK_ID..."
+              curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
-                -d "$(jq -n --arg text "📋 Passos do cenário:\n$FULL_STEPS" '{ notify_all: true, comment_text: $text }')"
-
-              # em caso de falha, destaca
-              if [ "$STATUS" = "rejected" ]; then
-                echo "⚠️ Cenário com falhas – comentário adicional já inclui detalhes."
-              else
-                echo "✅ Sem falhas – apenas documentado."
-              fi
-
+                -d "$(jq -n --arg desc "$DESCRIPTION" '{description: $desc}')"
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
-              DESCRIPTION=$(printf "Cenário \"%s\" finalizado com status: %s.\n\n📋 Passos:\n%s" \
-                "$SCENARIO" "$STATUS" "$FULL_STEPS")
-
               RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
@@ -351,12 +341,15 @@ jobs:
               TASK_ID=$(echo "$RESPONSE" | jq -r '.id')
             fi
 
-            # anexa relatório se existir
-            if [ -f test-results/cucumber-report.html ]; then
-              echo "📎 Anexando relatório ao Test Case $TASK_ID..."
+            # anexa somente o vídeo de evidência
+            VIDEO=$(find test-results/videos -type f -name "*${SCENARIO// /_*}*.mp4" | head -n1)
+            if [ -n "$VIDEO" ]; then
+              echo "📎 Anexando vídeo de evidência ao Test Case $TASK_ID..."
               curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
                 -H "Authorization: $CLICKUP_TOKEN" \
-                -F "attachment=@test-results/cucumber-report.html"
+                -F "attachment=@$VIDEO"
+            else
+              echo "⚠️ Vídeo de evidência não encontrado – pulando anexo."
             fi
           done  
 
