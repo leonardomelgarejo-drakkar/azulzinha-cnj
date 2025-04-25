@@ -285,10 +285,19 @@ jobs:
               --arg name   "$TASK_NAME" \
               --arg parent "$PARENT_ID" \
               '.tasks[]
-              | select(.name == $name and (.parent|tostring) == $parent)
-              | .id // empty')
+                | select(.name == $name and (.parent|tostring) == $parent)
+                | .id // empty')
 
-            # determina status e, se falha, prepara comentário
+            # monta lista completa de passos do cenário
+            FULL_STEPS=$(jq -r --arg s "$SCENARIO" '
+              .[] 
+              | .elements[] 
+              | select(.name==$s) 
+              | "- " + .keyword + .name + " (" + .result.status + ")" +
+                (if .result.error_message then "\n    💥 " + (.result.error_message | gsub("\n"; " ")) else "" end)
+            ' test-results/cucumber-report.json)
+
+            # determina status
             if jq -e --arg s "$SCENARIO" '
                 [ .[] 
                   | .elements[] 
@@ -298,40 +307,30 @@ jobs:
                 ] | length > 0
               ' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
-              FAILED_STEP=$(jq -r --arg s "$SCENARIO" '
-                .[]?.elements[]?
-                | select(.name == $s)
-                | .steps[] | select(.result.status=="failed")
-                | "- " + .keyword + .name + " 💥 " + (.result.error_message // "Erro não especificado")
-              ' test-results/cucumber-report.json)
-              COMMENT="❗ Cenário com falha: $FAILED_STEP"
             else
               STATUS="test complete"
             fi
 
             if [ -n "$TASK_ID" ]; then
               echo "🔄 Task existente ID=$TASK_ID"
+              # adiciona comentário com todos os passos
+              echo "💬 Adicionando passos do cenário como comentário..."
+              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
+                -H "Authorization: $CLICKUP_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "$(jq -n --arg text "📋 Passos do cenário:\n$FULL_STEPS" '{ notify_all: true, comment_text: $text }')"
+
+              # em caso de falha, destaca
               if [ "$STATUS" = "rejected" ]; then
-                echo "💬 Adicionando comentário de falha..."
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -H "Content-Type: application/json" \
-                  -d "$(jq -n --arg text "$COMMENT" '{ notify_all: true, comment_text: $text }')"
+                echo "⚠️ Cenário com falhas – comentário adicional já inclui detalhes."
               else
-                echo "✅ Já concluído sem falhas – sem ação."
+                echo "✅ Sem falhas – apenas documentado."
               fi
 
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
-              STEPS=$(jq -r --arg s "$SCENARIO" '
-                .[] 
-                | .elements[] 
-                | select(.name==$s) 
-                | "- " + .keyword + .name + " (" + .result.status + ")" +
-                  (if .result.error_message then "\n    💥 " + (.result.error_message | gsub("\n"; " ")) else "" end)
-              ' test-results/cucumber-report.json)
               DESCRIPTION=$(printf "Cenário \"%s\" finalizado com status: %s.\n\n📋 Passos:\n%s" \
-                "$SCENARIO" "$STATUS" "$STEPS")
+                "$SCENARIO" "$STATUS" "$FULL_STEPS")
 
               RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
