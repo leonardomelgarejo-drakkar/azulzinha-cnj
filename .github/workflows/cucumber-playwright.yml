@@ -288,28 +288,22 @@ jobs:
                 | select(.name == $name and (.parent|tostring) == $parent)
                 | .id // empty')
 
-            # 3) determina status (rejected/test complete)
+            # 3) determina status
             if jq -e --arg s "$SCENARIO" '
-                [ .[] 
-                  | .elements[] 
-                  | select(.name==$s) 
-                  | .steps[] 
-                  | select(.result.status=="failed") 
-                ] | length > 0
+                [ .[] | .elements[] | select(.name==$s) | .steps[] | select(.result.status=="failed") ] | length > 0
               ' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
             else
               STATUS="test complete"
             fi
 
-            # 4) extrai e formata os passos Gherkin
+            # 4) extrai e formata apenas os passos Gherkin
             SCENARIO_STEPS=$(jq -r --arg s "$SCENARIO" '
-              .[]?.elements[]?
-              | select(.name==$s)
-              | .keyword + " " + .name
+              .[] | .elements[] | select(.name==$s)
+              | .steps[] | "\( .keyword) \( .name)"
             ' test-results/cucumber-report.json | sed 's/^/     /')
 
-            # 5) monta a descrição no padrão solicitado
+            # 5) monta a descrição
             DESCRIPTION=$(printf "Scenario: %s\n%s" \
               "$SCENARIO" \
               "$SCENARIO_STEPS")
@@ -326,7 +320,6 @@ jobs:
               else
                 echo "✅ Já concluído sem falhas – sem ação."
               fi
-
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
               curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
