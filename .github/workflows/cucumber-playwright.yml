@@ -280,10 +280,15 @@ jobs:
               --data-urlencode "include_closed=true" \
               -H "Authorization: $CLICKUP_TOKEN" \
               -H "Content-Type: application/json")
-            TASK_ID=$(echo "$EXISTING" | jq -r --arg name "$TASK_NAME" '
-              .tasks[] | select(.name == $name and .parent == $ENV{PARENT_ID}) | .id // empty')
 
-            # determina status e passos
+            TASK_ID=$(echo "$EXISTING" | jq -r \
+              --arg name   "$TASK_NAME" \
+              --arg parent "$PARENT_ID" \
+              '.tasks[]
+              | select(.name == $name and (.parent|tostring) == $parent)
+              | .id // empty')
+
+            # determina status e, se falha, prepara comentário
             if jq -e --arg s "$SCENARIO" '
                 [ .[] 
                   | .elements[] 
@@ -293,7 +298,6 @@ jobs:
                 ] | length > 0
               ' test-results/cucumber-report.json >/dev/null; then
               STATUS="rejected"
-              # monta comentário com detalhes do passo
               FAILED_STEP=$(jq -r --arg s "$SCENARIO" '
                 .[]?.elements[]?
                 | select(.name == $s)
@@ -316,6 +320,7 @@ jobs:
               else
                 echo "✅ Já concluído sem falhas – sem ação."
               fi
+
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
               STEPS=$(jq -r --arg s "$SCENARIO" '
