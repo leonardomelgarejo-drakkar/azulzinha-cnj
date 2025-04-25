@@ -297,12 +297,14 @@ jobs:
               STATUS="test complete"
             fi
 
-            # 4) extrai e formata apenas os passos Gherkin, excluindo Before/After
+            # 4) extrai e formata passos + erro quando houver falha
             SCENARIO_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[]
-              | select(.keyword != "Before" and .keyword != "After")
-              | "\(.keyword) \(.name)"
+              | (if .result.status=="failed"
+                  then "\(.keyword) \(.name)\n\(.result.error_message)"
+                  else "\(.keyword) \(.name)"
+                end)
             ' test-results/cucumber-report.json | sed 's/^/     /')
 
             # 5) monta a descrição
@@ -310,18 +312,9 @@ jobs:
               "$SCENARIO" \
               "$SCENARIO_STEPS")
 
-            # 6) cria ou adiciona comentário
+            # 6) cria a task se não existir; caso contrário só log
             if [ -n "$TASK_ID" ]; then
-              echo "🔄 Task existente ID=$TASK_ID"
-              if [ "$STATUS" = "rejected" ]; then
-                echo "💬 Adicionando comentário de falha..."
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -H "Content-Type: application/json" \
-                  -d "$(jq -n --arg text "$DESCRIPTION" '{ notify_all: true, comment_text: $text }')"
-              else
-                echo "✅ Já concluído sem falhas – sem ação."
-              fi
+              echo "🔄 Task existente ID=$TASK_ID – sem alterações."
             else
               echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
               curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
