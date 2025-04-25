@@ -297,22 +297,29 @@ jobs:
               STATUS="test complete"
             fi
 
-            # 4) extrai e formata passos + erro quando houver falha
-            SCENARIO_STEPS=$(jq -r --arg s "$SCENARIO" '
+            # 4) extrai e formata os passos Gherkin, excluindo Before/After, e inclui a mensagem de erro para o passo com falha
+            RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[]
-              | (if .result.status=="failed"
-                  then "\(.keyword) \(.name)\n\(.result.error_message)"
-                  else "\(.keyword) \(.name)"
-                end)
-            ' test-results/cucumber-report.json | sed 's/^/     /')
+              | select(.keyword != "Before" and .keyword != "After")
+              | (
+                  .keyword + " " + .name
+                  + (if .result.status=="failed"
+                      then "\n" + (.result.error_message | gsub("\r?\n"; "\n"))
+                      else ""
+                    end)
+                )
+            ' test-results/cucumber-report.json)
+
+            # indentar cada linha em 5 espaços
+            SCENARIO_STEPS=$(printf "%s\n" "$RAW_STEPS" | sed 's/^/     /')
 
             # 5) monta a descrição
             DESCRIPTION=$(printf "Scenario: %s\n%s" \
               "$SCENARIO" \
               "$SCENARIO_STEPS")
 
-            # 6) cria a task se não existir; caso contrário só log
+            # 6) cria a task se não existir; senão só log
             if [ -n "$TASK_ID" ]; then
               echo "🔄 Task existente ID=$TASK_ID – sem alterações."
             else
