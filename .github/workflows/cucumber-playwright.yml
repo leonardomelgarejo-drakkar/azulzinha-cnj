@@ -301,23 +301,26 @@ jobs:
             ' test-results/cucumber-report.json)
             COMMENT="Scenario: $SCENARIO"$'\n'"$RAW"
 
-            # 5) Extrai TODOS os embeddings (vídeo + outros)
+            # 5) Extrai TODOS os embeddings do JSON (step-level e element-level)
             readarray -t EMBEDS < <(
               jq -r --arg s "$SCENARIO" '
-                .[] | select([.elements[].name]|index($s))
-                | .elements[] | select(.name==$s)
-                | .steps[]?.embeddings[]?
+                .[] 
+                | select([.elements[].name]|index($s))
+                | (
+                    (.elements[] | select(.name==$s) | .steps[]?.embeddings[]?),
+                    (.elements[] | select(.name==$s) | .embeddings[]?)
+                  )
                 | select(.mime_type != null)
                 | .mime_type + "," + (.data // "")
               ' test-results/cucumber-report.json
             )
 
-            # decodifica cada embedding em arquivo
+            # 6) Decodifica cada embedding em arquivo e guarda lista
             ATTACH_FILES=()
             for e in "${EMBEDS[@]}"; do
               MTYPE=${e%%,*}
               B64=${e#*,}
-              # escolhe extensão
+              [ -z "$B64" ] && continue
               case "$MTYPE" in
                 video/webm) EXT="webm" ;;
                 application/json) EXT="json" ;;
@@ -326,29 +329,23 @@ jobs:
                 *) EXT="bin" ;;
               esac
               FNAME="tmp/${idx}_${SCENARIO// /_}.${EXT}"
-              if [ -n "$B64" ]; then
-                echo "$B64" | base64 -d > "$FNAME" || { echo "⚠️ falha decodificar $MTYPE"; continue; }
-                ATTACH_FILES+=( "$FNAME" )
-              fi
+              echo "$B64" | base64 -d > "$FNAME"
+              ATTACH_FILES+=( "$FNAME" )
             done
 
-            # 6) Cria ou atualiza subtask
+            # 7) Cria ou atualiza subtask
             if [ -n "$TASK_ID" ]; then
               echo "✅ Subtask existente (ID=$TASK_ID) status=$EXISTING_STATUS"
-              # a) Atualiza status se mudou
-              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
+              [ "$EXISTING_STATUS" != "$NEW_STATUS" ] && \
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
                   -d "{\"status\":\"$NEW_STATUS\"}"
-              fi
-              # b) Comenta falha
-              if [ "$NEW_STATUS" = "rejected" ]; then
+              [ "$NEW_STATUS" = "rejected" ] && \
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
                   -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
-              fi
             else
               echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
               PAYLOAD=$(jq -n \
@@ -365,7 +362,7 @@ jobs:
               TASK_ID=$(echo "$CREATED" | jq -r '.id')
             fi
 
-            # 7) Anexa todos os arquivos gerados
+            # 8) Anexa todos os arquivos gerados
             for F in "${ATTACH_FILES[@]}"; do
               echo "📎 Anexando '$F'"
               curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
