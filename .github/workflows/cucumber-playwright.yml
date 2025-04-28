@@ -259,8 +259,12 @@ jobs:
           done < tmp/scenario_ids.csv
 
           # 2) Carrega cenários e vídeos
-          readarray -t SCENARIOS < <(jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u)
-          readarray -t VIDEOS    < <(ls -1rt test-results/report/videos/*.webm 2>/dev/null || true)
+          readarray -t SCENARIOS < <(
+            jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u
+          )
+          readarray -t VIDEOS < <(
+            ls -1rt test-results/report/videos/*.webm 2>/dev/null || true
+          )
 
           for idx in "${!SCENARIOS[@]}"; do
             SCENARIO="${SCENARIOS[idx]}"
@@ -271,22 +275,22 @@ jobs:
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
 
             TASK_NAME="Test Case: $SCENARIO"
-            echo "🔎 Buscando subtask '$TASK_NAME' (parent=$PARENT_ID)…"
-            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID/subtask" \
-              --data-urlencode "include_closed=true" \
+            echo "🔎 Carregando subtasks do parent $PARENT_ID…"
+            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID" \
+              --data-urlencode "include_subtasks=true" \
               -H "Authorization: $CLICKUP_TOKEN" \
               -H "Content-Type: application/json")
 
-            # 3) Extrai lista de subtasks
+            # 3) Extrai subtasks
             SUBTASKS=$(echo "$RESPONSE" | jq '.subtasks // []')
 
-            # 4) Tenta encontrar a subtask existente
+            # 4) Procura pela subtask existente
             TASK_ID=$(echo "$SUBTASKS" | jq -r --arg name "$TASK_NAME" '
               .[] | select(.name==$name) | .id // empty')
             EXISTING_STATUS=$(echo "$SUBTASKS" | jq -r --arg name "$TASK_NAME" '
               .[] | select(.name==$name) | .status // empty')
 
-            # 5) Define novo status conforme resultado do JSON
+            # 5) Define novo status
             if jq -e --arg s "$SCENARIO" '
                 [ .[] | .elements[] | select(.name==$s) | .steps[] 
                   | select(.result.status=="failed") ] | length>0
@@ -300,17 +304,17 @@ jobs:
             RAW=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
-              | .keyword+" "+.name
+              | .keyword + " " + .name
                 + (if .result.status=="failed" 
-                    then "\nError: "+(.result.error_message|gsub("\r?\n";"\n")) 
+                    then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) 
                     else "" end)
             ' test-results/cucumber-report.json)
             COMMENT=$(printf "Scenario: %s\n%s" "$SCENARIO" "$RAW")
 
             if [ -n "$TASK_ID" ]; then
-              echo "✅ Subtask existente (ID=$TASK_ID) status atual='$EXISTING_STATUS'"
+              echo "✅ Subtask existente (ID=$TASK_ID) status='$EXISTING_STATUS'"
 
-              # 7a) Atualiza status, se mudou
+              # 7a) Atualiza status se mudou
               if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
                 echo "🔄 Atualizando para '$NEW_STATUS'"
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
@@ -337,7 +341,7 @@ jobs:
               fi
 
             else
-              # 8) Se não existir, cria nova subtask
+              # 8) Cria nova subtask se não existir
               echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
               CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
