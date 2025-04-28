@@ -196,17 +196,11 @@ jobs:
           mkdir -p tmp
           > tmp/scenario_ids.csv
 
-          # Lista cada feature única
           readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
           for FEATURE in "${FEATURES[@]}"; do
-            # 1) define o novo status
             if jq -e --arg f "$FEATURE" '
-                [ .[] 
-                  | select(.name==$f)
-                  | .elements[] 
-                  | .steps[] 
-                  | select(.result.status=="failed") 
-                ] | length > 0
+                [ .[] | select(.name==$f) | .elements[] | .steps[]
+                  | select(.result.status=="failed") ] | length>0
               ' test-results/cucumber-report.json >/dev/null; then
               NEW_STATUS="rejected"
             else
@@ -214,33 +208,28 @@ jobs:
             fi
 
             TASK_NAME="Test Scenario: $FEATURE"
-            echo "🔎 Verificando existência de '$TASK_NAME'..."
-            # busca task existente (inclui fechadas)
-            EXISTING=$(curl -s -G "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+            echo "🔎 Buscando '$TASK_NAME'..."
+            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
               --data-urlencode "search=$TASK_NAME" \
               --data-urlencode "include_closed=true" \
-              -H "Authorization: $CLICKUP_TOKEN" \
-              -H "Content-Type: application/json")
+              -H "Authorization: $CLICKUP_TOKEN")
 
-            TASK_ID=$(echo "$EXISTING" | jq -r --arg name "$TASK_NAME" '
-              .tasks[] | select(.name == $name) | .id // empty')
+            TASK_ID=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '.tasks[] | select(.name==$name) | .id // empty')
+            EXISTING_STATUS=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '.tasks[] | select(.name==$name) | .status // empty')
 
             if [ -n "$TASK_ID" ]; then
-              # pega status atual da task
-              EXISTING_STATUS=$(echo "$EXISTING" | jq -r --arg name "$TASK_NAME" '
-                .tasks[] | select(.name==$name) | .status')
-              if [ "$EXISTING_STATUS" = "rejected" ] && [ "$NEW_STATUS" = "test complete" ]; then
-                echo "🔄 Atualizando status de '$TASK_NAME' (ID=$TASK_ID) para TEST COMPLETE..."
+              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
+                echo "🔄 Atualizando '$TASK_NAME' (ID=$TASK_ID) de $EXISTING_STATUS → $NEW_STATUS"
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
-                  -d "{\"status\":\"test complete\"}"
+                  -d "{\"status\":\"$NEW_STATUS\"}"
               else
-                echo "✅ Scenario já existente: ID=$TASK_ID (status: $EXISTING_STATUS) – sem alterações."
+                echo "✅ '$TASK_NAME' já está em '$EXISTING_STATUS' – sem alterações."
               fi
             else
-              echo "➕ Criando Test Scenario: $FEATURE → $NEW_STATUS"
-              RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+              echo "➕ Criando '$TASK_NAME' → $NEW_STATUS"
+              CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
                 -d "$(jq -n \
@@ -248,16 +237,10 @@ jobs:
                       --arg description "Feature \"$FEATURE\" finalizada com status: $NEW_STATUS." \
                       --arg status      "$NEW_STATUS" \
                       --argjson custom_item_id 1009 \
-                      '{
-                        name: $name,
-                        description: $description,
-                        status: $status,
-                        custom_item_id: $custom_item_id
-                      }')")
-              TASK_ID=$(echo "$RESPONSE" | jq -r '.id')
+                      '{name:$name,description:$description,status:$status,custom_item_id:$custom_item_id}')")
+              TASK_ID=$(echo "$CREATED" | jq -r '.id')
             fi
 
-            # salva para uso nos Test Cases
             echo "${FEATURE}|${TASK_ID}" >> tmp/scenario_ids.csv
           done  
   
@@ -269,114 +252,75 @@ jobs:
         run: |
           echo "🔍 Reportando Test Cases como subtasks…"
           declare -A PARENT
-
-          # 1) carrega FEATURE→PARENT_ID
           while IFS='|' read -r FEATURE ID; do
             PARENT["$FEATURE"]=$ID
           done < tmp/scenario_ids.csv
 
-          # 2) lista cenários e vídeos (em ordem de criação)
-          readarray -t SCENARIOS < <(
-            jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u
-          )
-          readarray -t VIDEO_FILES < <(
-            ls -1rt test-results/report/videos/*.webm 2>/dev/null || true
-          )
+          readarray -t SCENARIOS < <(jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u)
+          readarray -t VIDEOS    < <(ls -1rt test-results/report/videos/*.webm 2>/dev/null || true)
 
-          # 3) para cada cenário
           for idx in "${!SCENARIOS[@]}"; do
             SCENARIO="${SCENARIOS[idx]}"
-            FEATURE=$(jq -r --arg s "$SCENARIO" '
-              .[] | select([.elements[].name] | index($s)) | .name
-            ' test-results/cucumber-report.json)
+            FEATURE=$(jq -r --arg s "$SCENARIO" '.[] | select([.elements[].name]|index($s))|.name' test-results/cucumber-report.json)
             PARENT_ID=${PARENT["$FEATURE"]}
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
 
             TASK_NAME="Test Case: $SCENARIO"
-            echo "🔎 Verificando existência de '$TASK_NAME'..."
-            EXISTING=$(curl -s -G "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
-              --data-urlencode "search=$TASK_NAME" \
+            echo "🔎 Buscando subtask '$TASK_NAME' em $PARENT_ID..."
+            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID/subtask" \
               --data-urlencode "include_closed=true" \
-              -H "Authorization: $CLICKUP_TOKEN" \
-              -H "Content-Type: application/json")
-            TASK_ID=$(echo "$EXISTING" | jq -r \
-              --arg name "$TASK_NAME" \
-              --arg parent "$PARENT_ID" \
-              '.tasks[] | select(.name==$name and (.parent|tostring)==$parent) | .id // empty')
-            EXISTING_STATUS=$(echo "$EXISTING" | jq -r \
-              --arg name "$TASK_NAME" \
-              --arg parent "$PARENT_ID" \
-              '.tasks[] | select(.name==$name and (.parent|tostring)==$parent) | .status // empty')
+              -H "Authorization: $CLICKUP_TOKEN")
+            TASK_ID=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '.subtasks[]|select(.name==$name)|.id // empty')
+            EXISTING_STATUS=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '.subtasks[]|select(.name==$name)|.status // empty')
 
-            # 4) determina novo status
-            if jq -e --arg s "$SCENARIO" '
-                [ .[] | .elements[] | select(.name==$s) | .steps[] 
-                  | select(.result.status=="failed") ] | length>0
-              ' test-results/cucumber-report.json >/dev/null; then
+            if jq -e --arg s "$SCENARIO" '[.[]|.elements[]|select(.name==$s)|.steps[]|select(.result.status=="failed")]|length>0' test-results/cucumber-report.json >/dev/null; then
               NEW_STATUS="rejected"
             else
               NEW_STATUS="test complete"
             fi
 
-            # 5) formata passos e mensagem de erro
             RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
-              .[] | .elements[] | select(.name==$s)
-              | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
-              | .keyword + " " + .name
-                + (if .result.status=="failed" 
-                    then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) 
-                    else "" end)
+              .[]|.elements[]|select(.name==$s)
+              |.steps[]|select((.keyword|test("^(Before|After)";"i"))|not)
+              | .keyword+" "+.name
+                + (if .result.status=="failed" then "\nError: "+(.result.error_message|gsub("\r?\n";"\n")) else "" end)
             ' test-results/cucumber-report.json)
-            SCENARIO_STEPS=$(printf "%s\n" "$RAW_STEPS" | sed 's/^/     /')
-
-            # 6) monta descrição
-            DESCRIPTION=$(printf "Scenario: %s\n%s" "$SCENARIO" "$SCENARIO_STEPS")
+            COMMENT=$(printf "Scenario: %s\n%s" "$SCENARIO" "$RAW_STEPS")
 
             if [ -n "$TASK_ID" ]; then
-              # task já existe
-              if [ "$NEW_STATUS" = "test complete" ] && { [ "$EXISTING_STATUS" = "rejected" ] || [ "$EXISTING_STATUS" = "RE-DO" ]; }; then
-                echo "🔄 Atualizando status de '$TASK_NAME' para TEST COMPLETE..."
+              # Atualizações em subtasks existentes
+              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ] && [ "$NEW_STATUS" = "test complete" ]; then
+                echo "🔄 Atualizando status de '$TASK_NAME' → TEST COMPLETE"
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -H "Content-Type: application/json" \
+                  -H "Authorization: $CLICKUP_TOKEN" -H "Content-Type: application/json" \
                   -d "{\"status\":\"test complete\"}"
-                echo "📎 Anexando vídeo de evidência '$VIDEO_FILES[$idx]'..."
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${VIDEO_FILES[idx]}"
+                [ -f "${VIDEOS[idx]}" ] && curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                  -H "Authorization: $CLICKUP_TOKEN" -F "attachment=@${VIDEOS[idx]}"
               elif [ "$NEW_STATUS" = "rejected" ]; then
-                echo "💬 Adicionando comentário de falha em '$TASK_NAME'..."
+                echo "💬 Comentando falha em '$TASK_NAME'"
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -H "Content-Type: application/json" \
-                  -d "$(jq -n --arg text "$SCENARIO_STEPS" '{ "comment_text": $text }')"
-                echo "📎 Anexando vídeo de falha '$VIDEO_FILES[$idx]'..."
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${VIDEO_FILES[idx]}"
+                  -H "Authorization: $CLICKUP_TOKEN" -H "Content-Type: application/json" \
+                  -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
+                [ -f "${VIDEOS[idx]}" ] && curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                  -H "Authorization: $CLICKUP_TOKEN" -F "attachment=@${VIDEOS[idx]}"
               else
-                echo "✅ Subtask existente em status '$EXISTING_STATUS' – sem alterações."
+                echo "✅ Subtask '$TASK_NAME' em '$EXISTING_STATUS' – sem alterações."
               fi
             else
-              # cria nova subtask
-              echo "➕ Criando Subtask Test Case: $SCENARIO → $NEW_STATUS"
-              CREATE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
-                -H "Authorization: $CLICKUP_TOKEN" \
-                -H "Content-Type: application/json" \
+              # Cria nova subtask
+              echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
+              CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+                -H "Authorization: $CLICKUP_TOKEN" -H "Content-Type: application/json" \
                 -d "$(jq -n \
                       --arg name "$TASK_NAME" \
-                      --arg description "$DESCRIPTION" \
+                      --arg description "$COMMENT" \
                       --arg status "$NEW_STATUS" \
                       --arg parent "$PARENT_ID" \
                       --argjson custom_item_id 1010 \
                       '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')")
-              NEW_ID=$(echo "$CREATE" | jq -r '.id')
-              if [ -n "$VIDEO_FILES[$idx]" ]; then
-                echo "📎 Anexando vídeo de evidência '$VIDEO_FILES[$idx]'..."
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_ID/attachment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${VIDEO_FILES[idx]}"
-              fi
+              NEW_ID=$(echo "$CREATED" | jq -r '.id')
+              [ -f "${VIDEOS[idx]}" ] && curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_ID/attachment" \
+                -H "Authorization: $CLICKUP_TOKEN" -F "attachment=@${VIDEOS[idx]}"
             fi
           done  
 
