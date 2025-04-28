@@ -272,24 +272,16 @@ jobs:
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
 
             TASK_NAME="Test Case: $SCENARIO"
-            echo "🔎 Buscando subtask '$TASK_NAME' em LIST:$LIST_ID parent:$PARENT_ID…"
-            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
-              --data-urlencode "search=$TASK_NAME" \
+            echo "🔎 Listando subtasks de parent $PARENT_ID..."
+            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID/subtask" \
               --data-urlencode "include_closed=true" \
-              --data-urlencode "parent_ids[]=$PARENT_ID" \
-              -H "Authorization: $CLICKUP_TOKEN" \
-              -H "Content-Type: application/json")
+              -H "Authorization: $CLICKUP_TOKEN")
 
-            TASK_ID=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" --arg parent "$PARENT_ID" '
-              .tasks // [] | .[] 
-              | select(.name==$name and (.parent|tostring)==$parent) 
-              | .id // empty')
-            EXISTING_STATUS=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" --arg parent "$PARENT_ID" '
-              .tasks // [] | .[] 
-              | select(.name==$name and (.parent|tostring)==$parent) 
-              | .status // empty')
+            TASK_ID=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '
+              .tasks // [] | .[] | select(.name==$name) | .id // empty')
+            EXISTING_STATUS=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '
+              .tasks // [] | .[] | select(.name==$name) | .status // empty')
 
-            # determina novo status
             if jq -e --arg s "$SCENARIO" '
                 [ .[] | .elements[] | select(.name==$s) | .steps[] 
                   | select(.result.status=="failed") ] | length>0
@@ -299,30 +291,28 @@ jobs:
               NEW_STATUS="test complete"
             fi
 
-            # formata passos + possível mensagem de erro
             RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
-              | .keyword + " " + .name
+              | .keyword+" "+.name
                 + (if .result.status=="failed" 
-                    then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) 
+                    then "\nError: "+(.result.error_message|gsub("\r?\n";"\n")) 
                     else "" end)
             ' test-results/cucumber-report.json)
             COMMENT=$(printf "Scenario: %s\n%s" "$SCENARIO" "$RAW_STEPS")
 
             if [ -n "$TASK_ID" ]; then
-              # — existe: atualiza status se mudou
+              # existe → atualiza ou comenta
               if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
-                echo "🔄 Atualizando '$TASK_NAME' → $NEW_STATUS"
+                echo "🔄 Atualizando '$TASK_NAME' de $EXISTING_STATUS → $NEW_STATUS"
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
                   -d "{\"status\":\"$NEW_STATUS\"}"
               fi
 
-              # — adiciona conteúdo
               if [ "$NEW_STATUS" = "rejected" ]; then
-                echo "💬 Comentando falha em '$TASK_NAME'…"
+                echo "💬 Comentando falha em '$TASK_NAME'"
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
@@ -330,14 +320,14 @@ jobs:
               fi
 
               if [ -f "${VIDEOS[idx]}" ]; then
-                echo "📎 Anexando vídeo à subtask…"
+                echo "📎 Anexando vídeo '$VIDEOS[idx]'"
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -F "attachment=@${VIDEOS[idx]}"
               fi
 
             else
-              # — não existe: cria nova subtask
+              # não existe → cria
               echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
               CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
@@ -355,7 +345,7 @@ jobs:
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -F "attachment=@${VIDEOS[idx]}"
             fi
-          done
+          done  
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
