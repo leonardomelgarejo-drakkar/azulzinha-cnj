@@ -199,7 +199,7 @@ jobs:
           # Lista cada feature única
           readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
           for FEATURE in "${FEATURES[@]}"; do
-            # define o status
+            # 1) define o novo status
             if jq -e --arg f "$FEATURE" '
                 [ .[] 
                   | select(.name==$f)
@@ -208,9 +208,9 @@ jobs:
                   | select(.result.status=="failed") 
                 ] | length > 0
               ' test-results/cucumber-report.json >/dev/null; then
-              STATUS="rejected"
+              NEW_STATUS="rejected"
             else
-              STATUS="test complete"
+              NEW_STATUS="test complete"
             fi
 
             TASK_NAME="Test Scenario: $FEATURE"
@@ -226,16 +226,27 @@ jobs:
               .tasks[] | select(.name == $name) | .id // empty')
 
             if [ -n "$TASK_ID" ]; then
-              echo "✅ Scenario já existente: ID=$TASK_ID (status: $STATUS) – pulando criação."
+              # pega status atual da task
+              EXISTING_STATUS=$(echo "$EXISTING" | jq -r --arg name "$TASK_NAME" '
+                .tasks[] | select(.name==$name) | .status')
+              if [ "$EXISTING_STATUS" = "rejected" ] && [ "$NEW_STATUS" = "test complete" ]; then
+                echo "🔄 Atualizando status de '$TASK_NAME' (ID=$TASK_ID) para TEST COMPLETE..."
+                curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d "{\"status\":\"test complete\"}"
+              else
+                echo "✅ Scenario já existente: ID=$TASK_ID (status: $EXISTING_STATUS) – sem alterações."
+              fi
             else
-              echo "➕ Criando Test Scenario: $FEATURE → $STATUS"
+              echo "➕ Criando Test Scenario: $FEATURE → $NEW_STATUS"
               RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
                 -d "$(jq -n \
                       --arg name        "$TASK_NAME" \
-                      --arg description "Feature \"$FEATURE\" finalizada com status: $STATUS." \
-                      --arg status      "$STATUS" \
+                      --arg description "Feature \"$FEATURE\" finalizada com status: $NEW_STATUS." \
+                      --arg status      "$NEW_STATUS" \
                       --argjson custom_item_id 1009 \
                       '{
                         name: $name,
@@ -292,24 +303,28 @@ jobs:
               --arg name "$TASK_NAME" \
               --arg parent "$PARENT_ID" \
               '.tasks[] | select(.name==$name and (.parent|tostring)==$parent) | .id // empty')
+            EXISTING_STATUS=$(echo "$EXISTING" | jq -r \
+              --arg name "$TASK_NAME" \
+              --arg parent "$PARENT_ID" \
+              '.tasks[] | select(.name==$name and (.parent|tostring)==$parent) | .status // empty')
 
-            # 4) determina status
+            # 4) determina novo status
             if jq -e --arg s "$SCENARIO" '
                 [ .[] | .elements[] | select(.name==$s) | .steps[] 
                   | select(.result.status=="failed") ] | length>0
               ' test-results/cucumber-report.json >/dev/null; then
-              STATUS="rejected"
+              NEW_STATUS="rejected"
             else
-              STATUS="test complete"
+              NEW_STATUS="test complete"
             fi
 
-            # 5) formata passos excluindo Before/After
+            # 5) formata passos e mensagem de erro
             RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
               | .keyword + " " + .name
                 + (if .result.status=="failed" 
-                    then "\n" + (.result.error_message|gsub("\r?\n";"\n")) 
+                    then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) 
                     else "" end)
             ' test-results/cucumber-report.json)
             SCENARIO_STEPS=$(printf "%s\n" "$RAW_STEPS" | sed 's/^/     /')
@@ -317,33 +332,51 @@ jobs:
             # 6) monta descrição
             DESCRIPTION=$(printf "Scenario: %s\n%s" "$SCENARIO" "$SCENARIO_STEPS")
 
-            # 7) cria task se não existir
             if [ -n "$TASK_ID" ]; then
-              echo "🔄 Task existente ID=$TASK_ID – sem alterações."
+              # task já existe
+              if [ "$NEW_STATUS" = "test complete" ] && { [ "$EXISTING_STATUS" = "rejected" ] || [ "$EXISTING_STATUS" = "RE-DO" ]; }; then
+                echo "🔄 Atualizando status de '$TASK_NAME' para TEST COMPLETE..."
+                curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d "{\"status\":\"test complete\"}"
+                echo "📎 Anexando vídeo de evidência '$VIDEO_FILES[$idx]'..."
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -F "attachment=@${VIDEO_FILES[idx]}"
+              elif [ "$NEW_STATUS" = "rejected" ]; then
+                echo "💬 Adicionando comentário de falha em '$TASK_NAME'..."
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d "$(jq -n --arg text "$SCENARIO_STEPS" '{ "comment_text": $text }')"
+                echo "📎 Anexando vídeo de falha '$VIDEO_FILES[$idx]'..."
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -F "attachment=@${VIDEO_FILES[idx]}"
+              else
+                echo "✅ Subtask existente em status '$EXISTING_STATUS' – sem alterações."
+              fi
             else
-              echo "➕ Criando Subtask Test Case: $SCENARIO → $STATUS"
+              # cria nova subtask
+              echo "➕ Criando Subtask Test Case: $SCENARIO → $NEW_STATUS"
               CREATE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
                 -d "$(jq -n \
                       --arg name "$TASK_NAME" \
                       --arg description "$DESCRIPTION" \
-                      --arg status "$STATUS" \
+                      --arg status "$NEW_STATUS" \
                       --arg parent "$PARENT_ID" \
                       --argjson custom_item_id 1010 \
                       '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')")
-              TASK_ID=$(echo "$CREATE" | jq -r '.id')
-            fi
-
-            # 8) anexa o vídeo correspondente (mesmo índice do cenário)
-            VIDEO_PATH="${VIDEO_FILES[${idx}]}"
-            if [ -n "$VIDEO_PATH" ] && [ -f "$VIDEO_PATH" ]; then
-              echo "📎 Anexando vídeo de evidência '$VIDEO_PATH'..."
-              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                -H "Authorization: $CLICKUP_TOKEN" \
-                -F "attachment=@$VIDEO_PATH"
-            else
-              echo "⚠️ Nenhum vídeo correspondente encontrado para '$SCENARIO'"
+              NEW_ID=$(echo "$CREATE" | jq -r '.id')
+              if [ -n "$VIDEO_FILES[$idx]" ]; then
+                echo "📎 Anexando vídeo de evidência '$VIDEO_FILES[$idx]'..."
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_ID/attachment" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -F "attachment=@${VIDEO_FILES[idx]}"
+              fi
             fi
           done  
 
