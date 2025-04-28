@@ -359,7 +359,7 @@ jobs:
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -F "attachment=@${VIDEOS[idx]}"
             fi
-          done  
+          done
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
