@@ -250,7 +250,9 @@ jobs:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
           LIST_ID:       ${{ secrets.CLICKUP_TEST_LIST_ID }}
         run: |
+          set -euo pipefail
           echo "🔍 Reportando Test Cases como subtasks…"
+          mkdir -p tmp
 
           # 1) Mapeia FEATURE → PARENT_ID
           declare -A PARENT
@@ -258,12 +260,9 @@ jobs:
             PARENT["$FEATURE"]=$ID
           done < tmp/scenario_ids.csv
 
-          # 2) Carrega cenários e vídeos
+          # 2) Lista cenários
           readarray -t SCENARIOS < <(
             jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u
-          )
-          readarray -t VIDEOS < <(
-            ls -1rt test-results/report/videos/*.webm 2>/dev/null || true
           )
 
           for idx in "${!SCENARIOS[@]}"; do
@@ -275,22 +274,19 @@ jobs:
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
 
             TASK_NAME="Test Case: $SCENARIO"
-            echo "🔎 Carregando subtasks do parent $PARENT_ID…"
+            echo "🔎 Carregando tarefa pai $PARENT_ID com subtasks…"
             RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID" \
               --data-urlencode "include_subtasks=true" \
               -H "Authorization: $CLICKUP_TOKEN" \
               -H "Content-Type: application/json")
 
-            # 3) Extrai subtasks
             SUBTASKS=$(echo "$RESPONSE" | jq '.subtasks // []')
-
-            # 4) Procura pela subtask existente
             TASK_ID=$(echo "$SUBTASKS" | jq -r --arg name "$TASK_NAME" '
               .[] | select(.name==$name) | .id // empty')
             EXISTING_STATUS=$(echo "$SUBTASKS" | jq -r --arg name "$TASK_NAME" '
               .[] | select(.name==$name) | .status // empty')
 
-            # 5) Define novo status
+            # 3) Determina novo status
             if jq -e --arg s "$SCENARIO" '
                 [ .[] | .elements[] | select(.name==$s) | .steps[] 
                   | select(.result.status=="failed") ] | length>0
@@ -300,21 +296,44 @@ jobs:
               NEW_STATUS="test complete"
             fi
 
-            # 6) Prepara comentário com passos e erro
-            RAW=$(jq -r --arg s "$SCENARIO" '
+            # 4) Gera comentário com passos e erro
+            RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
-              | .keyword + " " + .name
+              | .keyword+" "+.name
                 + (if .result.status=="failed" 
-                    then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) 
+                    then "\nError: "+(.result.error_message|gsub("\r?\n";"\n")) 
                     else "" end)
             ' test-results/cucumber-report.json)
-            COMMENT=$(printf "Scenario: %s\n%s" "$SCENARIO" "$RAW")
+            COMMENT=$(printf "Scenario: %s\n%s" "$SCENARIO" "$RAW_STEPS")
+
+            # 5) Extrai info do vídeo do JSON
+            VIDEO_INFO=$(jq -r --arg s "$SCENARIO" '
+              .[] | select([.elements[].name]|index($s))
+              | .elements[] | select(.name==$s)
+              | .steps[] | .embeddings[]? 
+              | select(.mimeType=="video/webm")
+              | (if has("data") then "data," + .data
+                  elif has("filePath") then "file," + .filePath
+                  elif has("file") then "file," + .file
+                  else empty end)
+            ' test-results/cucumber-report.json || true)
+
+            echo "   👉 VIDEO_INFO for '$SCENARIO': $VIDEO_INFO"
+
+            VIDEO_FILE=""
+            if [[ "$VIDEO_INFO" == data,* ]]; then
+              BASE64=${VIDEO_INFO#data,}
+              VIDEO_FILE="tmp/video_${idx}.webm"
+              echo "$BASE64" | base64 -d > "$VIDEO_FILE" || { echo "⚠️ falha no base64"; true; }
+            elif [[ "$VIDEO_INFO" == file,* ]]; then
+              VIDEO_FILE=${VIDEO_INFO#file,}
+            fi
 
             if [ -n "$TASK_ID" ]; then
-              echo "✅ Subtask existente (ID=$TASK_ID) status='$EXISTING_STATUS'"
+              echo "✅ Subtask existente (ID=$TASK_ID) [status: $EXISTING_STATUS]"
 
-              # 7a) Atualiza status se mudou
+              # 6a) Atualiza status
               if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
                 echo "🔄 Atualizando para '$NEW_STATUS'"
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
@@ -323,43 +342,47 @@ jobs:
                   -d "{\"status\":\"$NEW_STATUS\"}"
               fi
 
-              # 7b) Se falhou, adiciona comentário
+              # 6b) Comenta falha
               if [ "$NEW_STATUS" = "rejected" ]; then
                 echo "💬 Comentando falha"
+                PAYLOAD=$(jq -n --arg text "$COMMENT" '{comment_text: $text}')
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
-                  -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
+                  -d "$PAYLOAD"
               fi
 
-              # 7c) Anexa vídeo sempre
-              if [ -f "${VIDEOS[idx]}" ]; then
-                echo "📎 Anexando vídeo"
+              # 6c) Anexa vídeo (se existir)
+              if [ -n "$VIDEO_FILE" ] && [ -f "$VIDEO_FILE" ]; then
+                echo "📎 Anexando vídeo '$VIDEO_FILE'"
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${VIDEOS[idx]}"
+                  -F "attachment=@${VIDEO_FILE}"
               fi
 
             else
-              # 8) Cria nova subtask se não existir
+              # 7) Cria nova subtask
               echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
+              CREATE_PAYLOAD=$(jq -n \
+                --arg name        "$TASK_NAME" \
+                --arg description "$COMMENT" \
+                --arg status      "$NEW_STATUS" \
+                --arg parent      "$PARENT_ID" \
+                --argjson custom_item_id 1010 \
+                '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')
               CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
-                -d "$(jq -n \
-                      --arg name        "$TASK_NAME" \
-                      --arg description "$COMMENT" \
-                      --arg status      "$NEW_STATUS" \
-                      --arg parent      "$PARENT_ID" \
-                      --argjson custom_item_id 1010 \
-                      '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')")
+                -d "$CREATE_PAYLOAD")
               NEW_ID=$(echo "$CREATED" | jq -r '.id')
-              [ -f "${VIDEOS[idx]}" ] && \
+              if [ -n "$VIDEO_FILE" ] && [ -f "$VIDEO_FILE" ]; then
+                echo "📎 Anexando vídeo '$VIDEO_FILE'"
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_ID/attachment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${VIDEOS[idx]}"
+                  -F "attachment=@${VIDEO_FILE}"
+              fi
             fi
-          done
+          done  
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
