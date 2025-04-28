@@ -268,7 +268,7 @@ jobs:
           for idx in "${!SCENARIOS[@]}"; do
             SCENARIO="${SCENARIOS[idx]}"
             FEATURE=$(jq -r --arg s "$SCENARIO" '
-              .[] | select([.elements[].name]|index($s))|.name
+              .[] | select([.elements[].name]|index($s)) | .name
             ' test-results/cucumber-report.json)
             PARENT_ID=${PARENT["$FEATURE"]}
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
@@ -301,43 +301,53 @@ jobs:
             ' test-results/cucumber-report.json)
             COMMENT="Scenario: $SCENARIO"$'\n'"$RAW"
 
-            # 5) Extrai vídeo do JSON
-            VIDEO_B64=$(jq -r --arg s "$SCENARIO" '
-              .[]
-              | select([.elements[].name]|index($s))
-              | .elements[] | select(.name==$s)
-              | .steps[]?.embeddings[]?
-              | select(.mime_type=="video/webm")
-              | .data // empty
-            ' test-results/cucumber-report.json)
+            # 5) Extrai TODOS os embeddings (vídeo + outros)
+            readarray -t EMBEDS < <(
+              jq -r --arg s "$SCENARIO" '
+                .[] | select([.elements[].name]|index($s))
+                | .elements[] | select(.name==$s)
+                | .steps[]?.embeddings[]?
+                | select(.mime_type != null)
+                | .mime_type + "," + (.data // "")
+              ' test-results/cucumber-report.json
+            )
 
-            VIDEO_FILE=""
-            if [ -n "$VIDEO_B64" ]; then
-              VIDEO_FILE="tmp/${idx}_video.webm"
-              echo "$VIDEO_B64" | base64 -d > "$VIDEO_FILE"
-            else
-              echo "⚠️ Nenhum vídeo webm encontrado em embeddings para '$SCENARIO'"
-            fi
+            # decodifica cada embedding em arquivo
+            ATTACH_FILES=()
+            for e in "${EMBEDS[@]}"; do
+              MTYPE=${e%%,*}
+              B64=${e#*,}
+              # escolhe extensão
+              case "$MTYPE" in
+                video/webm) EXT="webm" ;;
+                application/json) EXT="json" ;;
+                text/plain) EXT="txt" ;;
+                image/png) EXT="png" ;;
+                *) EXT="bin" ;;
+              esac
+              FNAME="tmp/${idx}_${SCENARIO// /_}.${EXT}"
+              if [ -n "$B64" ]; then
+                echo "$B64" | base64 -d > "$FNAME" || { echo "⚠️ falha decodificar $MTYPE"; continue; }
+                ATTACH_FILES+=( "$FNAME" )
+              fi
+            done
 
             # 6) Cria ou atualiza subtask
             if [ -n "$TASK_ID" ]; then
               echo "✅ Subtask existente (ID=$TASK_ID) status=$EXISTING_STATUS"
+              # a) Atualiza status se mudou
               if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
                   -d "{\"status\":\"$NEW_STATUS\"}"
               fi
+              # b) Comenta falha
               if [ "$NEW_STATUS" = "rejected" ]; then
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
                   -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
-              fi
-              if [ -n "$VIDEO_FILE" ] && [ -f "$VIDEO_FILE" ]; then
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${VIDEO_FILE}"
               fi
             else
               echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
@@ -352,13 +362,17 @@ jobs:
                 -H "Authorization: $CLICKUP_TOKEN" \
                 -H "Content-Type: application/json" \
                 -d "$PAYLOAD")
-              NEW_ID=$(echo "$CREATED" | jq -r '.id')
-              if [ -n "$VIDEO_FILE" ] && [ -f "$VIDEO_FILE" ]; then
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_ID/attachment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${VIDEO_FILE}"
-              fi
+              TASK_ID=$(echo "$CREATED" | jq -r '.id')
             fi
+
+            # 7) Anexa todos os arquivos gerados
+            for F in "${ATTACH_FILES[@]}"; do
+              echo "📎 Anexando '$F'"
+              curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                -H "Authorization: $CLICKUP_TOKEN" \
+                -F "attachment=@${F}"
+            done
+
           done  
 
       - name: Upload Cucumber Test Report
