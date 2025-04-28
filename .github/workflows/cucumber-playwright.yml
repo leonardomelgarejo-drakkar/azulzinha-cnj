@@ -280,12 +280,12 @@ jobs:
               -H "Authorization: $CLICKUP_TOKEN")
 
             SUBS=$(echo "$RESPONSE" | jq '.subtasks // []')
-            TASK_ID=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[]|select(.name==$name)|.id//empty')
-            EXISTING_STATUS=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[]|select(.name==$name)|.status//empty')
+            TASK_ID=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[] | select(.name==$name) | .id // empty')
+            EXISTING_STATUS=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[] | select(.name==$name) | .status // empty')
 
             # 3) Novo status
             if jq -e --arg s "$SCENARIO" '
-                [ .[]|.elements[]|select(.name==$s)|.steps[]|select(.result.status=="failed") ]|length>0
+                [ .[]|.elements[]|select(.name==$s)|.steps[]|select(.result.status=="failed") ] | length>0
               ' test-results/cucumber-report.json >/dev/null; then
               NEW_STATUS="rejected"
             else
@@ -294,14 +294,14 @@ jobs:
 
             # 4) Comentário de passos/erro
             RAW=$(jq -r --arg s "$SCENARIO" '
-              .[]|.elements[]|select(.name==$s)
-              |.steps[]|select((.keyword|test("^(Before|After)";"i"))|not)
-              | .keyword+" "+.name
-                + (if .result.status=="failed" then "\nError: "+(.result.error_message|gsub("\r?\n";"\n")) else "" end)
+              .[] | .elements[] | select(.name==$s)
+              | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
+              | .keyword + " " + .name
+                + (if .result.status=="failed" then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) else "" end)
             ' test-results/cucumber-report.json)
             COMMENT="Scenario: $SCENARIO"$'\n'"$RAW"
 
-            # 5) Extrai TODOS os embeddings do JSON (step-level e element-level)
+            # 5) Extrai TODOS os embeddings (step-level e element-level)
             readarray -t EMBEDS < <(
               jq -r --arg s "$SCENARIO" '
                 .[] 
@@ -315,20 +315,30 @@ jobs:
               ' test-results/cucumber-report.json
             )
 
-            # 6) Decodifica cada embedding em arquivo e guarda lista
+            # 6) Decodifica cada embedding em arquivo e renomeia duplicados
             ATTACH_FILES=()
             for e in "${EMBEDS[@]}"; do
               MTYPE=${e%%,*}
               B64=${e#*,}
               [ -z "$B64" ] && continue
+
+              # escolhe extensão
               case "$MTYPE" in
-                video/webm) EXT="webm" ;;
+                video/webm)       EXT="webm" ;;
                 application/json) EXT="json" ;;
-                text/plain) EXT="txt" ;;
-                image/png) EXT="png" ;;
-                *) EXT="bin" ;;
+                text/plain)       EXT="txt" ;;
+                image/png)        EXT="png" ;;
+                *)                EXT="bin" ;;
               esac
-              FNAME="tmp/${idx}_${SCENARIO// /_}.${EXT}"
+
+              BASE="tmp/${idx}_${SCENARIO// /_}"
+              FNAME="${BASE}.${EXT}"
+              COUNT=1
+              while [[ -e "$FNAME" ]]; do
+                FNAME="${BASE}_${COUNT}.${EXT}"
+                ((COUNT++))
+              done
+
               echo "$B64" | base64 -d > "$FNAME"
               ATTACH_FILES+=( "$FNAME" )
             done
