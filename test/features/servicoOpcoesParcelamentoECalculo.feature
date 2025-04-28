@@ -8,7 +8,7 @@ Feature: Cálculo Parcelas de Cobranca Deposito Judicial
        And a quantidade de parcelas é '1 x de'
        And o valor da parcela é 'R$ 526,89'
        And o valor 'Total: R$ 526,89'
-       And a 'Incluso serviço de conveniência: R$ 0,791'
+       And a 'Incluso serviço de conveniência: R$ 0,79'
   
   @ui @calculo-parcelamento @2x
   Scenario: 02-Verificar cálculo do parcelamento em 2 x
