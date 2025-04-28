@@ -272,16 +272,22 @@ jobs:
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
 
             TASK_NAME="Test Case: $SCENARIO"
-            echo "🔎 Buscando subtask '$TASK_NAME' em $PARENT_ID..."
-            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID/subtask" \
+            echo "🔎 Buscando subtask '$TASK_NAME' em LIST:$LIST_ID parent:$PARENT_ID…"
+            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
+              --data-urlencode "search=$TASK_NAME" \
               --data-urlencode "include_closed=true" \
-              -H "Authorization: $CLICKUP_TOKEN")
+              --data-urlencode "parent_ids[]=$PARENT_ID" \
+              -H "Authorization: $CLICKUP_TOKEN" \
+              -H "Content-Type: application/json")
 
-            # usa tasks // [] para nunca iterar null
-            TASK_ID=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '
-              .tasks // [] | .[] | select(.name==$name) | .id // empty')
-            EXISTING_STATUS=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '
-              .tasks // [] | .[] | select(.name==$name) | .status // empty')
+            TASK_ID=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" --arg parent "$PARENT_ID" '
+              .tasks // [] | .[] 
+              | select(.name==$name and (.parent|tostring)==$parent) 
+              | .id // empty')
+            EXISTING_STATUS=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" --arg parent "$PARENT_ID" '
+              .tasks // [] | .[] 
+              | select(.name==$name and (.parent|tostring)==$parent) 
+              | .status // empty')
 
             # determina novo status
             if jq -e --arg s "$SCENARIO" '
@@ -293,43 +299,49 @@ jobs:
               NEW_STATUS="test complete"
             fi
 
-            # formata passos + possível erro
+            # formata passos + possível mensagem de erro
             RAW_STEPS=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
-              | .keyword+" "+.name
+              | .keyword + " " + .name
                 + (if .result.status=="failed" 
-                    then "\nError: "+(.result.error_message|gsub("\r?\n";"\n")) 
+                    then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) 
                     else "" end)
             ' test-results/cucumber-report.json)
             COMMENT=$(printf "Scenario: %s\n%s" "$SCENARIO" "$RAW_STEPS")
 
             if [ -n "$TASK_ID" ]; then
-              # atualização
-              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ] && [ "$NEW_STATUS" = "test complete" ]; then
-                echo "🔄 Atualizando status → TEST COMPLETE"
+              # — existe: atualiza status se mudou
+              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
+                echo "🔄 Atualizando '$TASK_NAME' → $NEW_STATUS"
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
-                  -H "Authorization: $CLICKUP_TOKEN" -H "Content-Type: application/json" \
-                  -d "{\"status\":\"test complete\"}"
-                [ -f "${VIDEOS[idx]}" ] && \
-                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                    -H "Authorization: $CLICKUP_TOKEN" -F "attachment=@${VIDEOS[idx]}"
-              elif [ "$NEW_STATUS" = "rejected" ]; then
-                echo "💬 Comentando falha"
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
-                  -H "Authorization: $CLICKUP_TOKEN" -H "Content-Type: application/json" \
-                  -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
-                [ -f "${VIDEOS[idx]}" ] && \
-                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                    -H "Authorization: $CLICKUP_TOKEN" -F "attachment=@${VIDEOS[idx]}"
-              else
-                echo "✅ Subtask em '$EXISTING_STATUS' — sem alterações."
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d "{\"status\":\"$NEW_STATUS\"}"
               fi
+
+              # — adiciona conteúdo
+              if [ "$NEW_STATUS" = "rejected" ]; then
+                echo "💬 Comentando falha em '$TASK_NAME'…"
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
+              fi
+
+              if [ -f "${VIDEOS[idx]}" ]; then
+                echo "📎 Anexando vídeo à subtask…"
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -F "attachment=@${VIDEOS[idx]}"
+              fi
+
             else
-              # criação
-              echo "➕ Criando subtask → $NEW_STATUS"
+              # — não existe: cria nova subtask
+              echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
               CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
-                -H "Authorization: $CLICKUP_TOKEN" -H "Content-Type: application/json" \
+                -H "Authorization: $CLICKUP_TOKEN" \
+                -H "Content-Type: application/json" \
                 -d "$(jq -n \
                       --arg name        "$TASK_NAME" \
                       --arg description "$COMMENT" \
@@ -340,7 +352,8 @@ jobs:
               NEW_ID=$(echo "$CREATED" | jq -r '.id')
               [ -f "${VIDEOS[idx]}" ] && \
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_ID/attachment" \
-                  -H "Authorization: $CLICKUP_TOKEN" -F "attachment=@${VIDEOS[idx]}"
+                  -H "Authorization: $CLICKUP_TOKEN" \
+                  -F "attachment=@${VIDEOS[idx]}"
             fi
           done
 
