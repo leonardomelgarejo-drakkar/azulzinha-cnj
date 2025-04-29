@@ -388,7 +388,13 @@ jobs:
           echo "📝 Gerando relatório em Markdown..."
           mkdir -p tmp
           cat > tmp/qa_report.md <<EOF
-          # QA Report - Execução $(date +"%Y-%m-%d %H:%M")
+          # Quality indicators
+
+          ## Notice
+
+          Test scenario represents a system feature and test cases represent test coverage for them.
+
+          ## Notice
 
           ## Test Scenarios
           | Cenário                         | Status       |
