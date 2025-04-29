@@ -382,35 +382,35 @@ jobs:
 
           done
 
-          - name: Gerar QA Report em Markdown
-          if: ${{ always() }}
-          run: |
-            echo "📝 Gerando relatório em Markdown..."
-            mkdir -p tmp
-            cat > tmp/qa_report.md <<EOF
-            # QA Report - Execução $(date +"%Y-%m-%d %H:%M")
-  
-            ## Test Scenarios
-            | Cenário                         | Status       |
-            |---------------------------------|--------------|
-            $(jq -r '.[] 
-                | "- | " + .name 
-                  + " | " 
-                  + (if ([.elements[].steps[].result.status] 
-                          | index("failed")) then "❌ failed" else "✅ passed" end) 
-                  + " |"' test-results/cucumber-report.json)
-  
-            ## Test Cases
-            | Test Case                       | Status       |
-            |---------------------------------|--------------|
-            $(jq -r '.[] 
-                | .elements[] 
-                | "- | " + .name 
-                  + " | " 
-                  + (if ([.steps[].result.status] 
-                          | index("failed")) then "❌ failed" else "✅ passed" end)
-                  + " |"' test-results/cucumber-report.json)
-            EOF
+      - name: Gerar QA Report em Markdown
+        if: ${{ always() }}
+        run: |
+          echo "📝 Gerando relatório em Markdown..."
+          mkdir -p tmp
+          cat > tmp/qa_report.md <<EOF
+          # QA Report - Execução $(date +"%Y-%m-%d %H:%M")
+
+          ## Test Scenarios
+          | Cenário                         | Status       |
+          |---------------------------------|--------------|
+          $(jq -r '.[] 
+              | "- | " + .name 
+                + " | " 
+                + (if ([.elements[].steps[].result.status] 
+                        | index("failed")) then "❌ failed" else "✅ passed" end) 
+                + " |"' test-results/cucumber-report.json)
+
+          ## Test Cases
+          | Test Case                       | Status       |
+          |---------------------------------|--------------|
+          $(jq -r '.[] 
+              | .elements[] 
+              | "- | " + .name 
+                + " | " 
+                + (if ([.steps[].result.status] 
+                        | index("failed")) then "❌ failed" else "✅ passed" end)
+                + " |"' test-results/cucumber-report.json)
+          EOF
   
       - name: Atualizar página QA Report no ClickUp Docs
         if: ${{ always() }}
