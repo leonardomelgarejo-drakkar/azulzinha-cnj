@@ -380,7 +380,58 @@ jobs:
                 -F "attachment=@${F}"
             done
 
-          done  
+          done
+
+          - name: Gerar QA Report em Markdown
+          if: ${{ always() }}
+          run: |
+            echo "📝 Gerando relatório em Markdown..."
+            mkdir -p tmp
+            cat > tmp/qa_report.md <<EOF
+            # QA Report - Execução $(date +"%Y-%m-%d %H:%M")
+  
+            ## Test Scenarios
+            | Cenário                         | Status       |
+            |---------------------------------|--------------|
+            $(jq -r '.[] 
+                | "- | " + .name 
+                  + " | " 
+                  + (if ([.elements[].steps[].result.status] 
+                          | index("failed")) then "❌ failed" else "✅ passed" end) 
+                  + " |"' test-results/cucumber-report.json)
+  
+            ## Test Cases
+            | Test Case                       | Status       |
+            |---------------------------------|--------------|
+            $(jq -r '.[] 
+                | .elements[] 
+                | "- | " + .name 
+                  + " | " 
+                  + (if ([.steps[].result.status] 
+                          | index("failed")) then "❌ failed" else "✅ passed" end)
+                  + " |"' test-results/cucumber-report.json)
+            EOF
+  
+      - name: Atualizar página QA Report no ClickUp Docs
+        if: ${{ always() }}
+        env:
+          CLICKUP_TOKEN:    ${{ secrets.CLICKUP_API_TOKEN }}
+          WORKSPACE_ID:     31043253
+          DOC_ID:           xkbnn-73533
+          PAGE_ID:          xkbnn-51973   # substitua pelo ID da página QA Report que você quer atualizar
+        run: |
+          echo "🔄 Enviando Markdown para o ClickUp Doc Page..."
+          # embrulha o Markdown num literal JSON escapado
+          CONTENT=$(jq -Rs . tmp/qa_report.md)
+          curl -s -X PUT \
+            "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
+            -H "Authorization: ${CLICKUP_TOKEN}" \
+            -H "accept: application/json" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"content_format\": \"text/md\",
+              \"content\": ${CONTENT}
+            }"
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
