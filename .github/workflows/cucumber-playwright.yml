@@ -397,18 +397,34 @@ jobs:
           FAILED_CASES=$(jq '[ .[].elements[] | select([ .steps[].result.status ] | index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
           EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
 
-          # 3) Monta o bloco de evidência: para cada Test Scenario, título e seus Test Cases
+          # 3) Bloco de evidência com Test Scenarios e, ao lado de cada Test Case, seus embeddings
           EVIDENCE_BLOCK=$(
             jq -r '
               .[] |
                 "### " + .name,
-                ( .elements[]? | "#### " + .name )
+                ( .elements[]? |
+                    "#### " + .name +
+                    ( if (.embeddings // [] | length) > 0 then
+                        " " + ( 
+                          [.embeddings[] |
+                              if .mime_type | test("^image/") then
+                                "![embed](" + "data:" + .mime_type + ";base64," + .data + ")"
+                              else
+                                "[" + .mime_type + "](" + "data:" + .mime_type + ";base64," + .data + ")"
+                              end
+                          ] | join(" ")
+                        )
+                      else
+                        ""
+                      end
+                    )
+                )
             ' test-results/cucumber-report.json
           )
 
           # 4) Gera o Markdown
           mkdir -p tmp
-          cat > tmp/qa_report.md <<EOF
+          cat <<EOF > tmp/qa_report.md
           # Quality indicators
           
           ## Notice
