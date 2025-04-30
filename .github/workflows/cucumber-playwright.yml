@@ -424,7 +424,7 @@ jobs:
           ' test-results/cucumber-report.json)
 
           # 4) Debug (opcional): libere este echo para verificar o conteúdo
-          # echo "$EVIDENCE_BLOCK"
+          echo "$EVIDENCE_BLOCK"
 
           # 5) Monta e grava o Markdown (sem indentar o EOF)
           mkdir -p tmp
