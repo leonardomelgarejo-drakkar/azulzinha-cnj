@@ -384,87 +384,38 @@ jobs:
 
       - name: Gerar QA Report em Markdown
         if: ${{ always() }}
-        env:
-          CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
-          CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
         run: |
-          echo "📝 Gerando relatório em Markdown..."
+          echo "📝 Gerando relatório em Markdown a partir do Cucumber JSON…"
 
-          # 1) Baixa até 100 tasks não arquivadas
-          TASKS_JSON=$(
-            curl -s -G "https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ID}/task" \
-              --data-urlencode "archived=false" \
-              --data-urlencode "limit=100" \
-              -H "Authorization: ${CLICKUP_API_TOKEN}" \
-              -H "Content-Type: application/json"
-          )
+          # 1) Indicadores de Test Scenarios (features)
+          TOTAL_SCENARIOS=$(jq 'length' test-results/cucumber-report.json)
+          FAILED_SCENARIOS=$(jq '[ .[] | select([ .elements[].steps[].result.status ] | index("failed")) ] | length' test-results/cucumber-report.json)
+          EXECUTED_SCENARIOS=$((TOTAL_SCENARIOS - FAILED_SCENARIOS))
 
-          # 1.a) Debug: veja a primeira task e ajuste os filtros abaixo se necessário
-          echo "$TASKS_JSON" | jq '.tasks[0]' || true
+          # 2) Indicadores de Test Cases (cenários únicos)
+          TOTAL_CASES=$(jq '[ .[].elements[].name ] | unique | length' test-results/cucumber-report.json)
+          FAILED_CASES=$(jq '[ .[].elements[] | select([ .steps[].result.status ] | index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
+          EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
 
-          # 2) Indicadores para Test Scenarios
-          TOTAL_SCENARIOS=$(
-            echo "$TASKS_JSON" \
-            | jq '[.tasks[]
-                  | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")
-                ] | length'
-          )
-          EXECUTED_SCENARIOS=$(
-            echo "$TASKS_JSON" \
-            | jq '[.tasks[]
-                  | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")
-                  | select(.status.status=="executed")
-                ] | length'
-          )
-          FAILED_SCENARIOS=$(
-            echo "$TASKS_JSON" \
-            | jq '[.tasks[]
-                  | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")
-                  | select(.status.status=="failed")
-                ] | length'
-          )
-
-          # 3) Indicadores para Test Cases
-          TOTAL_CASES=$(
-            echo "$TASKS_JSON" \
-            | jq '[.tasks[]
-                  | select(.custom_fields[]?.name=="Type" and .value=="Test Case")
-                ] | length'
-          )
-          EXECUTED_CASES=$(
-            echo "$TASKS_JSON" \
-            | jq '[.tasks[]
-                  | select(.custom_fields[]?.name=="Type" and .value=="Test Case")
-                  | select(.status.status=="executed")
-                ] | length'
-          )
-          FAILED_CASES=$(
-            echo "$TASKS_JSON" \
-            | jq '[.tasks[]
-                  | select(.custom_fields[]?.name=="Type" and .value=="Test Case")
-                  | select(.status.status=="failed")
-                ] | length'
-          )
-
-          # 4) Gera o Markdown (observe que o EOF está alinhado à esquerda)
+          # 3) Monta o Markdown (sem indentar o EOF)
           mkdir -p tmp
           cat > tmp/qa_report.md <<EOF
           # Quality indicators
-
+          
           ## Notice
-
+          
           Test scenario represents a system feature and test cases represent test coverage for them.
-
+          
           ## General
-
+          
           ## Test Scenarios
-
+          
           | Total | Executed | Failed |
           | :---: | :------: | :----: |
           | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-
+          
           ## Test Cases
-
+          
           | Total | Executed | Failed |
           | :---: | :------: | :----: |
           | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
