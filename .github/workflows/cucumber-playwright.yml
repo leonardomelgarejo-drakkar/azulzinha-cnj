@@ -397,35 +397,36 @@ jobs:
           FAILED_CASES=$(jq '[ .[].elements[] | select([ .steps[].result.status ] | index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
           EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
 
-          # 3) Monta o bloco de evidência com cenários e, ao lado de cada caso, seus embeddings
-          EVIDENCE_BLOCK=$(
-            jq -r '
-              .[] as $scenario |
-                "### " + $scenario.name,
-                (
-                  $scenario.elements[]? as $case |
-                    "#### " + $case.name +
-                    ( if ($case.embeddings // [] | length) > 0 then
-                        " " +
-                        (
-                          [$case.embeddings[] |
-                            if (.mime_type | test("^image/")) then
-                              "![embed](" + "data:" + .mime_type + ";base64," + .data + ")"
-                            else
-                              "[" + .mime_type + "](" + "data:" + .mime_type + ";base64," + .data + ")"
-                            end
-                          ] 
-                          | join(" ")
-                        )
-                      else
-                        ""
-                      end
-                    )
-                )
-            ' test-results/cucumber-report.json
-          )
+          # 3) Bloco de evidência com cenários e, ao lado de cada caso, seus embeddings
+          EVIDENCE_BLOCK=$(jq -r '
+            .[] as $scenario |
+              "### " + $scenario.name,
+              (
+                $scenario.elements[]? as $case |
+                  "#### " + $case.name +
+                  (
+                    if ($case.embeddings // [] | length) > 0 then
+                      " " +
+                      (
+                        $case.embeddings[]
+                        | if (.mime_type | test("^image/")) then
+                            "![embed](" + ("data:" + .mime_type + ";base64," + .data) + ")"
+                          else
+                            "[" + .mime_type + "](" + ("data:" + .mime_type + ";base64," + .data) + ")"
+                          end
+                      )
+                      | join(" ")
+                    else
+                      ""
+                    end
+                  )
+              )
+          ' test-results/cucumber-report.json)
 
-          # 4) Gera o Markdown (certifique-se de que EOF esteja sem indentação)
+          # 4) Debug (opcional): libere este echo para verificar o conteúdo
+          # echo "$EVIDENCE_BLOCK"
+
+          # 5) Monta e grava o Markdown (sem indentar o EOF)
           mkdir -p tmp
           cat <<EOF > tmp/qa_report.md
           # Quality indicators
