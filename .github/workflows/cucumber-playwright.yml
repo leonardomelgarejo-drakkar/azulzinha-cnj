@@ -389,41 +389,64 @@ jobs:
           CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
         run: |
           echo "📝 Gerando relatório em Markdown..."
-          # 1) Busca todas as tasks do list no ClickUp
-          TASKS_JSON=$(curl -s -G "https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ID}/task" \
-            --data-urlencode "archived=false" \
-            -H "Authorization: ${CLICKUP_API_TOKEN}" \
-            -H "Content-Type: application/json")
+
+          # 1) Baixa até 100 tasks não arquivadas
+          TASKS_JSON=$(
+            curl -s -G "https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ID}/task" \
+              --data-urlencode "archived=false" \
+              --data-urlencode "limit=100" \
+              -H "Authorization: ${CLICKUP_API_TOKEN}" \
+              -H "Content-Type: application/json"
+          )
+
+          # 1.a) Debug: veja a primeira task e ajuste os filtros abaixo se necessário
+          echo "$TASKS_JSON" | jq '.tasks[0]' || true
 
           # 2) Indicadores para Test Scenarios
-          TOTAL_SCENARIOS=$(echo "$TASKS_JSON" \
-            | jq '[.tasks[] | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")] | length')
-          EXECUTED_SCENARIOS=$(echo "$TASKS_JSON" \
-            | jq '[.tasks[] 
-                      | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario") 
-                      | select(.status.status=="executed")
-                    ] | length')
-          FAILED_SCENARIOS=$(echo "$TASKS_JSON" \
-            | jq '[.tasks[] 
-                      | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario") 
-                      | select(.status.status=="failed")
-                    ] | length')
+          TOTAL_SCENARIOS=$(
+            echo "$TASKS_JSON" \
+            | jq '[.tasks[]
+                  | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")
+                ] | length'
+          )
+          EXECUTED_SCENARIOS=$(
+            echo "$TASKS_JSON" \
+            | jq '[.tasks[]
+                  | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")
+                  | select(.status.status=="executed")
+                ] | length'
+          )
+          FAILED_SCENARIOS=$(
+            echo "$TASKS_JSON" \
+            | jq '[.tasks[]
+                  | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")
+                  | select(.status.status=="failed")
+                ] | length'
+          )
 
           # 3) Indicadores para Test Cases
-          TOTAL_CASES=$(echo "$TASKS_JSON" \
-            | jq '[.tasks[] | select(.custom_fields[]?.name=="Type" and .value=="Test Case")] | length')
-          EXECUTED_CASES=$(echo "$TASKS_JSON" \
-            | jq '[.tasks[] 
-                      | select(.custom_fields[]?.name=="Type" and .value=="Test Case") 
-                      | select(.status.status=="executed")
-                    ] | length')
-          FAILED_CASES=$(echo "$TASKS_JSON" \
-            | jq '[.tasks[] 
-                      | select(.custom_fields[]?.name=="Type" and .value=="Test Case") 
-                      | select(.status.status=="failed")
-                    ] | length')
+          TOTAL_CASES=$(
+            echo "$TASKS_JSON" \
+            | jq '[.tasks[]
+                  | select(.custom_fields[]?.name=="Type" and .value=="Test Case")
+                ] | length'
+          )
+          EXECUTED_CASES=$(
+            echo "$TASKS_JSON" \
+            | jq '[.tasks[]
+                  | select(.custom_fields[]?.name=="Type" and .value=="Test Case")
+                  | select(.status.status=="executed")
+                ] | length'
+          )
+          FAILED_CASES=$(
+            echo "$TASKS_JSON" \
+            | jq '[.tasks[]
+                  | select(.custom_fields[]?.name=="Type" and .value=="Test Case")
+                  | select(.status.status=="failed")
+                ] | length'
+          )
 
-          # 4) Monta o relatório em Markdown
+          # 4) Gera o Markdown (observe que o EOF está alinhado à esquerda)
           mkdir -p tmp
           cat > tmp/qa_report.md <<EOF
           # Quality indicators
@@ -445,8 +468,7 @@ jobs:
           | Total | Executed | Failed |
           | :---: | :------: | :----: |
           | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
-
-          EOF  
+          EOF
   
       - name: Atualizar página QA Report no ClickUp Docs
         if: ${{ always() }}
