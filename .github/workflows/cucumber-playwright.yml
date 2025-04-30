@@ -398,7 +398,7 @@ jobs:
           EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
 
           # 3) Monta a lista de evidências (cada feature como item de lista)
-          EVIDENCE_LIST=$(jq -r '.[].name | "- " + .' test-results/cucumber-report.json)
+          EVIDENCE_TITLES=$(jq -r '.[].name | "### " + .' test-results/cucumber-report.json)
 
           # 4) Gera o Markdown
           mkdir -p tmp
@@ -425,7 +425,7 @@ jobs:
             
             ## Test Evidence
             
-            $EVIDENCE_LIST
+            $EVIDENCE_TITLES
             EOF
   
       - name: Atualizar página QA Report no ClickUp Docs
