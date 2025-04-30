@@ -394,7 +394,7 @@ jobs:
 
           Test scenario represents a system feature and test cases represent test coverage for them.
 
-          ## Notice
+          ## General
 
           ## Test Scenarios
           | Cenário                         | Status       |
