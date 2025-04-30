@@ -384,8 +384,46 @@ jobs:
 
       - name: Gerar QA Report em Markdown
         if: ${{ always() }}
+        env:
+          CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
+          CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
         run: |
           echo "📝 Gerando relatório em Markdown..."
+          # 1) Busca todas as tasks do list no ClickUp
+          TASKS_JSON=$(curl -s -G "https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ID}/task" \
+            --data-urlencode "archived=false" \
+            -H "Authorization: ${CLICKUP_API_TOKEN}" \
+            -H "Content-Type: application/json")
+
+          # 2) Indicadores para Test Scenarios
+          TOTAL_SCENARIOS=$(echo "$TASKS_JSON" \
+            | jq '[.tasks[] | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario")] | length')
+          EXECUTED_SCENARIOS=$(echo "$TASKS_JSON" \
+            | jq '[.tasks[] 
+                      | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario") 
+                      | select(.status.status=="executed")
+                    ] | length')
+          FAILED_SCENARIOS=$(echo "$TASKS_JSON" \
+            | jq '[.tasks[] 
+                      | select(.custom_fields[]?.name=="Type" and .value=="Test Scenario") 
+                      | select(.status.status=="failed")
+                    ] | length')
+
+          # 3) Indicadores para Test Cases
+          TOTAL_CASES=$(echo "$TASKS_JSON" \
+            | jq '[.tasks[] | select(.custom_fields[]?.name=="Type" and .value=="Test Case")] | length')
+          EXECUTED_CASES=$(echo "$TASKS_JSON" \
+            | jq '[.tasks[] 
+                      | select(.custom_fields[]?.name=="Type" and .value=="Test Case") 
+                      | select(.status.status=="executed")
+                    ] | length')
+          FAILED_CASES=$(echo "$TASKS_JSON" \
+            | jq '[.tasks[] 
+                      | select(.custom_fields[]?.name=="Type" and .value=="Test Case") 
+                      | select(.status.status=="failed")
+                    ] | length')
+
+          # 4) Monta o relatório em Markdown
           mkdir -p tmp
           cat > tmp/qa_report.md <<EOF
           # Quality indicators
@@ -397,26 +435,18 @@ jobs:
           ## General
 
           ## Test Scenarios
-          | Cenário                         | Status       |
-          |---------------------------------|--------------|
-          $(jq -r '.[] 
-              | "- | " + .name 
-                + " | " 
-                + (if ([.elements[].steps[].result.status] 
-                        | index("failed")) then "❌ failed" else "✅ passed" end) 
-                + " |"' test-results/cucumber-report.json)
+
+          | Total | Executed | Failed |
+          | :---: | :------: | :----: |
+          | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
 
           ## Test Cases
-          | Test Case                       | Status       |
-          |---------------------------------|--------------|
-          $(jq -r '.[] 
-              | .elements[] 
-              | "- | " + .name 
-                + " | " 
-                + (if ([.steps[].result.status] 
-                        | index("failed")) then "❌ failed" else "✅ passed" end)
-                + " |"' test-results/cucumber-report.json)
-          EOF
+
+          | Total | Executed | Failed |
+          | :---: | :------: | :----: |
+          | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
+
+          EOF  
   
       - name: Atualizar página QA Report no ClickUp Docs
         if: ${{ always() }}
