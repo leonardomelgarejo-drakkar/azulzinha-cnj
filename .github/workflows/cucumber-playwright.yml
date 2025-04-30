@@ -397,36 +397,42 @@ jobs:
           FAILED_CASES=$(jq '[ .[].elements[] | select([ .steps[].result.status ] | index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
           EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
 
-          # 3) Monta a lista de evidências (cada feature como item de lista)
-          EVIDENCE_TITLES=$(jq -r '.[].name | "### " + .' test-results/cucumber-report.json)
+          # 3) Monta o bloco de evidência: para cada Test Scenario, título e seus Test Cases
+          EVIDENCE_BLOCK=$(
+            jq -r '
+              .[] |
+                "### " + .name,
+                ( .elements[]? | "#### " + .name )
+            ' test-results/cucumber-report.json
+          )
 
           # 4) Gera o Markdown
           mkdir -p tmp
           cat > tmp/qa_report.md <<EOF
-            # Quality indicators
-            
-            ## Notice
-            
-            Test scenario represents a system feature and test cases represent test coverage for them.
-            
-            ## General
-            
-            ## Test Scenarios
-            
-            | Total | Executed | Failed |
-            | :---: | :------: | :----: |
-            | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-            
-            ## Test Cases
-            
-            | Total | Executed | Failed |
-            | :---: | :------: | :----: |
-            | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
-            
-            ## Test Evidence
-            
-            $EVIDENCE_TITLES
-            EOF
+          # Quality indicators
+          
+          ## Notice
+          
+          Test scenario represents a system feature and test cases represent test coverage for them.
+          
+          ## General
+          
+          ## Test Scenarios
+          
+          | Total | Executed | Failed |
+          | :---: | :------: | :----: |
+          | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
+          
+          ## Test Cases
+          
+          | Total | Executed | Failed |
+          | :---: | :------: | :----: |
+          | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
+          
+          ## Test Evidence
+          
+          $EVIDENCE_BLOCK
+          EOF
   
       - name: Atualizar página QA Report no ClickUp Docs
         if: ${{ always() }}
