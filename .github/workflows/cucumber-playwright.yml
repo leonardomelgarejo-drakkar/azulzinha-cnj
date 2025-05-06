@@ -382,16 +382,11 @@ jobs:
 
           done
 
-      - name: Gerar QA Report e anexar embeddings
+      - name: Gerar QA Report em Markdown e anexar imagens
         if: ${{ always() }}
-        env:
-          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          WORKSPACE_ID:  31043253
-          DOC_ID:        xkbnn-73533
-          PAGE_ID:       xkbnn-51973
         run: |
           set +e
-          echo "📝 Gerando QA Report e anexando embeddings..."
+          echo "📝 Gerando QA Report e anexando imagens..."
           mkdir -p tmp
 
           # 1) Calcula indicadores
@@ -412,42 +407,55 @@ jobs:
           ## Test Evidence
           EOF
 
-          idx=0
-          # Para cada cenário e cada embedding, faz upload e anexa no markdown
+          img_idx=0
+          # Para cada cenário único
           while IFS= read -r scenario; do
             echo "🔍 Cenário: $scenario" >> tmp/qa_report.md
-            echo "### $scenario" >> tmp/qa_report.md
+            echo "### $scenario"      >> tmp/qa_report.md
 
-            # coleta todos embeddings (imagem, vídeo, etc.)
-            mapfile -t embeds < <(
+            # Extrai apenas embeddings de imagem
+            mapfile -t images < <(
               jq -r --arg sc "$scenario" '
-                .[] | select(.name==$sc) | .elements[]?.steps[]?.embeddings[]?
+                .[] | select(.name == $sc)
+                | .elements[]?.steps[]?.embeddings[]?
+                | select(.mime_type | test("^image/"))
                 | "\(.mime_type),\(.data)"
               ' test-results/cucumber-report.json
             )
 
-            for embed in "${embeds[@]}"; do
-              mime=${embed%%,*}
-              b64=${embed#*,}
+            for img in "${images[@]}"; do
+              mime=${img%%,*}
+              b64=${img#*,}
               ext=${mime#*/}
-              file="tmp/embed_${idx}.${ext}"
-              ((idx++))
+              file="tmp/img_${img_idx}.${ext}"
+              ((img_idx++))
 
               echo "$b64" | base64 -d > "$file"
 
-              # upload como attachment
-              resp=$(curl -s -f -X POST \
-                "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/attachments" \
+              # Upload como attachment (captura HTTP e corpo para debug)
+              http_code=$(curl -s -o tmp/attach_resp.json -w "%{http_code}" \
+                -X POST "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/attachments" \
                 -H "Authorization: ${CLICKUP_TOKEN}" \
-                -F "file=@${file}") || { echo "⚠️ Falha upload $file"; continue; }
+                -F "file=@${file}")
 
-              url=$(echo "$resp" | jq -r '.url // empty')
+              echo "🔄 Upload $file → HTTP $http_code"
+              echo "📦 Response body:" 
+              cat tmp/attach_resp.json
+
+              if [[ "$http_code" != "200" && "$http_code" != "201" ]]; then
+                echo "⚠️ Falha no upload $file (HTTP $http_code)"
+                continue
+              fi
+
+              url=$(jq -r '.url // empty' tmp/attach_resp.json)
               if [ -n "$url" ]; then
                 echo "![embed]($url)" >> tmp/qa_report.md
-                echo "" >> tmp/qa_report.md
+                echo ""                   >> tmp/qa_report.md
+              else
+                echo "⚠️ URL inválida para $file"
               fi
             done
-          done < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
+          done < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)  
   
       - name: Atualizar QA Report no ClickUp Docs
         if: ${{ always() }}
