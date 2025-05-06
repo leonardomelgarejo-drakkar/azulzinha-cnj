@@ -382,97 +382,86 @@ jobs:
 
           done
 
-      - name: Gerar QA Report em Markdown
+      - name: Gerar QA Report e anexar embeddings
         if: ${{ always() }}
         run: |
-          echo "📝 Gerando relatório em Markdown a partir do Cucumber JSON…"
+          set +e
+          echo "📝 Gerando QA Report e anexando embeddings..."
+          mkdir -p tmp
 
-          # 1) Indicadores de Test Scenarios (features)
+          # 1) Calcula indicadores
           TOTAL_SCENARIOS=$(jq 'length' test-results/cucumber-report.json)
           FAILED_SCENARIOS=$(jq '[ .[] | select([ .elements[].steps[].result.status ] | index("failed")) ] | length' test-results/cucumber-report.json)
           EXECUTED_SCENARIOS=$((TOTAL_SCENARIOS - FAILED_SCENARIOS))
-
-          # 2) Indicadores de Test Cases (cenários únicos)
           TOTAL_CASES=$(jq '[ .[].elements[].name ] | unique | length' test-results/cucumber-report.json)
           FAILED_CASES=$(jq '[ .[].elements[] | select([ .steps[].result.status ] | index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
           EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
 
-          # 3) Bloco de evidência com cenários e todos os seus embeddings
-          EVIDENCE_BLOCK=$(jq -r '
-            .[] as $scenario |
-              "### " + $scenario.name,
-              ($scenario.elements[]? as $case |
-                # junta embeddings de steps e de element
-                ([ $case.steps[]?.embeddings[]? ] + [ $case.embeddings[]? ])
-                | map(
-                    if .mime_type | test("^image/") then
-                      "![embed](" + ("data:" + .mime_type + ";base64," + .data) + ")"
-                    else
-                      "[" + .mime_type + "](" + ("data:" + .mime_type + ";base64," + .data) + ")"
-                    end
-                  )
-                | join(" ")
-                as $embeds |
-                "#### " + $case.name + (if $embeds != "" then "\n" + $embeds else "" end)
-              )
-          ' test-results/cucumber-report.json)
-
-          # 4) (Opcional) Debug
-          # echo "$EVIDENCE_BLOCK"
-
-          # 5) Monta e grava o Markdown
-          mkdir -p tmp
+          # Inicia o Markdown
           cat <<EOF > tmp/qa_report.md
           # Quality indicators
-          
-          ## Notice
 
-          Test scenario represents a system feature and test cases represent test coverage for them.
-          ## General
-
-          ## Test Scenarios
-
-          | Total | Executed | Failed |
-          | :---: | :------: | :----: |
-          | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-
-          ## Test Cases
-
-          | Total | Executed | Failed |
-          | :---: | :------: | :----: |
-          | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
+          ## Test Scenarios: $EXECUTED_SCENARIOS/$TOTAL_SCENARIOS (failed: $FAILED_SCENARIOS)
+          ## Test Cases: $EXECUTED_CASES/$TOTAL_CASES (failed: $FAILED_CASES)
 
           ## Test Evidence
-
-          $EVIDENCE_BLOCK
           EOF
 
-      - name: Atualizar página QA Report em ClickUp Docs
+          idx=0
+          # Para cada cenário e cada embedding, faz upload e anexa no markdown
+          while IFS= read -r scenario; do
+            echo "🔍 Cenário: $scenario" >> tmp/qa_report.md
+            echo "### $scenario" >> tmp/qa_report.md
+
+            # coleta todos embeddings (imagem, vídeo, etc.)
+            mapfile -t embeds < <(
+              jq -r --arg sc "$scenario" '
+                .[] | select(.name==$sc) | .elements[]?.steps[]?.embeddings[]?
+                | "\(.mime_type),\(.data)"
+              ' test-results/cucumber-report.json
+            )
+
+            for embed in "${embeds[@]}"; do
+              mime=${embed%%,*}
+              b64=${embed#*,}
+              ext=${mime#*/}
+              file="tmp/embed_${idx}.${ext}"
+              ((idx++))
+
+              echo "$b64" | base64 -d > "$file"
+
+              # upload como attachment
+              resp=$(curl -s -f -X POST \
+                "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/attachments" \
+                -H "Authorization: ${CLICKUP_TOKEN}" \
+                -F "file=@${file}") || { echo "⚠️ Falha upload $file"; continue; }
+
+              url=$(echo "$resp" | jq -r '.url // empty')
+              if [ -n "$url" ]; then
+                echo "![embed]($url)" >> tmp/qa_report.md
+                echo "" >> tmp/qa_report.md
+              fi
+            done
+          done < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
+  
+      - name: Atualizar QA Report no ClickUp Docs
         if: ${{ always() }}
         env:
-          CLICKUP_TOKEN:    ${{ secrets.CLICKUP_API_TOKEN }}
-          WORKSPACE_ID:     31043253
-          DOC_ID:           xkbnn-73533
-          PAGE_ID:          xkbnn-51973
+          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          WORKSPACE_ID:  31043253
+          DOC_ID:        xkbnn-73533
+          PAGE_ID:       xkbnn-51973
         run: |
-          echo "🔄 Preparando payload JSON..."
-          mkdir -p tmp
-
-          # lê o markdown bruto e escapa como JSON string
+          echo "🔄 Atualizando ClickUp Doc..."
           CONTENT=$(jq -Rs . tmp/qa_report.md)
-
-          # monta o JSON no arquivo
           cat <<EOF > tmp/payload.json
           {"content_format":"text/md","content":$CONTENT}
           EOF
-
-          echo "🔄 Enviando Markdown para o ClickUp Doc Page..."
           curl -s -X PUT \
             "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
             -H "Authorization: ${CLICKUP_TOKEN}" \
-            -H "Accept: application/json" \
             -H "Content-Type: application/json" \
-            --data-binary @tmp/payload.json  
+            --data-binary @tmp/payload.json
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
