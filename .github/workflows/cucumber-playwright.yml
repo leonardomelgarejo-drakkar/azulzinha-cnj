@@ -456,15 +456,17 @@ jobs:
           PAGE_ID:          xkbnn-51973
         run: |
           echo "🔄 Preparando payload JSON..."
-          # gera o JSON num arquivo
-          jq -n \
-            --arg cf "text/md" \
-            --slurpfile content tmp/qa_report.md \
-            '{content_format: $cf, content: $content[0]}' \
-            > tmp/payload.json
+          mkdir -p tmp
+
+          # lê o markdown bruto e escapa como JSON string
+          CONTENT=$(jq -Rs . tmp/qa_report.md)
+
+          # monta o JSON no arquivo
+          cat <<EOF > tmp/payload.json
+          {"content_format":"text/md","content":$CONTENT}
+          EOF
 
           echo "🔄 Enviando Markdown para o ClickUp Doc Page..."
-          # envia pela opção @arquivo
           curl -s -X PUT \
             "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
             -H "Authorization: ${CLICKUP_TOKEN}" \
