@@ -426,17 +426,17 @@ jobs:
           | -------- | ------ | ------ |
           EOF
   
-            # 4) Preenche a tabela “By Scenario”
-            readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
-            for FEATURE in "${FEATURES[@]}"; do
-              TOTAL=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[].name ] | unique | length' test-results/cucumber-report.json)
-              FAILED=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[] | select([.steps[].result.status]|index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
-              PASSED=$((TOTAL - FAILED))
-              echo "| $FEATURE | $PASSED | $FAILED |" >> tmp/qa_report.md
-            done
-  
-            # 5) Link para o relatório completo em HTML
-            cat <<EOF >> tmp/qa_report.md
+          # 4) Preenche a tabela “Number of test cases per Test Scenario”
+          readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
+          for FEATURE in "${FEATURES[@]}"; do
+            TOTAL=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[].name ] | unique | length' test-results/cucumber-report.json)
+            FAILED=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[] | select([.steps[].result.status]|index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
+            PASSED=$((TOTAL - FAILED))
+            echo "| $FEATURE | $PASSED | $FAILED |" >> tmp/qa_report.md
+          done
+
+          # 5) Link para o relatório completo em HTML
+          cat <<EOF >> tmp/qa_report.md
   
           ## Full HTML Report
   
