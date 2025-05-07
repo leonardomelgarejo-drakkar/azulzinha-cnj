@@ -404,21 +404,19 @@ jobs:
 
           Test scenario represents a system feature and test cases represent test coverage for them.
 
-          ## General
-
-          ### Test Scenarios
+          ### ![Test Scenarios](https://img.shields.io/badge/Test%20Scenarios-green?style=flat-square)
 
           | Total | Executed | Failed |
           | :---: | :------: | :----: |
           | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
 
-          ### Test Cases
+          ### ![Test Cases](https://img.shields.io/badge/Test%20Cases-blue?style=flat-square)
 
           | Total | Executed | Failed |
           | :---: | :------: | :----: |
           | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
 
-          ## Number of test cases per Test Scenario
+          ### ![Number of test cases per Test Scenario](https://img.shields.io/badge/Number%20of%20test%20cases%20per%20Test%20Scenario-purple?style=flat-square)
 
           | Scenario | Passed | Failed |
           | -------- | ------ | ------ |
@@ -436,7 +434,7 @@ jobs:
           # 5) Link para o relatório completo em HTML
           cat <<EOF >> tmp/qa_report.md
 
-          ## Full HTML Report
+          ### ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=flat-square)
 
           [Abrir relatório completo (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html)
           EOF
@@ -445,9 +443,9 @@ jobs:
         if: ${{ always() }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          WORKSPACE_ID:  31043253
-          DOC_ID:        xkbnn-73533
-          PAGE_ID:       xkbnn-51973
+          WORKSPACE_ID:  ${{ secrets.WORKSPACE_ID }}
+          DOC_ID:        ${{ secrets.DOC_ID }}
+          PAGE_ID:       ${{ secrets.PAGE_ID }}
         run: |
           echo "🔄 Atualizando ClickUp Doc com QA Report…"
           CONTENT=$(jq -Rs . tmp/qa_report.md)
