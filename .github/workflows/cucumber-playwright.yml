@@ -413,14 +413,15 @@ jobs:
           EOF
 
           img_idx=0
+          # Para cada cenário único
           while IFS= read -r scenario; do
             echo "🔍 Cenário: $scenario" >> tmp/qa_report.md
             echo "### $scenario"      >> tmp/qa_report.md
 
-            # só imagens
+            # Extrai apenas embeddings de imagem
             mapfile -t images < <(
               jq -r --arg sc "$scenario" '
-                .[] | select(.name==$sc)
+                .[] | select(.name == $sc)
                 | .elements[]?.steps[]?.embeddings[]?
                 | select(.mime_type|test("^image/"))
                 | "\(.mime_type),\(.data)"
@@ -430,7 +431,7 @@ jobs:
             for img in "${images[@]}"; do
               mime=${img%%,*}
               b64=${img#*,}
-              ext=${mime#*/}               # ex: png
+              ext=${mime#*/}
               file="tmp/img_${img_idx}.${ext}"
               ((img_idx++))
 
@@ -444,7 +445,7 @@ jobs:
                 -F "file=@${file}")
 
               echo "🔄 Upload $file → HTTP $http_code"
-              echo "📦 Response body:"
+              echo "📦 Response body:" 
               cat tmp/attach_resp.json
 
               if [[ "$http_code" != "200" && "$http_code" != "201" ]]; then
@@ -455,12 +456,13 @@ jobs:
               url=$(jq -r '.url // empty' tmp/attach_resp.json)
               if [ -n "$url" ]; then
                 echo "![embed]($url)" >> tmp/qa_report.md
-                echo ""                  >> tmp/qa_report.md
+                echo ""                   >> tmp/qa_report.md
               else
                 echo "⚠️ URL inválida para $file"
               fi
             done
-          done < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)  
+          done < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
+          .[].name' test-results/cucumber-report.json | sort -u)  
   
       - name: Atualizar QA Report no ClickUp Docs
         if: ${{ always() }}
