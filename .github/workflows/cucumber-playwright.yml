@@ -391,57 +391,63 @@ jobs:
           echo "📝 Gerando QA Report usando attachments de Tasks e Subtasks..."
           mkdir -p tmp
 
-          # 1) Carrega mapping Feature → Scenario TaskID
+          # Carrega mapping Feature → TaskID
           declare -A SCENARIO_TASK
           while IFS='|' read -r FEATURE TASK_ID; do
             SCENARIO_TASK["$FEATURE"]=$TASK_ID
           done < tmp/scenario_ids.csv
 
-          # 2) Inicia o Markdown
+          # Inicia o Markdown
           cat <<EOF > tmp/qa_report.md
           # QA Report
 
           ## Test Evidence
           EOF
 
-          # 3) Para cada Feature (Test Scenario)
+          # Para cada Feature (Test Scenario)
           for FEATURE in "${!SCENARIO_TASK[@]}"; do
             PARENT_ID=${SCENARIO_TASK[$FEATURE]}
-            echo "### $FEATURE" >> tmp/qa_report.md
+            echo "${FEATURE}" >> tmp/qa_report.md
 
-            # 3a) Attachments do Test Scenario
-            mapfile -t URLS < <(
+            # Attachments do Test Scenario
+            mapfile -t SCEN_URLS < <(
               curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}/attachment" \
                 -H "Authorization: ${CLICKUP_TOKEN}" \
                 --data-urlencode "team_id=${WORKSPACE_ID}" \
               | jq -r '.attachments // [] | .[] | .url'
             )
-            for url in "${URLS[@]}"; do
+            for url in "${SCEN_URLS[@]}"; do
               echo "![embed]($url)" >> tmp/qa_report.md
               echo "" >> tmp/qa_report.md
             done
 
-            # 3b) Attachments de cada Test Case (subtask)
+            # Attachments de cada Test Case (subtask)
             RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}" \
               -H "Authorization: ${CLICKUP_TOKEN}" \
               --data-urlencode "include_subtasks=true")
-            mapfile -t SUB_IDS < <(
-              echo "$RESPONSE" | jq -r '.subtasks // [] | .[] | .id'
+            mapfile -t SUB_TASKS < <(
+              echo "$RESPONSE" | jq -r '.subtasks // [] | .[] | "\(.id)|\(.name)"'
             )
 
-            for SUB_ID in "${SUB_IDS[@]}"; do
-              echo "- Subtask ID $SUB_ID" >> tmp/qa_report.md
-              mapfile -t SUB_URLS < <(
+            for entry in "${SUB_TASKS[@]}"; do
+              SUB_ID=${entry%%|*}
+              SUB_NAME=${entry#*|}
+              echo "- $SUB_NAME" >> tmp/qa_report.md
+
+              # attachments da subtask
+              mapfile -t ST_URLS < <(
                 curl -s -G "https://api.clickup.com/api/v2/task/${SUB_ID}/attachment" \
                   -H "Authorization: ${CLICKUP_TOKEN}" \
                   --data-urlencode "team_id=${WORKSPACE_ID}" \
                 | jq -r '.attachments // [] | .[] | .url'
               )
-              for suburl in "${SUB_URLS[@]}"; do
-                echo "  ![embed]($suburl)" >> tmp/qa_report.md
-                echo ""                         >> tmp/qa_report.md
+              for u in "${ST_URLS[@]}"; do
+                echo "  ![embed]($u)" >> tmp/qa_report.md
+                echo "" >> tmp/qa_report.md
               done
             done
+
+            echo "" >> tmp/qa_report.md
           done
   
       - name: Atualizar QA Report no ClickUp Docs
