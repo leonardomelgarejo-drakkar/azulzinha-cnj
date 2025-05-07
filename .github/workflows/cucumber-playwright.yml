@@ -384,11 +384,6 @@ jobs:
 
       - name: Gerar QA Report em Markdown e anexar imagens
         if: ${{ always() }}
-        env:
-          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          WORKSPACE_ID:  31043253
-          DOC_ID:        xkbnn-73533
-          PAGE_ID:       xkbnn-51973
         run: |
           set +e
           echo "📝 Gerando QA Report e anexando imagens..."
@@ -413,17 +408,16 @@ jobs:
           EOF
 
           img_idx=0
-          # Para cada cenário único
           while IFS= read -r scenario; do
             echo "🔍 Cenário: $scenario" >> tmp/qa_report.md
             echo "### $scenario"      >> tmp/qa_report.md
 
-            # Extrai apenas embeddings de imagem
+            # só imagens
             mapfile -t images < <(
               jq -r --arg sc "$scenario" '
-                .[] | select(.name == $sc)
+                .[] | select(.name==$sc)
                 | .elements[]?.steps[]?.embeddings[]?
-                | select(.mime_type | test("^image/"))
+                | select(.mime_type|test("^image/"))
                 | "\(.mime_type),\(.data)"
               ' test-results/cucumber-report.json
             )
@@ -431,20 +425,21 @@ jobs:
             for img in "${images[@]}"; do
               mime=${img%%,*}
               b64=${img#*,}
-              ext=${mime#*/}
+              ext=${mime#*/}               # ex: png
               file="tmp/img_${img_idx}.${ext}"
               ((img_idx++))
 
               echo "$b64" | base64 -d > "$file"
 
-              # Upload como attachment (captura HTTP e corpo para debug)
-              http_code=$(curl -s -o tmp/attach_resp.json -w "%{http_code}" \
-                -X POST "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/attachments" \
+              # upload como attachment na página (com log -v)
+              http_code=$(curl -s -o tmp/attach_resp.json -w "%{http_code}" -v \
+                -X POST "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}/attachments" \
                 -H "Authorization: ${CLICKUP_TOKEN}" \
+                -H "Accept: application/json" \
                 -F "file=@${file}")
 
               echo "🔄 Upload $file → HTTP $http_code"
-              echo "📦 Response body:" 
+              echo "📦 Response body:"
               cat tmp/attach_resp.json
 
               if [[ "$http_code" != "200" && "$http_code" != "201" ]]; then
@@ -455,7 +450,7 @@ jobs:
               url=$(jq -r '.url // empty' tmp/attach_resp.json)
               if [ -n "$url" ]; then
                 echo "![embed]($url)" >> tmp/qa_report.md
-                echo ""                   >> tmp/qa_report.md
+                echo ""                  >> tmp/qa_report.md
               else
                 echo "⚠️ URL inválida para $file"
               fi
