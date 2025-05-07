@@ -399,7 +399,11 @@ jobs:
 
           # Inicia o Markdown
           cat <<EOF > tmp/qa_report.md
-          # QA Report
+          # Quality indicators
+
+          ## Notice
+
+          Test scenario represents a system feature and test cases represent test coverage for them.
 
           ## Test Evidence
           EOF
