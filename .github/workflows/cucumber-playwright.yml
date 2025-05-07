@@ -424,8 +424,8 @@ jobs:
 
           O relatório completo em HTML está disponível em:
 
-          https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html
-          EOF  
+          [Abrir relatório completo (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html)
+          EOF
   
       - name: Atualizar QA Report no ClickUp Docs
         if: ${{ always() }}
