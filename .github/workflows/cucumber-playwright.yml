@@ -384,6 +384,11 @@ jobs:
 
       - name: Gerar QA Report em Markdown e anexar imagens
         if: ${{ always() }}
+        env:
+          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          WORKSPACE_ID:  31043253
+          DOC_ID:        xkbnn-73533
+          PAGE_ID:       xkbnn-51973
         run: |
           set +e
           echo "📝 Gerando QA Report e anexando imagens..."
