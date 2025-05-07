@@ -400,59 +400,55 @@ jobs:
           # Inicia o Markdown
           cat <<EOF > tmp/qa_report.md
           # QA Report
-          
+
           ## Test Evidence
           EOF
-  
-            # Para cada Feature (Test Scenario)
-            for FEATURE in "${!SCENARIO_TASK[@]}"; do
-              PARENT_ID=${SCENARIO_TASK[$FEATURE]}
-              echo "${FEATURE}" >> tmp/qa_report.md
-  
-              # Attachments do Test Scenario
-              mapfile -t SCEN_URLS < <(
-                curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}/attachment" \
+
+          # Para cada Feature (Test Scenario)
+          for FEATURE in "${!SCENARIO_TASK[@]}"; do
+            PARENT_ID=${SCENARIO_TASK[$FEATURE]}
+            echo "### $FEATURE" >> tmp/qa_report.md
+
+            # Attachments do Test Scenario
+            mapfile -t SCEN_URLS < <(
+              curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}/attachment" \
+                -H "Authorization: ${CLICKUP_TOKEN}" \
+                --data-urlencode "team_id=${WORKSPACE_ID}" \
+              | jq -r '.attachments // [] | .[] | .url'
+            )
+            for url in "${SCEN_URLS[@]}"; do
+              echo "![embed]($url)" >> tmp/qa_report.md
+              echo ""                     >> tmp/qa_report.md
+            done
+
+            # Attachments de cada Test Case (subtask)
+            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}" \
+              -H "Authorization: ${CLICKUP_TOKEN}" \
+              --data-urlencode "include_subtasks=true")
+            mapfile -t SUB_TASKS < <(
+              echo "$RESPONSE" | jq -r '.subtasks // [] | .[] | "\(.id)|\(.name)"'
+            )
+
+            for entry in "${SUB_TASKS[@]}"; do
+              SUB_ID=${entry%%|*}
+              SUB_NAME=${entry#*|}
+              # obtém urls de attachments da subtask
+              mapfile -t ST_URLS < <(
+                curl -s -G "https://api.clickup.com/api/v2/task/${SUB_ID}/attachment" \
                   -H "Authorization: ${CLICKUP_TOKEN}" \
                   --data-urlencode "team_id=${WORKSPACE_ID}" \
                 | jq -r '.attachments // [] | .[] | .url'
               )
-              for url in "${SCEN_URLS[@]}"; do
-                echo "![embed]($url)" >> tmp/qa_report.md
-                echo "" >> tmp/qa_report.md
+              # monta linha com nome do Test Case e seus links
+              LINE="- ${SUB_NAME}"
+              for u in "${ST_URLS[@]}"; do
+                LINE+=" [embed]($u)"
               done
-  
-              # Attachments de cada Test Case (subtask)
-              RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}" \
-                -H "Authorization: ${CLICKUP_TOKEN}" \
-                --data-urlencode "include_subtasks=true")
-              mapfile -t SUB_TASKS < <(
-                echo "$RESPONSE" | jq -r '.subtasks // [] | .[] | "\(.id)|\(.name)"'
-              )
-  
-              for entry in "${SUB_TASKS[@]}"; do
-                SUB_ID=${entry%%|*}
-                SUB_NAME=${entry#*|}
-                # obtém urls de attachments da subtask
-                mapfile -t ST_URLS < <(
-                  curl -s -G "https://api.clickup.com/api/v2/task/${SUB_ID}/attachment" \
-                    -H "Authorization: ${CLICKUP_TOKEN}" \
-                    --data-urlencode "team_id=${WORKSPACE_ID}" \
-                  | jq -r '.attachments // [] | .[] | .url'
-                )
-                # monta linha com nome do Test Case e seus links
-                LINE="- ${SUB_NAME}"
-                for u in "${ST_URLS[@]}"; do
-                  LINE+=" [embed]($u)"
-                done
-                echo "$LINE" >> tmp/qa_report.md
-              done
-  
-              echo "" >> tmp/qa_report.md
-                done
-              done
-  
-              echo "" >> tmp/qa_report.md
-            done  
+              echo "$LINE" >> tmp/qa_report.md
+            done
+
+            echo "" >> tmp/qa_report.md
+          done  
   
       - name: Atualizar QA Report no ClickUp Docs
         if: ${{ always() }}
