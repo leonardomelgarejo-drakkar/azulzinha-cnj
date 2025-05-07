@@ -384,6 +384,10 @@ jobs:
 
       - name: Gerar QA Report em Markdown
         if: ${{ always() }}
+        env:
+          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+          WORKSPACE_ID:  31043253
+          DOC_ID:        xkbnn-73533
         run: |
           echo "📝 Gerando QA Report em Markdown…"
 
@@ -397,32 +401,49 @@ jobs:
           FAILED_CASES=$(jq '[ .[].elements[] | select([ .steps[].result.status ] | index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
           EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
 
-          # 3) Monta o Markdown
+          # 3) Monta o Markdown básico
           mkdir -p tmp
           cat <<EOF > tmp/qa_report.md
           # Quality indicators
-          
+
           ## Notice
-          
+
           Test scenario represents a system feature and test cases represent test coverage for them.
-          
+
           ## General
-          
+
           ### Test Scenarios
-  
+
           | Total | Executed | Failed |
           | :---: | :------: | :----: |
           | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-          
+
           ### Test Cases
-          
+
           | Total | Executed | Failed |
           | :---: | :------: | :----: |
           | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
-          
+
+          ## Test Evidence
+
+          <!-- aqui você já incluiria, no passo anterior, os links de attachments de cada cenário/caso -->
+
+          EOF
+
+          # 4) Fazer upload do HTML como attachment DO DOC (não da page)
+          echo "📎 Upload do cucumber-report.html ao Doc…"
+          RESP=$(curl -s -X POST \
+            "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/attachments" \
+            -H "Authorization: ${CLICKUP_TOKEN}" \
+            -F "file=@test-results/cucumber-report.html")
+          REPORT_URL=$(jq -r '.url' <<<"$RESP")
+
+          # 5) Anexa link para o HTML no final do Markdown
+          cat <<EOF >> tmp/qa_report.md
+
           ## Full HTML Report
-          
-          Abaixo está o relatório completo em HTML gerado pelo Cucumber.
+
+          [Abrir relatório completo (HTML)](${REPORT_URL})
           EOF
   
       - name: Atualizar QA Report no ClickUp Docs
@@ -433,9 +454,7 @@ jobs:
           DOC_ID:        xkbnn-73533
           PAGE_ID:       xkbnn-51973
         run: |
-          echo "🔄 Atualizando QA Report no ClickUp Doc…"
-
-          # 1) Envia o Markdown via API
+          echo "🔄 Atualizando ClickUp Doc com QA Report…"
           CONTENT=$(jq -Rs . tmp/qa_report.md)
           cat <<JSON > tmp/payload.json
           {"content_format":"text/md","content":$CONTENT}
@@ -444,14 +463,7 @@ jobs:
             "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
             -H "Authorization: ${CLICKUP_TOKEN}" \
             -H "Content-Type: application/json" \
-            --data-binary @tmp/payload.json
-
-          # 2) Anexa o HTML completo como attachment na página
-          echo "📎 Anexando cucumber-report.html ao Doc Page…"
-          curl -s -X POST \
-            "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}/attachments" \
-            -H "Authorization: ${CLICKUP_TOKEN}" \
-            -F "file=@test-results/cucumber-report.html"  
+            --data-binary @tmp/payload.json  
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
