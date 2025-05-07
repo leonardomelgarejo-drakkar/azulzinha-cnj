@@ -420,7 +420,7 @@ jobs:
           | :---: | :------: | :----: |
           | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
           
-          ## By Scenario
+          ## Number of test cases per Test Scenario
           
           | Scenario | Passed | Failed |
           | -------- | ------ | ------ |
