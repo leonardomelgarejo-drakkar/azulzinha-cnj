@@ -400,8 +400,6 @@ jobs:
           # 3) Monta o Markdown
           mkdir -p tmp
           cat <<EOF > tmp/qa_report.md
-          # Quality indicators
-
           ## Notice
 
           Test scenario represents a system feature and test cases represent test coverage for them.
