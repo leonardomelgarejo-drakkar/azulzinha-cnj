@@ -386,18 +386,20 @@ jobs:
         if: ${{ always() }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          WORKSPACE_ID:  ${{ secrets.WORKSPACE_ID }}
+          WORKSPACE_ID: ${{ secrets.WORKSPACE_ID }}
+          DOC_ID:        xkbnn-73533
+          PAGE_ID:       xkbnn-51973
         run: |
-          echo "📝 Gerando QA Report usando attachments de Tasks e Subtasks..."
+          echo "📝 Gerando QA Report usando URLs das Tasks e Subtasks..."
           mkdir -p tmp
 
-          # Carrega mapping Feature → TaskID
+          # 1) Carrega o mapping Feature → TaskID
           declare -A SCENARIO_TASK
           while IFS='|' read -r FEATURE TASK_ID; do
             SCENARIO_TASK["$FEATURE"]=$TASK_ID
           done < tmp/scenario_ids.csv
 
-          # Inicia o Markdown
+          # 2) Inicia o Markdown
           cat <<EOF > tmp/qa_report.md
           # Quality indicators
 
@@ -408,51 +410,41 @@ jobs:
           ## Test Evidence
           EOF
 
-          # Para cada Feature (Test Scenario)
+          # 3) Para cada Feature (Test Scenario)
           for FEATURE in "${!SCENARIO_TASK[@]}"; do
             PARENT_ID=${SCENARIO_TASK[$FEATURE]}
             echo "### $FEATURE" >> tmp/qa_report.md
 
-            # Attachments do Test Scenario
-            mapfile -t SCEN_URLS < <(
-              curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}/attachment" \
-                -H "Authorization: ${CLICKUP_TOKEN}" \
-                --data-urlencode "team_id=${WORKSPACE_ID}" \
-              | jq -r '.attachments // [] | .[] | .url'
-            )
-            for url in "${SCEN_URLS[@]}"; do
-              echo "![embed]($url)" >> tmp/qa_report.md
-              echo ""                     >> tmp/qa_report.md
-            done
+            # 3.1) siblings: URL da Task pai
+            PARENT_URL=$(curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}" \
+              -H "Authorization: ${CLICKUP_TOKEN}" \
+              --data-urlencode "include_subtasks=false" \
+              | jq -r '.url')
+            echo "- [Feature Link]($PARENT_URL)" >> tmp/qa_report.md
+            echo "" >> tmp/qa_report.md
 
-            # Attachments de cada Test Case (subtask)
+            # 3.2) subtasks: id, name e url
             RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/${PARENT_ID}" \
               -H "Authorization: ${CLICKUP_TOKEN}" \
               --data-urlencode "include_subtasks=true")
+
             mapfile -t SUB_TASKS < <(
-              echo "$RESPONSE" | jq -r '.subtasks // [] | .[] | "\(.id)|\(.name)"'
+              echo "$RESPONSE" \
+                | jq -r '.subtasks // [] | .[] | "\(.id)|\(.name)|\(.url)"'
             )
 
+            # 3.3) para cada Test Case
             for entry in "${SUB_TASKS[@]}"; do
               SUB_ID=${entry%%|*}
-              SUB_NAME=${entry#*|}
-              # obtém urls de attachments da subtask
-              mapfile -t ST_URLS < <(
-                curl -s -G "https://api.clickup.com/api/v2/task/${SUB_ID}/attachment" \
-                  -H "Authorization: ${CLICKUP_TOKEN}" \
-                  --data-urlencode "team_id=${WORKSPACE_ID}" \
-                | jq -r '.attachments // [] | .[] | .url'
-              )
-              # monta linha com nome do Test Case e seus links
-              LINE="- ${SUB_NAME}"
-              for u in "${ST_URLS[@]}"; do
-                LINE+=" [embed]($u)"
-              done
-              echo "$LINE" >> tmp/qa_report.md
+              rest=${entry#*|}
+              SUB_NAME=${rest%%|*}
+              SUB_URL=${rest#*|}
+
+              echo "- **${SUB_NAME}** [Link](${SUB_URL})" >> tmp/qa_report.md
             done
 
             echo "" >> tmp/qa_report.md
-          done  
+          done
   
       - name: Atualizar QA Report no ClickUp Docs
         if: ${{ always() }}
@@ -462,7 +454,7 @@ jobs:
           DOC_ID:        xkbnn-73533
           PAGE_ID:       xkbnn-51973
         run: |
-          echo "🔄 Atualizando ClickUp Doc com QA Report leve..."
+          echo "🔄 Enviando QA Report para o ClickUp Doc..."
           CONTENT=$(jq -Rs . tmp/qa_report.md)
           cat <<EOF > tmp/payload.json
           {"content_format":"text/md","content":$CONTENT}
@@ -471,7 +463,7 @@ jobs:
             "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
             -H "Authorization: ${CLICKUP_TOKEN}" \
             -H "Content-Type: application/json" \
-            --data-binary @tmp/payload.json
+            --data-binary @tmp/payload.json  
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
