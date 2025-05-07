@@ -382,54 +382,51 @@ jobs:
 
           done
 
-      - name: Anexar embeddings como attachments em Task e gerar Markdown
+      - name: Gerar QA Report em Markdown a partir de attachments
         if: ${{ always() }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
           WORKSPACE_ID:  ${{ secrets.WORKSPACE_ID }}
-          TASK_ID:       ${{ secrets.CLICKUP_QA_TASK_ID }}
         run: |
+          echo "📝 Gerando QA Report usando attachments das Tasks..."
           mkdir -p tmp
-          echo "# QA Report" > tmp/qa_report.md
-          echo "" >> tmp/qa_report.md
 
-          idx=0
-          for scenario in $(jq -r '.[].name' test-results/cucumber-report.json | sort -u); do
-            echo "## $scenario" >> tmp/qa_report.md
+          # Carrega mapping Feature → TaskID
+          declare -A SCENARIO_TASK
+          while IFS='|' read -r FEATURE TASK_ID; do
+            SCENARIO_TASK["$FEATURE"]=$TASK_ID
+          done < tmp/scenario_ids.csv
 
-            # só imagens
-            mapfile -t images < <(
-              jq -r --arg sc "$scenario" '
-                .[]
-                | select(.name==$sc)
-                | .elements[]?.steps[]?.embeddings[]?
-                | select(.mime_type|test("^image/"))
-                | "\(.mime_type),\(.data)"
-              ' test-results/cucumber-report.json
+          # Inicia o Markdown
+          cat <<EOF > tmp/qa_report.md
+          # QA Report
+
+          ## Test Evidence
+          EOF
+
+          # Para cada Feature, busca attachments
+          for FEATURE in "${!SCENARIO_TASK[@]}"; do
+            TASK_ID=${SCENARIO_TASK[$FEATURE]}
+            echo "🔍 Buscando attachments da Task $TASK_ID para: $FEATURE"
+
+            # Chama API de attachments da Task
+            mapfile -t URLS < <(
+              curl -s -G "https://api.clickup.com/api/v2/task/${TASK_ID}/attachment" \
+                -H "Authorization: ${CLICKUP_TOKEN}" \
+                --data-urlencode "team_id=${WORKSPACE_ID}" \
+                | jq -r '.attachments[].url'
             )
 
-            for img in "${images[@]}"; do
-              mime=${img%%,*}
-              b64=${img#*,}
-              ext=${mime#*/}                  # ex: png
-              path="tmp/img_${idx}.${ext}"
-              ((idx++))
-
-              echo "$b64" | base64 -d > "$path"
-
-              # 1) faz upload na Task
-              resp=$(curl -s -X POST \
-                "https://api.clickup.com/api/v2/task/${TASK_ID}/attachment?team_id=${WORKSPACE_ID}" \
-                -H "Authorization: ${CLICKUP_TOKEN}" \
-                -F "attachment=@${path}")
-
-              url=$(echo "$resp" | jq -r '.url')
-              echo "![embed]($url)" >> tmp/qa_report.md
-              echo ""                   >> tmp/qa_report.md
-            done
+            if [ ${#URLS[@]} -gt 0 ]; then
+              echo "### $FEATURE" >> tmp/qa_report.md
+              for URL in "${URLS[@]}"; do
+                echo "![embed]($URL)" >> tmp/qa_report.md
+                echo "" >> tmp/qa_report.md
+              done
+            fi
           done
   
-      - name: Atualizar página QA Report no ClickUp Docs
+      - name: Atualizar QA Report no ClickUp Docs
         if: ${{ always() }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
@@ -437,6 +434,7 @@ jobs:
           DOC_ID:        xkbnn-73533
           PAGE_ID:       xkbnn-51973
         run: |
+          echo "🔄 Atualizando ClickUp Doc com QA Report leve..."
           CONTENT=$(jq -Rs . tmp/qa_report.md)
           cat <<EOF > tmp/payload.json
           {"content_format":"text/md","content":$CONTENT}
@@ -445,7 +443,15 @@ jobs:
             "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
             -H "Authorization: ${CLICKUP_TOKEN}" \
             -H "Content-Type: application/json" \
-            --data-binary @tmp/payload.json  
+            --data-binary @tmp/payload.json
+
+      - name: Upload Cucumber Test Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cucumber-test-report
+          path: test-results
+          retention-days: 5
 
   deploy-report:
     needs: test
