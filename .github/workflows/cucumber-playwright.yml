@@ -401,25 +401,21 @@ jobs:
           mkdir -p tmp
           cat <<EOF > tmp/qa_report.md
           ## Notice
-
           Test scenario represents a system feature and test cases represent test coverage for them.
 
-          ### ![Test Scenarios](https://img.shields.io/badge/Test%20Scenarios-green?style=flat-square)
-
-          | Total | Executed | Failed |
-          | :---: | :------: | :----: |
+          ![Test Scenarios](https://img.shields.io/badge/Test%20Scenarios-green?style=for-the-badge)
+          | **Total** | **Executed** | **Failed** |
+          | :-------: | :----------: | :--------: |
           | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
 
-          ### ![Test Cases](https://img.shields.io/badge/Test%20Cases-blue?style=flat-square)
-
-          | Total | Executed | Failed |
-          | :---: | :------: | :----: |
+          ![Test Cases](https://img.shields.io/badge/Test%20Cases-blue?style=for-the-badge)
+          | **Total** | **Executed** | **Failed** |
+          | :-------: | :----------: | :--------: |
           | $TOTAL_CASES | $EXECUTED_CASES | $FAILED_CASES |
 
-          ### ![Number of test cases per Test Scenario](https://img.shields.io/badge/Number%20of%20test%20cases%20per%20Test%20Scenario-purple?style=flat-square)
-
-          | Scenario | Passed | Failed |
-          | -------- | ------ | ------ |
+          ![Number of test cases per Test Scenario](https://img.shields.io/badge/Number%20of%20test%20cases%20per%20Test%20Scenario-purple?style=for-the-badge)
+          | **Scenario** | **Passed** | **Failed** |
+          | ------------ | ---------- | ---------- |
           EOF
 
           # 4) Preenche a tabela “Number of test cases per Test Scenario”
@@ -434,7 +430,7 @@ jobs:
           # 5) Link para o relatório completo em HTML
           cat <<EOF >> tmp/qa_report.md
 
-          ### ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=flat-square)
+          ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge)
 
           [Abrir relatório completo (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html)
           EOF
