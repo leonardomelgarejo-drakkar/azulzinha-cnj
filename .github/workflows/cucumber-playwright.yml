@@ -207,7 +207,7 @@ jobs:
               NEW_STATUS="test complete"
             fi
 
-            TASK_NAME="Test Scenario: $FEATURE"
+            TASK_NAME="$FEATURE"
             echo "🔎 Buscando '$TASK_NAME'..."
             RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
               --data-urlencode "search=$TASK_NAME" \
@@ -273,7 +273,7 @@ jobs:
             PARENT_ID=${PARENT["$FEATURE"]}
             [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
 
-            TASK_NAME="Test Case: $SCENARIO"
+            TASK_NAME="$SCENARIO"
             echo "🔎 Carregando parent $PARENT_ID com subtasks…"
             RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID" \
               --data-urlencode "include_subtasks=true" \
