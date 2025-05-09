@@ -3,6 +3,7 @@ name: Azulzinha - CNJ Pipeline
 on:
   push:
     branches: [ main ]
+    tags: ['v*']
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -383,7 +384,7 @@ jobs:
           done
 
       - name: Gerar QA Report em Markdown
-        if: ${{ always() }}
+        if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') }}
         run: |
           echo "📝 Gerando QA Report em Markdown…"
 
@@ -433,7 +434,7 @@ jobs:
           EOF
   
       - name: Atualizar QA Report no ClickUp Docs
-        if: ${{ always() }}
+        if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') }}
         env:
           CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
           WORKSPACE_ID:  ${{ secrets.WORKSPACE_ID }}
