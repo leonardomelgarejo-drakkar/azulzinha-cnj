@@ -415,7 +415,7 @@ jobs:
 
           ![Number of test cases per Test Scenario](https://img.shields.io/badge/Number%20of%20test%20cases%20per%20Test%20Scenario-purple?style=for-the-badge)
           | **Scenario** | **Passed** | **Failed** |
-          | ------------ | ---------- | ---------- |
+          | :----------: | :--------: | :--------: |
           EOF
 
           # 4) Preenche a tabela “Number of test cases per Test Scenario”
