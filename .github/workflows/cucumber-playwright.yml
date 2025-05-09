@@ -403,16 +403,12 @@ jobs:
           ## Notice
           Test scenario represents a system feature and test cases represent test coverage for them.
 
-          | ![Test Scenarios](https://img.shields.io/badge/Test%20Scenarios-green?style=for-the-badge) | **Total** | **Executed** | **Failed** |
-          | :------------------------------------------------------------------------------------: | :-------: | :----------: | :--------: |
-          | Quantities                                                                             | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
+          ## Resultado dos Testes
 
-          |![Test Cases](https://img.shields.io/badge/Test%20Cases-blue?style=for-the-badge) | **Total** | **Executed** | **Failed** |
-          | :------------------------------------------------------------------------------: | :-------: | :----------: | :--------: |
-          | Quantities                                                                       | $TOTAL_CASES | $EXECUTED_CASES | $FAILE
-
-          |![Number of test cases per Test Scenario](https://img.shields.io/badge/Number%20of%20test%20cases%20per%20Test%20Scenario-purple?style=for-the-badge)          | **Scenario** | **Passed** | **Failed** |
-          | :--------------------------------------------------------------------------------------------------------------------------------------------------:          | :----------: | :--------: | :--------: |
+          |                          			| **Total** | **Executed** | **Failed** |
+          |:---------------------------------	|:---------:|:------------:|:----------:|
+          | **Test Scenarios**       			| $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
+          | **Test Cases**           			| $TOTAL_CASES     | $EXECUTED_CASES     | $FAILED_CASES     |
           EOF
 
           # 4) Preenche a tabela “Number of test cases per Test Scenario”
@@ -421,7 +417,7 @@ jobs:
             TOTAL=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[].name ] | unique | length' test-results/cucumber-report.json)
             FAILED=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[] | select([.steps[].result.status]|index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
             PASSED=$((TOTAL - FAILED))
-            echo "| Quantities                                                                       | $FEATURE | $PASSED | $FAILED |" >> tmp/qa_report.md
+            echo "| **Cases Per Scenarios** | $FEATURE | $PASSED | $FAILED |" >> tmp/qa_report.md
           done
 
           # 5) Link para o relatório completo em HTML
