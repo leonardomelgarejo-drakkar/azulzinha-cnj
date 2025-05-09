@@ -427,9 +427,9 @@ jobs:
           # 5) Link para o relatório completo em HTML
           cat <<EOF >> tmp/qa_report.md
 
-          ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge)
-
-          [Abrir relatório completo (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html)
+          | ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge) |
+          | :---------------------------------------------------------------------------------------: |
+          | [Abrir relatório completo (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html) |
           EOF
   
       - name: Atualizar QA Report no ClickUp Docs
