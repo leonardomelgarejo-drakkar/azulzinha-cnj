@@ -175,15 +175,15 @@ jobs:
 
             TASK_NAME="$SCENARIO"
             echo "🔎 Carregando parent $PARENT_ID com subtasks…"
-            PARENT_JSON=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID" \
+            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID" \
               --data-urlencode "include_subtasks=true" \
               -H "Authorization: $CLICKUP_TOKEN")
 
-            SUBS=$(echo "$PARENT_JSON" | jq '.subtasks // []')
+            SUBS=$(echo "$RESPONSE" | jq '.subtasks // []')
             TASK_ID=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[] | select(.name==$name) | .id // empty')
             EXISTING_STATUS=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[] | select(.name==$name) | .status // empty')
 
-            # 3) Novo status
+            # 3) Define novo status
             if jq -e --arg s "$SCENARIO" '
                 [ .[]|.elements[]|select(.name==$s)|.steps[]|select(.result.status=="failed") ] | length>0
               ' test-results/cucumber-report.json >/dev/null; then
@@ -192,7 +192,7 @@ jobs:
               NEW_STATUS="test complete"
             fi
 
-            # 4) Comentário de passos/erro
+            # 4) Prepara comentário de passos/erro
             RAW=$(jq -r --arg s "$SCENARIO" '
               .[] | .elements[] | select(.name==$s)
               | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
@@ -204,7 +204,7 @@ jobs:
             # 5) Extrai e decodifica embeddings em arquivos
             readarray -t EMBEDS < <(
               jq -r --arg s "$SCENARIO" '
-                .[] 
+                .[]
                 | select([.elements[].name]|index($s))
                 | (
                     (.elements[] | select(.name==$s) | .steps[]?.embeddings[]?),
@@ -216,7 +216,8 @@ jobs:
             )
             ATTACH_FILES=()
             for e in "${EMBEDS[@]}"; do
-              MTYPE=${e%%,*} B64=${e#*,}
+              MTYPE=${e%%,*}
+              B64=${e#*,}
               [ -z "$B64" ] && continue
               case "$MTYPE" in
                 video/webm)       EXT="webm" ;;
@@ -226,39 +227,54 @@ jobs:
                 *)                EXT="bin" ;;
               esac
               BASE="tmp/${idx}_${SCENARIO// /_}"
-              FNAME="${BASE}.${EXT}"; COUNT=1
+              FNAME="${BASE}.${EXT}"
+              COUNT=1
               while [[ -e "$FNAME" ]]; do
-                FNAME="${BASE}_${COUNT}.${EXT}"; ((COUNT++))
+                FNAME="${BASE}_${COUNT}.${EXT}"
+                ((COUNT++))
               done
               echo "$B64" | base64 -d > "$FNAME"
               ATTACH_FILES+=( "$FNAME" )
             done
 
-            # 6) Se já existe subtask, atualiza; senão, cria
+            # 6) Cria ou atualiza a subtask
             if [ -n "$TASK_ID" ]; then
               echo "✅ Subtask existente (ID=$TASK_ID) status=$EXISTING_STATUS"
-              [ "$EXISTING_STATUS" != "$NEW_STATUS" ] && \
-                echo "🔄 Atualizando status $EXISTING_STATUS → $NEW_STATUS" && \
+
+              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
+                echo "🔄 Atualizando status $EXISTING_STATUS → $NEW_STATUS"
                 curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -H "Content-Type: application/json" \
                   -d "{\"status\":\"$NEW_STATUS\"}"
 
-              # Se for rejected, adiciona comentário
-              if [ "$NEW_STATUS" = "rejected" ]; then
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -H "Content-Type: application/json" \
-                  -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
+                # 7) Anexa evidências apenas na transição de status
+                echo "📎 Anexando evidências após mudança para '$NEW_STATUS'..."
+                for F in "${ATTACH_FILES[@]}"; do
+                  echo "📎 Anexando '$F'"
+                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+                    -H "Authorization: $CLICKUP_TOKEN" \
+                    -F "attachment=@${F}"
+                done
+
+                # Se ficou rejeitado, adiciona comentário de erro
+                if [ "$NEW_STATUS" = "rejected" ]; then
+                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
+                    -H "Authorization: $CLICKUP_TOKEN" \
+                    -H "Content-Type: application/json" \
+                    -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
+                fi
+              else
+                echo "ℹ️ Status já é '$EXISTING_STATUS' – sem anexos nem comentários."
               fi
 
             else
               echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
               PAYLOAD=$(jq -n \
-                --arg name "$TASK_NAME" \
+                --arg name        "$TASK_NAME" \
                 --arg description "$COMMENT" \
-                --arg status "$NEW_STATUS" \
-                --arg parent "$PARENT_ID" \
+                --arg status      "$NEW_STATUS" \
+                --arg parent      "$PARENT_ID" \
                 --argjson custom_item_id 1010 \
                 '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')
               CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
@@ -266,26 +282,16 @@ jobs:
                 -H "Content-Type: application/json" \
                 -d "$PAYLOAD")
               TASK_ID=$(echo "$CREATED" | jq -r '.id')
-            fi
 
-            # 7) Lista attachments já existentes na subtask
-            EXISTING_ATTACHMENTS_JSON=$(curl -s -G \
-              "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-              -H "Authorization: $CLICKUP_TOKEN")
-            EXISTING_FILES=$(echo "$EXISTING_ATTACHMENTS_JSON" | jq -r '.attachments[]?.attachment_name')
-
-            # 8) Anexa só os arquivos que ainda não estiverem lá
-            for F in "${ATTACH_FILES[@]}"; do
-              NAME=$(basename "$F")
-              if echo "$EXISTING_FILES" | grep -Fxq "$NAME"; then
-                echo "⏭️ '$NAME' já existe — pulando upload"
-              else
-                echo "📎 Anexando novo arquivo '$NAME'"
+              # 8) Anexa todas as evidências na criação
+              echo "📎 Anexando evidências na criação de subtask..."
+              for F in "${ATTACH_FILES[@]}"; do
+                echo "📎 Anexando '$F'"
                 curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
                   -H "Authorization: $CLICKUP_TOKEN" \
                   -F "attachment=@${F}"
-              fi
-            done
+              done
+            fi
 
           done
 
