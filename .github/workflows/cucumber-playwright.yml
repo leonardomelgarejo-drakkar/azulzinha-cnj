@@ -404,9 +404,9 @@ jobs:
 
           ![Totals](https://img.shields.io/badge/Totais%20-green?style=for-the-badge)
           | **Type** | **Total** | **Executed** | **Failed** |
-          |:--------------------------:	|:---------:|:------------:|:----------:|
-          | **Test_Scenarios**       		| $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-          | **Test_Cases**           		| $TOTAL_CASES     | $EXECUTED_CASES     | $FAILED_CASES     |
+          |:----------------------:	|:---------:|:------------:|:----------:|
+          | Test_Scenarios       		| $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
+          | Test_Cases           		| $TOTAL_CASES     | $EXECUTED_CASES     | $FAILED_CASES     |
 
           ![Cases per Scenario](https://img.shields.io/badge/Cases%20%20Per%20Scenario-purple?style=for-the-badge)
           | **Scenario** | **Passed**   | **Failed** |
@@ -427,8 +427,8 @@ jobs:
 
           ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge)
 
-          | HTML Report |
-          | :------------: |
+          | **HTML Report** |
+          | :-------------: |
           | [Open full report (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html) |
           EOF
   
