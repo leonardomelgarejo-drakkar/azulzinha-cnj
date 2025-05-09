@@ -1,0 +1,128 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "cadastro-cobranca-deposito-judicial;01-tentativa-de-cadastrar-cobrança-de-depósito-judicial-completa",
+        "keyword": "Scenario",
+        "line": 4,
+        "name": "01-Tentativa de cadastrar cobrança de depósito judicial completa",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 5,
+            "name": "o usuário preenche todos os campos obrigatórios",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:11"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8181327
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 6,
+            "name": "a requisição de inclusão é realizada 1 vez es",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:171"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 8154466807
+            },
+            "embeddings": [
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSYXcgUmVxdWVzdDogIntcInByb2Nlc3NvXCI6XCJURVNUUUFQUk9DNTU4OTM2MzkwMlwiLFwiYXV0b3JcIjp7XCJub21lXCI6XCJURVNUUUFOQU1FIFJvYmVydG8gTGltYVwiLFwiZG9jdW1lbnRvXCI6e1widGlwb1wiOlwiQ1BGXCIsXCJudW1lcm9cIjpcIjQyMzkyMjUxMTY5XCJ9fSxcInJldVwiOntcIm5vbWVcIjpcIlRFU1RRQU5BTUUgSm/Do28gU2lsdmFcIixcImRvY3VtZW50b1wiOntcInRpcG9cIjpcIkNQRlwiLFwibnVtZXJvXCI6XCI2ODk0OTY2NTkxM1wifX0sXCJkZXBvc2l0YW50ZVwiOntcIm5vbWVcIjpcIlFBIERlcG9zaXRhbnRlXCIsXCJkb2N1bWVudG9cIjp7XCJ0aXBvXCI6XCJDTlBKXCIsXCJudW1lcm9cIjpcIjk3ODU1NDk1MDAwMTcyXCJ9LFwiZS1tYWlsXCI6XCJxYS5kZXBvc2l0YW50ZUB0ZXN0LmNvbVwiLFwidGVsZWZvbmVcIjpcIjUxOTg1MzE5MzE2XCJ9LFwiZGVwb3NpdG9cIjp7XCJpZFwiOlwiVEVTVFFBREVQSUQ4OTIxNjE2NDhcIixcImZpbmFsaWRhZGVcIjpcIkdBUkFOVElBXCIsXCJ2YWxvclwiOjEwMDAsXCJvYnNlcnZhY29lc1wiOlwiVEVTVFFBXCJ9LFwidXJsUmV0b3Jub1wiOlwiaHR0cHM6Ly9ub3ZvZGVwb3NpdG9qdWRpY2lhbC5jYWl4YS5nb3YvYnIvbGFsYWxhXCJ9Ig==",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBTdGF0dXMgQ29kZTogMjAw",
+                "mime_type": "text/plain"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBSZXNwb25zZTogewogICJlbmRwb2ludFBhZ2FtZW50byI6ICJodHRwczovL3FhLmF6dWx6aW5oYXBheS5maXNlcnYuY29tL0NOSi9wYWdhaWQvMWM4MDJhZTEtZGQ2OC00OWExLWE1NGYtZTJiOTQxYWFlYzEyIgp9",
+                "mime_type": "application/json"
+              },
+              {
+                "data": "RXhlY3XDp8OjbyBuw7ptZXJvIDEgLSBUZW1wbyBkZSBFeGVjdcOnw6NvOiA4MTQ1LjQ4IG1z",
+                "mime_type": "text/plain"
+              }
+            ]
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 7,
+            "name": "a resposta contém o status code 200",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:178"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2820118
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "o tempo de resposta é abaixo de 20000 milisegundos",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:182"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2257024
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "o endpoint de pagamento é retornado corretamente",
+            "match": {
+              "location": "test/steps/cadastroCobrancaDepositoJudicialSteps.ts:186"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2231135
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@api",
+            "line": 3
+          },
+          {
+            "name": "@deposito-judicial",
+            "line": 3
+          },
+          {
+            "name": "@completo",
+            "line": 3
+          },
+          {
+            "name": "@e2e-test",
+            "line": 3
+          },
+          {
+            "name": "@smoke-test",
+            "line": 3
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "cadastro-cobranca-deposito-judicial",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Cadastro Cobranca Deposito Judicial",
+    "tags": [],
+    "uri": "test/features/cadastroCobrancaDepositoJudicial.feature"
+  }
+]
