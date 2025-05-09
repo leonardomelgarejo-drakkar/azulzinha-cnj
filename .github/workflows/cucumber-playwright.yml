@@ -400,16 +400,13 @@ jobs:
           # 3) Monta o Markdown
           mkdir -p tmp
           cat <<EOF > tmp/qa_report.md
-          ## Notice
-          Test scenario represents a system feature and test cases represent test coverage for them.
-
           ## Test Results
 
           ![Totals](https://img.shields.io/badge/Totais%20-green?style=for-the-badge)
-          | Type | **Total** | **Executed** | **Failed** |
-          |:-----------------------------	|:---------:|:------------:|:----------:|
-          | **Test Scenarios**       		| $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-          | **Test Cases**           		| $TOTAL_CASES     | $EXECUTED_CASES     | $FAILED_CASES     |
+          | **Type** | **Total** | **Executed** | **Failed** |
+          |:--------------------------:	|:---------:|:------------:|:----------:|
+          | **Test_Scenarios**       		| $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
+          | **Test_Cases**           		| $TOTAL_CASES     | $EXECUTED_CASES     | $FAILED_CASES     |
 
           ![Cases per Scenario](https://img.shields.io/badge/Cases%20%20Per%20Scenario-purple?style=for-the-badge)
           | **Scenario** | **Passed**   | **Failed** |
@@ -428,9 +425,11 @@ jobs:
           # 5) Link para o relatório completo em HTML
           cat <<EOF >> tmp/qa_report.md
 
-          | ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge) |
-          | :---------------------------------------------------------------------------------------: |
-          | [Abrir relatório completo (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html) |
+          ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge)
+
+          | HTML Report |
+          | :------------: |
+          | [Open full report (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/cucumber-report.html) |
           EOF
   
       - name: Atualizar QA Report no ClickUp Docs
