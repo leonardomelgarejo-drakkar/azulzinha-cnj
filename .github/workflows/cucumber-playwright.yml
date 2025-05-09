@@ -389,7 +389,7 @@ jobs:
           cat <<EOF > tmp/qa_report.md
           ## Test Results
 
-          ![Totals](https://img.shields.io/badge/Totais%20-green?style=for-the-badge)
+          ![Totals](https://img.shields.io/badge/Totals%20-green?style=for-the-badge)
           | **Type** | **Total** | **Executed** | **Failed** |
           |:----------------------:	|:---------:|:------------:|:----------:|
           | Test_Scenarios       		| $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
