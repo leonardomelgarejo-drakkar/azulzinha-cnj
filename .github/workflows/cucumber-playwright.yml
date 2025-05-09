@@ -26,32 +26,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js and Playwright
-        run: |
-          npx playwright install --with-deps
-          npm ci
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v4
+      - name: Setup Node.js and cache NPM
+        uses: actions/setup-node@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Cache Playwright Browsers (Chromium)
-        uses: actions/cache@v4
+      - name: Setup Playwright
+        uses: microsoft/playwright-github-action@v1
         with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-chromium-
-      
-      - name: Install Google Chrome for Playwright
-        run: npx playwright install chromium --with-deps
+          browsers: chromium
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
@@ -85,106 +72,6 @@ jobs:
             echo "Testes falharam!"
             exit 1
           fi
-
-      - name: Criar ou reabrir bug no ClickUp para cada cenário com falha
-        if: failure()
-        run: |
-          echo "🔍 Buscando cenários com falha no relatório JSON..."
-        
-          readarray -t FAILED_SCENARIOS < <(jq -r '.[]?.elements[]? | select(.steps[].result.status=="failed") | .name' test-results/cucumber-report.json | sort -u)
-        
-          if [ ${#FAILED_SCENARIOS[@]} -eq 0 ]; then
-            echo "✅ Nenhum cenário com falha encontrado."
-            exit 0
-          fi
-        
-          for SCENARIO in "${FAILED_SCENARIOS[@]}"; do
-            echo "🔍 Verificando tarefas existentes para: $SCENARIO"
-        
-            EXISTING_TASKS=$(curl -s -G "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
-              --data-urlencode "search=$SCENARIO" \
-              --data-urlencode "include_closed=true" \
-              -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
-              -H "Content-Type: application/json")
-        
-            MATCHING_TASK=$(echo "$EXISTING_TASKS" | jq -r --arg scenario "$SCENARIO" '
-              .tasks[] | select(.name | test($scenario)) | {id: .id, status: .status.status}')
-        
-            MATCHING_TASK_ID=$(echo "$MATCHING_TASK" | jq -r '.id')
-            MATCHING_TASK_STATUS=$(echo "$MATCHING_TASK" | jq -r '.status')
-        
-            if [ -n "$MATCHING_TASK_ID" ]; then
-              echo "🔎 Tarefa encontrada: ID=$MATCHING_TASK_ID com status=$MATCHING_TASK_STATUS"
-        
-              # Alterar status para backlog se estiver em "in uat" ou "Closed"
-              if [[ "$MATCHING_TASK_STATUS" == "Closed" || "$MATCHING_TASK_STATUS" == "in uat" ]]; then
-                echo "♻️ Alterando status para BACKLOG..."
-                curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
-                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
-                  -H "Content-Type: application/json" \
-                  -d '{"status": "backlog"}'
-        
-                echo "💬 Adicionando comentário com o passo que falhou..."
-        
-                FAILED_STEP=$(jq -r --arg scenario "$SCENARIO" '
-                  .[]?.elements[]?
-                  | select(.name == $scenario)
-                  | .steps[]
-                  | select(.result.status == "failed")
-                  | .keyword + .name + " 💥 " + (.result.error_message // "Erro não especificado")' test-results/cucumber-report.json)
-        
-                COMMENT_TEXT=$(printf "🔄 Bug reaberto no pipeline.\n\n📋 Passo que falhou:\n%s" "$FAILED_STEP")
-        
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID/comment" \
-                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
-                  -H "Content-Type: application/json" \
-                  -d "$(jq -n --arg text "$COMMENT_TEXT" '{ notify_all: true, comment_text: $text }')"
-        
-              else
-                echo "⚠️ Bug já existe com status ativo ($MATCHING_TASK_STATUS) – sem alterações."
-                continue
-              fi
-        
-            else
-              echo "🐞 Nenhuma tarefa encontrada – criando nova para o cenário: $SCENARIO"
-        
-              STEPS=$(jq -r --arg scenario "$SCENARIO" '
-                .[]?.elements[]?
-                | select(.name == $scenario)
-                | .steps[]
-                | "- " + .keyword + .name + " (" + .result.status + ")"
-                  + (if .result.error_message then "\n  💥 " + (.result.error_message | gsub("\n"; " ") | gsub("\r"; "")) else "" end)' test-results/cucumber-report.json)
-        
-              DESCRIPTION=$(printf "Falha no cenário automatizado: \"%s\"\n\n🔗 Workflow: %s/%s/actions/runs/%s\n\n📋 Passos:\n%s" \
-                "$SCENARIO" "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}" "$STEPS")
-        
-              echo "📝 Criando nova tarefa no ClickUp..."
-              NEW_TASK_RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
-                -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
-                -H "Content-Type: application/json" \
-                -d "$(jq -n \
-                  --arg name "🐞 CI Fail : $SCENARIO" \
-                  --arg description "$DESCRIPTION" \
-                  '{
-                    name: $name,
-                    description: $description,
-                    status: "backlog",
-                    priority: 3,
-                    custom_item_id: 1003
-                  }')")
-        
-              NEW_TASK_ID=$(echo "$NEW_TASK_RESPONSE" | jq -r '.id')
-        
-              if [ -f test-results/cucumber-report.html ]; then
-                echo "📎 Anexando cucumber-report.html à tarefa $NEW_TASK_ID..."
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_TASK_ID/attachment" \
-                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
-                  -F "attachment=@test-results/cucumber-report.html"
-              else
-                echo "⚠️ Arquivo cucumber-report.html não encontrado – pulando anexo."
-              fi
-            fi
-          done
 
       - name: Reportar Test Scenarios no ClickUp
         if: ${{ always() }}
@@ -380,6 +267,106 @@ jobs:
                 -F "attachment=@${F}"
             done
 
+          done
+
+      - name: Criar ou reabrir bug no ClickUp para cada cenário com falha
+        if: failure()
+        run: |
+          echo "🔍 Buscando cenários com falha no relatório JSON..."
+        
+          readarray -t FAILED_SCENARIOS < <(jq -r '.[]?.elements[]? | select(.steps[].result.status=="failed") | .name' test-results/cucumber-report.json | sort -u)
+        
+          if [ ${#FAILED_SCENARIOS[@]} -eq 0 ]; then
+            echo "✅ Nenhum cenário com falha encontrado."
+            exit 0
+          fi
+        
+          for SCENARIO in "${FAILED_SCENARIOS[@]}"; do
+            echo "🔍 Verificando tarefas existentes para: $SCENARIO"
+        
+            EXISTING_TASKS=$(curl -s -G "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
+              --data-urlencode "search=$SCENARIO" \
+              --data-urlencode "include_closed=true" \
+              -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
+              -H "Content-Type: application/json")
+        
+            MATCHING_TASK=$(echo "$EXISTING_TASKS" | jq -r --arg scenario "$SCENARIO" '
+              .tasks[] | select(.name | test($scenario)) | {id: .id, status: .status.status}')
+        
+            MATCHING_TASK_ID=$(echo "$MATCHING_TASK" | jq -r '.id')
+            MATCHING_TASK_STATUS=$(echo "$MATCHING_TASK" | jq -r '.status')
+        
+            if [ -n "$MATCHING_TASK_ID" ]; then
+              echo "🔎 Tarefa encontrada: ID=$MATCHING_TASK_ID com status=$MATCHING_TASK_STATUS"
+        
+              # Alterar status para backlog se estiver em "in uat" ou "Closed"
+              if [[ "$MATCHING_TASK_STATUS" == "Closed" || "$MATCHING_TASK_STATUS" == "in uat" ]]; then
+                echo "♻️ Alterando status para BACKLOG..."
+                curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
+                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
+                  -H "Content-Type: application/json" \
+                  -d '{"status": "backlog"}'
+        
+                echo "💬 Adicionando comentário com o passo que falhou..."
+        
+                FAILED_STEP=$(jq -r --arg scenario "$SCENARIO" '
+                  .[]?.elements[]?
+                  | select(.name == $scenario)
+                  | .steps[]
+                  | select(.result.status == "failed")
+                  | .keyword + .name + " 💥 " + (.result.error_message // "Erro não especificado")' test-results/cucumber-report.json)
+        
+                COMMENT_TEXT=$(printf "🔄 Bug reaberto no pipeline.\n\n📋 Passo que falhou:\n%s" "$FAILED_STEP")
+        
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID/comment" \
+                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
+                  -H "Content-Type: application/json" \
+                  -d "$(jq -n --arg text "$COMMENT_TEXT" '{ notify_all: true, comment_text: $text }')"
+        
+              else
+                echo "⚠️ Bug já existe com status ativo ($MATCHING_TASK_STATUS) – sem alterações."
+                continue
+              fi
+        
+            else
+              echo "🐞 Nenhuma tarefa encontrada – criando nova para o cenário: $SCENARIO"
+        
+              STEPS=$(jq -r --arg scenario "$SCENARIO" '
+                .[]?.elements[]?
+                | select(.name == $scenario)
+                | .steps[]
+                | "- " + .keyword + .name + " (" + .result.status + ")"
+                  + (if .result.error_message then "\n  💥 " + (.result.error_message | gsub("\n"; " ") | gsub("\r"; "")) else "" end)' test-results/cucumber-report.json)
+        
+              DESCRIPTION=$(printf "Falha no cenário automatizado: \"%s\"\n\n🔗 Workflow: %s/%s/actions/runs/%s\n\n📋 Passos:\n%s" \
+                "$SCENARIO" "${{ github.server_url }}" "${{ github.repository }}" "${{ github.run_id }}" "$STEPS")
+        
+              echo "📝 Criando nova tarefa no ClickUp..."
+              NEW_TASK_RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/${{ secrets.CLICKUP_LIST_ID }}/task" \
+                -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
+                -H "Content-Type: application/json" \
+                -d "$(jq -n \
+                  --arg name "🐞 CI Fail : $SCENARIO" \
+                  --arg description "$DESCRIPTION" \
+                  '{
+                    name: $name,
+                    description: $description,
+                    status: "backlog",
+                    priority: 3,
+                    custom_item_id: 1003
+                  }')")
+        
+              NEW_TASK_ID=$(echo "$NEW_TASK_RESPONSE" | jq -r '.id')
+        
+              if [ -f test-results/cucumber-report.html ]; then
+                echo "📎 Anexando cucumber-report.html à tarefa $NEW_TASK_ID..."
+                curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_TASK_ID/attachment" \
+                  -H "Authorization: ${{ secrets.CLICKUP_API_TOKEN }}" \
+                  -F "attachment=@test-results/cucumber-report.html"
+              else
+                echo "⚠️ Arquivo cucumber-report.html não encontrado – pulando anexo."
+              fi
+            fi
           done
 
       - name: Gerar QA Report em Markdown
