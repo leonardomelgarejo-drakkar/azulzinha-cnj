@@ -10,11 +10,22 @@ let depositoJudicialPage: DepositoJudicialPage;
 let assert: Assert;
 let valorDepositoFluxo: number;
 let depositoJudicialHeaderText: string;
+let codigoProcesso: string;
 let valorx: string;
 
 Given('que a cobrança de depósito judicial de valor R${string} foi cadastrada com sucesso', { timeout: timeout }, async function (valorDeposito: string) {
   valorDepositoFluxo = Number(valorDeposito);
-  const processo = ProcessoFactory.geraProcessoComValorDeposito(valorDepositoFluxo);
+  const processo = ProcessoFactory.geraProcessoComValorDepositoCodigoProcesso(valorDepositoFluxo);
+  const requestData = JSON.stringify(processo);
+  
+  const { responseBody } = await cadastrarDepositoJudicial(requestData, 1, this);
+  
+  this.endpointPagamento = responseBody.endpointPagamento;
+});
+
+Given('que a cobrança de depósito judicial fixo de valor R${string} foi cadastrada com sucesso', { timeout: timeout }, async function (valorDeposito: string) {
+  valorDepositoFluxo = Number(valorDeposito);
+  const processo = ProcessoFactory.geraProcessoComValorDepositoCodigoProcessoFixo(valorDepositoFluxo);
   const requestData = JSON.stringify(processo);
   
   const { responseBody } = await cadastrarDepositoJudicial(requestData, 1, this);
@@ -32,6 +43,60 @@ When('o usuário acessa o link do cadastro judicial', { timeout: timeout }, asyn
 Then('a página do cadastro de depósito é acessada', { timeout: timeout }, async function () {
   depositoJudicialHeaderText = await depositoJudicialPage.getdepositoJudicialHeaderText();
   await assert.assertElementContains(depositoJudicialHeaderText, "Depósito Judicial Não Tributá");
+});
+
+Then('a aba de dados do processo é expandida', { timeout: timeout }, async function () {
+  await depositoJudicialPage.expandirDadosProcesso();
+});
+
+Then('o código do processo é {string}', { timeout: timeout }, async function (processo: string) {
+  codigoProcesso = await depositoJudicialPage.getCodigoProcesso();
+  await assert.assertElementContains(codigoProcesso, processo);
+});
+
+Then('o depositante é {string}', { timeout: timeout }, async function (depositante: string) {
+  const nomeDepositante = await depositoJudicialPage.getDepositante();
+  await assert.assertElementContains(nomeDepositante, depositante);
+});
+
+Then('o autor é {string}', { timeout: timeout }, async function (autor: string) {
+  const nomeAutor = await depositoJudicialPage.getAutor();
+  await assert.assertElementContains(nomeAutor, autor);
+});
+
+Then('o réu é {string}', { timeout: timeout }, async function (reu: string) {
+  const nomeReu = await depositoJudicialPage.getReu();
+  await assert.assertElementContains(nomeReu, reu);
+});
+
+Then('o documento do depositante é {string}', { timeout: timeout }, async function (documento: string) {
+  const documentoDepositante = await depositoJudicialPage.getDocumentoDepositante();
+  await assert.assertElementContains(documentoDepositante, documento);
+});
+
+Then('o documento do autor é {string}', { timeout: timeout }, async function (documento: string) {
+  const documentoAutor = await depositoJudicialPage.getDocumentoAutor();
+  await assert.assertElementContains(documentoAutor, documento);
+});
+
+Then('o documento do réu é {string}', { timeout: timeout }, async function (documento: string) {
+  const documentoReu = await depositoJudicialPage.getDocumentoReu();
+  await assert.assertElementContains(documentoReu, documento);
+});
+
+Then('o valor do depósito é {string}', { timeout: timeout }, async function (valor: string) {
+  const valorDeposito = await depositoJudicialPage.getValorDeposito();
+  await assert.assertElementContains(valorDeposito, valor);
+});
+
+Then('o telefone do depositante é {string}', { timeout: timeout }, async function (telefone: string) {
+  const telefoneDepositante = await depositoJudicialPage.getTelefoneDepositante();
+  await assert.assertElementContains(telefoneDepositante, telefone);
+});
+
+Then('o e-mail do depositante é {string}', { timeout: timeout }, async function (email: string) {
+  const emailDepositante = await depositoJudicialPage.getEmailDepositante();
+  await assert.assertElementContains(emailDepositante, email);
 });
 
 Then('a quantidade de parcelas é {string}', { timeout: timeout }, async function (textNumParcelas: string) {

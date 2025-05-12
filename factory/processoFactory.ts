@@ -271,6 +271,43 @@ export class ProcessoFactory {
       .build()
   }
 
+  static geraProcessoComValorDepositoCodigoProcesso(valor: number): ProcessoJudicial {
+    return new ProcessoJudicial.Builder()
+      .setDeposito({
+        id: DataRequest.generateDepositoId(),
+        finalidade: "GARANTIA",
+        valor: valor,
+        observacoes: "TESTQA"})
+      .build()
+  }
+
+  static geraProcessoComValorDepositoCodigoProcessoFixo(valor: number): ProcessoJudicial {
+    return new ProcessoJudicial.Builder()
+      .setProcesso(DataRequest.generateDepositoIdFixo())
+      .setAutor({
+        nome: "TESTQANAME João Silva",
+        documento: { tipo: "CPF", numero: "21363842528" },
+        "e-mail": "qa.autor@test.com",
+        telefone: "51985319314",
+      })
+      .setReu({
+        nome: "TESTQANAME Roberto Lima",
+        documento: { tipo: "CPF", numero: "91616544422" }
+      })
+      .setDepositante({
+        nome: "QA Depositante",
+        documento: { tipo: "CNPJ",numero: "97855495000172" },
+        "e-mail": "qa.depositante@test.com",
+        telefone: "51985319316",
+      })
+      .setDeposito({
+        id: DataRequest.generateDepositoId(),
+        finalidade: "GARANTIA",
+        valor: valor,
+        observacoes: "TESTQA"})
+      .build();
+  }
+
   static geraProcessoComValorDepositoZero(): ProcessoJudicial {
     return new ProcessoJudicial.Builder()
       .setDeposito({

@@ -13,8 +13,19 @@ export default class DepositoJudicialPage {
     menuItemRole: "menuitem",
     searchBox: "searchbox",
     gridCell: "gridcell",
+    buttonRoleType: "button",
     depositoJudicialHeaderText: "Depósito Judicial Não Tributá",
-    valor: "R$1.001,51"
+    valor: "R$1.001,51",
+    numeroProcessoText: "Processo N°:",
+    telefoneDepositanteByText: "(51) 98531-",
+    emailDepositanteByText: "qa.depositante@test.com",
+    testIdDepositante: "DepositanteValue",
+    testIdAutor: "AutorValue",
+    testIdReu: "RéuValue",
+    testIdDocumentoDepositante: "CNPJValueDepositante",
+    testIdDocumentoAutor: "CPFValueAutor",
+    testIdDocumentoReu: "CPFValueReu",
+    testIdValorDeposito: "ValorValue"
   }
 
   async goto(BASEURL: string){
@@ -41,7 +52,6 @@ export default class DepositoJudicialPage {
     const text = this.base.getByText(textNumParcelas);
 
     return await this.base.getByTextWithScrollToElement(await text);
-    // return await text;
   }
 
   async getValorTotal(valorTotal: string, position: number) {
@@ -54,6 +64,50 @@ export default class DepositoJudicialPage {
     const text = `Incluso serviço de conveniência: R$${valorConveniencia}`;
 
     return await this.base.getByTextOnPosition(text, position);
+  }
+
+  async expandirDadosProcesso(){
+    return await this.base.waitAndClickGetByRole(this.Elements.buttonRoleType, this.Elements.numeroProcessoText);
+  }
+
+  async getCodigoProcesso(){
+    return await this.base.getTextByRole(this.Elements.buttonRoleType, this.Elements.numeroProcessoText);
+  }
+
+  async getDepositante(){
+    return await this.base.getByTestId(this.Elements.testIdDepositante);
+  }
+
+  async getAutor(){
+    return await this.base.getByTestId(this.Elements.testIdAutor);
+  }
+
+  async getReu(){
+    return await this.base.getByTestId(this.Elements.testIdReu);
+  }
+
+  async getDocumentoDepositante(){
+    return await this.base.getByTestId(this.Elements.testIdDocumentoDepositante);
+  }
+
+  async getDocumentoAutor(){
+    return await this.base.getByTestId(this.Elements.testIdDocumentoAutor);
+  }
+
+  async getDocumentoReu(){
+    return await this.base.getByTestId(this.Elements.testIdDocumentoReu);
+  }
+
+  async getValorDeposito(){
+    return await this.base.getByTestId(this.Elements.testIdValorDeposito);
+  }
+
+  async getTelefoneDepositante(){
+    return await this.base.getByText(this.Elements.telefoneDepositanteByText);
+  }
+
+  async getEmailDepositante(){
+    return await this.base.getByText(this.Elements.emailDepositanteByText);
   }
   
 }

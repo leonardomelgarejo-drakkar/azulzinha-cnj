@@ -32,6 +32,8 @@ export default class PlaywrightWrapper {
             state: "visible"
         });
         await element.click();
+
+        return element.textContent();
     }
 
     async waitForPopupAndClickGetByRole(roleType: string, role: string) {
@@ -118,7 +120,7 @@ export default class PlaywrightWrapper {
     }
 
     async getByTestId(testId: string){
-        const element = this.page.getByTestId(testId);
+        const element = this.page.getByTestId(testId).first();
         await element.waitFor({
             state: "visible"
         });

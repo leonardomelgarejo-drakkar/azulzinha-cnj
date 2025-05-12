@@ -63,6 +63,10 @@ export class DataRequest {
     return `TESTQADEPID${this.generateRandomNumericString(9)}`;
   }
 
+  static generateDepositoIdFixo(): string {
+    return `TESTQAPROC7050318998`;
+  }
+
   private static generateRandomNumericString(length: number): string {
     return Array.from({ length }, () => Math.floor(Math.random() * 10)).join("");
   }
