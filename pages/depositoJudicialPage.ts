@@ -15,10 +15,16 @@ export default class DepositoJudicialPage {
     gridCell: "gridcell",
     buttonRoleType: "button",
     depositoJudicialHeaderText: "Depósito Judicial Não Tributá",
+    toolTipConvenienciaText: "O que é o serviço de conveniê",
     valor: "R$1.001,51",
     numeroProcessoText: "Processo N°:",
     telefoneDepositanteByText: "(51) 98531-",
     emailDepositanteByText: "qa.depositante@test.com",
+    testIdPrimeiroPasso: "ValidaçãoProcesso",
+    testIdSegundoPasso: "Natureza do depósito",
+    testIdTerceiroPasso: "InformaçõesDepósito",
+    testIdQuartoPasso: "FormaPagamento",
+    testIdQuintoPasso: "Confirmação",
     testIdDepositante: "DepositanteValue",
     testIdAutor: "AutorValue",
     testIdReu: "RéuValue",
@@ -34,6 +40,10 @@ export default class DepositoJudicialPage {
 
   async getdepositoJudicialHeaderText(){
     return await this.base.getByText(this.Elements.depositoJudicialHeaderText);
+  }
+
+  async getToolTipConveniencia(){
+    return await this.base.getByText(this.Elements.toolTipConvenienciaText);
   }
 
   async getTextQuantidadeParcelasEsperadas(textNumParcelas: string) {
@@ -72,6 +82,26 @@ export default class DepositoJudicialPage {
 
   async getCodigoProcesso(){
     return await this.base.getTextByRole(this.Elements.buttonRoleType, this.Elements.numeroProcessoText);
+  }
+
+  async getPrimeiroPasso(){
+    return await this.base.getByTestId(this.Elements.testIdPrimeiroPasso);
+  }
+
+  async getSegundoPasso(){
+    return await this.base.getByTestId(this.Elements.testIdSegundoPasso);
+  }
+
+  async getTerceiroPasso(){
+    return await this.base.getByTestId(this.Elements.testIdTerceiroPasso);
+  }
+
+  async getQuartoPasso(){
+    return await this.base.getByTestId(this.Elements.testIdQuartoPasso);
+  }
+
+  async getQuintoPasso(){
+    return await this.base.getByTestId(this.Elements.testIdQuintoPasso);
   }
 
   async getDepositante(){

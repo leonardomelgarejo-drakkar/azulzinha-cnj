@@ -45,6 +45,11 @@ Then('a página do cadastro de depósito é acessada', { timeout: timeout }, asy
   await assert.assertElementContains(depositoJudicialHeaderText, "Depósito Judicial Não Tributá");
 });
 
+Then('a máscara do tooltip de serviço de convêniencia está correta', { timeout: timeout }, async function () {
+  const toolTipConveniencia = await depositoJudicialPage.getToolTipConveniencia();
+  await assert.assertElementContains(toolTipConveniencia, "O que é o serviço de conveniência?");
+});
+
 Then('a aba de dados do processo é expandida', { timeout: timeout }, async function () {
   await depositoJudicialPage.expandirDadosProcesso();
 });
@@ -52,6 +57,31 @@ Then('a aba de dados do processo é expandida', { timeout: timeout }, async func
 Then('o código do processo é {string}', { timeout: timeout }, async function (processo: string) {
   codigoProcesso = await depositoJudicialPage.getCodigoProcesso();
   await assert.assertElementContains(codigoProcesso, processo);
+});
+
+Then('o primeiro passo é {string}', { timeout: timeout }, async function (primeiro: string) {
+  const primeiroPasso = await depositoJudicialPage.getPrimeiroPasso();
+  await assert.assertElementContains(primeiroPasso, primeiro);
+});
+
+Then('o segundo passo é {string}', { timeout: timeout }, async function (segundo: string) {
+  const segundoPasso = await depositoJudicialPage.getSegundoPasso();
+  await assert.assertElementContains(segundoPasso, segundo);
+});
+
+Then('o terceiro passo é {string}', { timeout: timeout }, async function (terceiro: string) {
+  const terceiroPasso = await depositoJudicialPage.getTerceiroPasso();
+  await assert.assertElementContains(terceiroPasso, terceiro);
+});
+
+Then('o quarto passo é {string}', { timeout: timeout }, async function (quarto: string) {
+  const quartoPasso = await depositoJudicialPage.getQuartoPasso();
+  await assert.assertElementContains(quartoPasso, quarto);
+});
+
+Then('o quinto passo é {string}', { timeout: timeout }, async function (quinto: string) {
+  const quintoPasso = await depositoJudicialPage.getQuintoPasso();
+  await assert.assertElementContains(quintoPasso, quinto);
 });
 
 Then('o depositante é {string}', { timeout: timeout }, async function (depositante: string) {
