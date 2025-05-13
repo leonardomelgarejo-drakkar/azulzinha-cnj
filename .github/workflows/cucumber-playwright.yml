@@ -185,7 +185,7 @@ jobs:
                   --arg scenario "$SCENARIO" \
                   --arg description "$DESCRIPTION" \
                   '{
-                    name: ("CI Fail : " + $feature + " — " + $scenario),
+                    name: ("CI Fail : " + $feature + " | " + $scenario),
                     description: $description,
                     status: "backlog",
                     priority: 3,

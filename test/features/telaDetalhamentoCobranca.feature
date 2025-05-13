@@ -9,7 +9,7 @@ Feature: Tela Detalhamento da cobrança
        And o segundo passo é 'Natureza do depósito'
        And o terceiro passo é 'Informações do depósito'
        And o quarto passo é 'Forma de pagamento'
-       And o quinto passo é 'Confirmação'
+       And o quinto passo é 'Confirmação2'
 
   @ui @tela-detalhamento-cobranca @dados-processo @e2e-test
   Scenario: 02-Validar máscaras de dados dos detalhes do processo
