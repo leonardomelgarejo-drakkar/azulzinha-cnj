@@ -3,7 +3,7 @@ import { expect } from "@playwright/test";
 import { ProcessoFactory } from "../../factory/processoFactory";
 import { ProcessoJudicial } from "../../factory/models/processoJudicial";
 import { cadastrarDepositoJudicial } from "../../helper/util/cadastroCobrancaHelper";
-import { timeout } from "../../helper/globalConfig";
+import { timeout } from "../../config/globalConfig";
 
 let requestData: string;
 let processo: ProcessoJudicial;

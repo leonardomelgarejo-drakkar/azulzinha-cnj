@@ -4,7 +4,7 @@ import { ProcessoFactory } from "../../factory/processoFactory";
 import { fixture } from "../../hooks/pageFixture";
 import DepositoJudicialPage from "../../pages/depositoJudicialPage";
 import Assert from "../../helper/wrapper/assert";
-import { timeout } from "../../helper/globalConfig";
+import { timeout } from "../../config/globalConfig";
 
 let depositoJudicialPage: DepositoJudicialPage;
 let assert: Assert;

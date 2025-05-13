@@ -34,32 +34,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js and Playwright
-        run: |
-          npx playwright install --with-deps
-          npm ci
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v4
+      - name: Setup Node.js (com cache de npm)
+        uses: actions/setup-node@v4
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          node-version: 20
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Cache Playwright Browsers (Chromium)
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-chromium-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-chromium-
-      
-      - name: Install Google Chrome for Playwright
-        run: npx playwright install chromium --with-deps
+      - name: Install Playwright browsers + deps
+        run: npx playwright install --with-deps
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
@@ -75,6 +57,14 @@ jobs:
           ENV=test
           EOF
 
+      - name: Prepare dependências (Node + tipos)
+        run: |
+          npm ci
+          npm install --save-dev @types/node
+
+      - name: Instalar navegadores do Playwright
+        run: npx playwright install --with-deps
+
       - name: Run Cucumber tests
         env:
           BASEURL: ${{ secrets.BASEURL }}
@@ -86,9 +76,9 @@ jobs:
           if [[ -n "${{ github.event.inputs.tags }}" ]]; then
             TAGS_OPTION="--TAGS=${{ github.event.inputs.tags }}"
           fi
-          
+
           npm test $TAGS_OPTION --exit | tee output.log
-          
+
           if grep -q "failed" output.log; then
             echo "Testes falharam!"
             exit 1

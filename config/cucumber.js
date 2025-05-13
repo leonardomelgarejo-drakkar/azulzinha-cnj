@@ -19,7 +19,7 @@ module.exports = {
       "html:test-results/cucumber-report.html",
       "json:test-results/cucumber-report.json"
     ],
-    parallel: 1,
+    parallel: 2,
     strict: false,
     timeout: 30000
   }
