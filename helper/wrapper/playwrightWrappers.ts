@@ -15,6 +15,7 @@ export default class PlaywrightWrapper {
         await element.waitFor({
             state: "visible"
         });
+        await element.scrollIntoViewIfNeeded();
         await element.click();
     }
 
@@ -33,7 +34,15 @@ export default class PlaywrightWrapper {
         });
         await element.click();
 
-        return element.textContent();
+        return await element.textContent();
+    }
+
+        async waitAndClickGetByRoleWithoutReturn(roleType: string, role: string) {
+        const element = this.page.getByRole(roleType as any, { name: role });
+        await element.waitFor({
+            state: "visible"
+        });
+        await element.click();
     }
 
     async waitForPopupAndClickGetByRole(roleType: string, role: string) {

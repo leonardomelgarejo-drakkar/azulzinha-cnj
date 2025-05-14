@@ -14,10 +14,14 @@ export default class DepositoJudicialPage {
     searchBox: "searchbox",
     gridCell: "gridcell",
     buttonRoleType: "button",
+    optionRoleType: "option",
     depositoJudicialHeaderText: "Depósito Judicial Não Tributá",
     toolTipConvenienciaText: "O que é o serviço de conveniê",
     valor: "R$1.001,51",
     numeroProcessoText: "Processo N°:",
+    continuarText: "Continuar",
+    opcaoQuantidadeParcelasText: "Select an option",
+    quantidadeParcelas2xText: "2x de R$ 263,71",
     telefoneDepositanteByText: "(51) 98531-",
     emailDepositanteByText: "qa.depositante@test.com",
     testIdPrimeiroPasso: "ValidaçãoProcesso",
@@ -31,7 +35,8 @@ export default class DepositoJudicialPage {
     testIdDocumentoDepositante: "CNPJValueDepositante",
     testIdDocumentoAutor: "CPFValueAutor",
     testIdDocumentoReu: "CPFValueReu",
-    testIdValorDeposito: "ValorValue"
+    testIdValorDeposito: "ValorValue",
+    umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1"
   }
 
   async goto(BASEURL: string){
@@ -50,6 +55,30 @@ export default class DepositoJudicialPage {
     const text = this.base.getByTextExact(textNumParcelas, true);
 
     return await text;
+  }
+
+  async selecionaQuantidadeDeParcelas() {
+    const text = this.base.waitAndClick(this.Elements.umaParcelaLocator);
+
+    return await text;
+  }
+
+  async clicaContinuar() {
+    await this.base.waitAndClickGetByRoleWithoutReturn(this.Elements.buttonRoleType, this.Elements.continuarText);
+  }
+
+  async clicaQuantidadeParcelas() {
+    await this.base.waitAndClickGetByRole(this.Elements.buttonRoleType, this.Elements.opcaoQuantidadeParcelasText);
+  }
+
+  async selecionaQuantidadeDeParcelas2x() {
+    await this.base.waitAndClickGetByRoleWithoutReturn(this.Elements.optionRoleType, this.Elements.quantidadeParcelas2xText);
+  }
+
+  async getQuantidadeDeParcelasSelecionadas() {
+    const text = await this.base.getTextByRole(this.Elements.buttonRoleType, this.Elements.opcaoQuantidadeParcelasText);
+
+    return text;
   }
 
   async getValorEsperado(valorEsperado: string) {

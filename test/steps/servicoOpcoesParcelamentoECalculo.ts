@@ -134,6 +134,26 @@ Then('a quantidade de parcelas é {string}', { timeout: timeout }, async functio
   await assert.assertElementContains(textQuantidadeParcelas, textNumParcelas);
 });
 
+Then('seleciona quantidade de parcelas igual 1 x de R$ 526,89', { timeout: timeout }, async function () {
+  await depositoJudicialPage.selecionaQuantidadeDeParcelas();
+});
+
+Then('clica no botão continuar', { timeout: timeout }, async function () {
+  await depositoJudicialPage.clicaContinuar();
+});
+
+Then('altera quantidade de parcelas para 2x R$263,71', { timeout: timeout }, async function () {
+  await depositoJudicialPage.clicaQuantidadeParcelas();
+  await depositoJudicialPage.selecionaQuantidadeDeParcelas2x();
+});
+
+Then('confirma a alteração para {string}', { timeout: timeout }, async function (novaQuantidadeParcelas: string) {
+  const quantidadeParcelasSelecionadas = await depositoJudicialPage.getQuantidadeDeParcelasSelecionadas();
+  console.log("Retorno da tela: " + quantidadeParcelasSelecionadas);
+  await assert.assertElementContains(quantidadeParcelasSelecionadas, novaQuantidadeParcelas);
+  console.log("Debug")
+});
+
 Then('o valor da parcela é {string}', { timeout: timeout }, async function (valorEsperado: string) {
   valorx = await depositoJudicialPage.getValorEsperado(valorEsperado);
   await assert.assertElementContains(valorx, valorEsperado);
