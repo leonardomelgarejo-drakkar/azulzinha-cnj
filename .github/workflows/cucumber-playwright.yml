@@ -490,7 +490,6 @@ jobs:
 
   deploy-report:
     needs: test
-    if: always()
     runs-on: ubuntu-22.04
     steps:
       - name: Download Test Report
@@ -499,20 +498,41 @@ jobs:
           name: cucumber-test-report
           path: test-results
 
-      - name: Rename Cucumber Report to index.html (if exists)
+      - name: Rename to index.html (se existir)
         run: |
           if [ -f test-results/cucumber-report.html ]; then
             cp test-results/cucumber-report.html test-results/index.html
-          else
-            echo "Arquivo cucumber-report.html não encontrado. Pulando renomeação."
           fi
 
-      - name: Ensure JSON is accessible
+      - name: Deploy GitHub Pages (tag)
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: test-results
+          destination_dir: ${{ github.ref_name }}
+          force_orphan: true
+          keep_files: true
+
+      - name: Deploy GitHub Pages (root)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: test-results
+          force_orphan: true
+          keep_files: true
+
+      - name: Ensure JSON report is accessible
         run: |
-          if [ -f test-results/cucumber-report.json ]; then
+          mkdir -p test-results
+
+          if [[ -f test-results/cucumber-report.json ]]; then
             cp test-results/cucumber-report.json test-results/report.json
           else
-            echo "Arquivo cucumber-report.json não encontrado."
+            echo "⚠️ Aviso: cucumber-report.json não encontrado, pulando rename."
           fi
 
       - name: Deploy to GitHub Pages
