@@ -16,6 +16,7 @@ export default class DepositoJudicialPage {
     buttonRoleType: "button",
     optionRoleType: "option",
     depositoJudicialHeaderText: "Depósito Judicial Não Tributá",
+    
     toolTipConvenienciaText: "O que é o serviço de conveniê",
     valor: "R$1.001,51",
     numeroProcessoText: "Processo N°:",
@@ -24,6 +25,7 @@ export default class DepositoJudicialPage {
     quantidadeParcelas2xText: "2x de R$ 263,71",
     telefoneDepositanteByText: "(51) 98531-",
     emailDepositanteByText: "qa.depositante@test.com",
+    cpfTitularCartaoText: "CPF do titular ou CNPJ97.855.",
     testIdPrimeiroPasso: "ValidaçãoProcesso",
     testIdSegundoPasso: "Natureza do depósito",
     testIdTerceiroPasso: "InformaçõesDepósito",
@@ -36,6 +38,15 @@ export default class DepositoJudicialPage {
     testIdDocumentoAutor: "CPFValueAutor",
     testIdDocumentoReu: "CPFValueReu",
     testIdValorDeposito: "ValorValue",
+    testIdNumeroCartao: "InputNumeroCartao",
+    testIdValidadeCartao: "input-login-birth-date",
+    testIdVVVCartao: "CVVInput",
+    testIdCEP: "input-cep-to-register",
+    testIdNumeroEndereco: "input-number-address-to-register",
+    testIdNomeTitularCartao: "InputNameCartao",
+    testIdCpfTitularCartao: "InputNameCartao",
+    testIdEnderecoTitularCartao: "input-address-to-register",
+    testIdBairroTitularCartao: "input-neighborhood-to-register",
     umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1"
   }
 
@@ -46,6 +57,22 @@ export default class DepositoJudicialPage {
   async getdepositoJudicialHeaderText(){
     return await this.base.getByText(this.Elements.depositoJudicialHeaderText);
   }
+
+  async getNomeTitularCartao(){
+    return await this.base.getInputValueByTestId(this.Elements.testIdNomeTitularCartao);
+  }
+
+  async getCpfTitularCartao(){
+    return await this.base.getByText(this.Elements.cpfTitularCartaoText);
+  }  
+
+  async getEnderecoTitularCartao(){
+    return await this.base.getInputValueByTestId(this.Elements.testIdEnderecoTitularCartao);
+  }  
+
+  async getBairroTitularCartao(){
+    return await this.base.getInputValueByTestId(this.Elements.testIdBairroTitularCartao);
+  }  
 
   async getToolTipConveniencia(){
     return await this.base.getByText(this.Elements.toolTipConvenienciaText);
@@ -108,6 +135,26 @@ export default class DepositoJudicialPage {
   async expandirDadosProcesso(){
     return await this.base.waitAndClickGetByRole(this.Elements.buttonRoleType, this.Elements.numeroProcessoText);
   }
+
+  async preencheNumeroCartao(numeroCartao: string){
+    await this.base.fillByTestId(this.Elements.testIdNumeroCartao, numeroCartao);
+  }
+
+  async preencheValidadeCartao(validadeCartao: string){
+    await this.base.fillByTestId(this.Elements.testIdValidadeCartao, validadeCartao);
+  }
+
+  async preencheCVV(cvv: string){
+    await this.base.fillByTestId(this.Elements.testIdVVVCartao, cvv);
+  }  
+
+  async preencheCEP(cep: string){
+    await this.base.fillByTestId(this.Elements.testIdCEP, cep);
+  }  
+
+  async preencheNumeroEndereco(numeroEndereco: string){
+    await this.base.fillByTestId(this.Elements.testIdNumeroEndereco, numeroEndereco);
+  }  
 
   async getCodigoProcesso(){
     return await this.base.getTextByRole(this.Elements.buttonRoleType, this.Elements.numeroProcessoText);

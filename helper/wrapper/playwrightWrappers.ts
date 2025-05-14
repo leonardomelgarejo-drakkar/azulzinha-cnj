@@ -85,6 +85,15 @@ export default class PlaywrightWrapper {
         await element.fill(text);
     }
 
+    async fillByTestId(testId: string, text: string){
+        const element = this.page.getByTestId(testId)
+        await element.waitFor({
+            state: "visible"
+        });
+        await element.scrollIntoViewIfNeeded();
+        await element.fill(text);
+    }
+
     async clickByLabel(label: string){
         const element = this.page.getByLabel(label);
         await element.waitFor({
@@ -129,13 +138,23 @@ export default class PlaywrightWrapper {
     }
 
     async getByTestId(testId: string){
-        const element = this.page.getByTestId(testId).first();
+        const element = this.page.getByTestId(testId);
         await element.waitFor({
             state: "visible"
         });
         await element.scrollIntoViewIfNeeded();
         return (await element.textContent()).trim();
     }
+
+    async getInputValueByTestId(testId: string){
+        const element = this.page.getByTestId(testId);
+        await element.waitFor({
+            state: "visible"
+        });
+        await element.scrollIntoViewIfNeeded();
+        return (await element.inputValue()).trim();
+    }
+
 
     async getByTextOnPosition(text: string, position: number){
         const element = this.page.getByText(text).nth(position - 1);

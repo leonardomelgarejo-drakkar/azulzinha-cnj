@@ -40,9 +40,29 @@ When('o usuário acessa o link do cadastro judicial', { timeout: timeout }, asyn
   await depositoJudicialPage.goto(url);
 });
 
-Then('a página do cadastro de depósito é acessada', { timeout: timeout }, async function () {
+When('a página do cadastro de depósito é acessada', { timeout: timeout }, async function () {
   depositoJudicialHeaderText = await depositoJudicialPage.getdepositoJudicialHeaderText();
   await assert.assertElementContains(depositoJudicialHeaderText, "Depósito Judicial Não Tributá");
+});
+
+Then('o nome do titular é carregado automaticamente com {string}', { timeout: timeout }, async function (titularCartao: string) {
+  const nomeTitularCartao = await depositoJudicialPage.getNomeTitularCartao();
+  await assert.assertElementContains(nomeTitularCartao, titularCartao);
+});
+
+Then('o cpf do titular é carregado automaticamente com {string}', { timeout: timeout }, async function (cpfTitular: string) {
+  const cpfTitularCartao = await depositoJudicialPage.getCpfTitularCartao();
+  await assert.assertElementContains(cpfTitularCartao, cpfTitular);
+});
+
+Then('automaticamente o endereço é carregado automaticamente com {string}', { timeout: timeout }, async function (enderecoTitular: string) {
+  const enderecoTitularCartao = await depositoJudicialPage.getEnderecoTitularCartao();
+  await assert.assertElementContains(enderecoTitularCartao, enderecoTitular);
+});
+
+Then('automaticamente o bairro é carregado automaticamente com {string}', { timeout: timeout }, async function (bairroTitular: string) {
+  const bairroTitularCartao = await depositoJudicialPage.getBairroTitularCartao();
+  await assert.assertElementContains(bairroTitularCartao, bairroTitular);
 });
 
 Then('a máscara do tooltip de serviço de convêniencia está correta', { timeout: timeout }, async function () {
@@ -134,24 +154,42 @@ Then('a quantidade de parcelas é {string}', { timeout: timeout }, async functio
   await assert.assertElementContains(textQuantidadeParcelas, textNumParcelas);
 });
 
-Then('seleciona quantidade de parcelas igual 1 x de R$ 526,89', { timeout: timeout }, async function () {
+When('seleciona quantidade de parcelas igual 1 x de R$ 526,89', { timeout: timeout }, async function () {
   await depositoJudicialPage.selecionaQuantidadeDeParcelas();
 });
 
-Then('clica no botão continuar', { timeout: timeout }, async function () {
+When('clica no botão continuar', { timeout: timeout }, async function () {
   await depositoJudicialPage.clicaContinuar();
 });
 
-Then('altera quantidade de parcelas para 2x R$263,71', { timeout: timeout }, async function () {
+When('preenche o número do cartão com {string}', { timeout: timeout }, async function (numeroCartao: string) {
+  await depositoJudicialPage.preencheNumeroCartao(numeroCartao);
+});
+
+When('preenche a validade com {string}', { timeout: timeout }, async function (validadeCartao: string) {
+  await depositoJudicialPage.preencheValidadeCartao(validadeCartao);
+});
+
+When('preenche o card verification value com {string}', { timeout: timeout }, async function (cardVerificationValue: string) {
+  await depositoJudicialPage.preencheCVV(cardVerificationValue);
+});
+
+When('preenche o CEP com {string}', { timeout: timeout }, async function (cep: string) {
+  await depositoJudicialPage.preencheCEP(cep);
+});
+
+When('preenche o numero com {string}', { timeout: timeout }, async function (numero: string) {
+  await depositoJudicialPage.preencheNumeroEndereco(numero);
+});
+
+When('altera quantidade de parcelas para 2x R$263,71', { timeout: timeout }, async function () {
   await depositoJudicialPage.clicaQuantidadeParcelas();
   await depositoJudicialPage.selecionaQuantidadeDeParcelas2x();
 });
 
 Then('confirma a alteração para {string}', { timeout: timeout }, async function (novaQuantidadeParcelas: string) {
   const quantidadeParcelasSelecionadas = await depositoJudicialPage.getQuantidadeDeParcelasSelecionadas();
-  console.log("Retorno da tela: " + quantidadeParcelasSelecionadas);
   await assert.assertElementContains(quantidadeParcelasSelecionadas, novaQuantidadeParcelas);
-  console.log("Debug")
 });
 
 Then('o valor da parcela é {string}', { timeout: timeout }, async function (valorEsperado: string) {
