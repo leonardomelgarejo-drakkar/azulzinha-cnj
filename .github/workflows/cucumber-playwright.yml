@@ -16,7 +16,7 @@ on:
         required: true
         default: 'no'
         type: choice
-        options: 
+        options:
           - 'yes'
           - 'no'
   schedule:
@@ -40,6 +40,19 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Prepare dependências (Node + tipos)
+        run: |
+          npm ci
+          npm install --save-dev @types/node
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-browsers-
+
       - name: Install Playwright browsers + deps
         run: npx playwright install --with-deps
 
@@ -56,14 +69,6 @@ jobs:
           RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV=test
           EOF
-
-      - name: Prepare dependências (Node + tipos)
-        run: |
-          npm ci
-          npm install --save-dev @types/node
-
-      - name: Instalar navegadores do Playwright
-        run: npx playwright install --with-deps
 
       - name: Run Cucumber tests
         env:
@@ -518,3 +523,4 @@ jobs:
           publish_branch: gh-pages
           force_orphan: true
           keep_files: true
+          destination_dir: ${{ github.ref_name }}
