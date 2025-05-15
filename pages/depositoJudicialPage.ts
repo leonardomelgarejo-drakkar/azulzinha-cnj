@@ -15,12 +15,13 @@ export default class DepositoJudicialPage {
     gridCell: "gridcell",
     buttonRoleType: "button",
     optionRoleType: "option",
+    checkboxRole: "checkbox",
     depositoJudicialHeaderText: "Depósito Judicial Não Tributá",
-    
     toolTipConvenienciaText: "O que é o serviço de conveniê",
     valor: "R$1.001,51",
     numeroProcessoText: "Processo N°:",
     continuarText: "Continuar",
+    proximoText: "Proximo",
     opcaoQuantidadeParcelasText: "Select an option",
     quantidadeParcelas2xText: "2x de R$ 263,71",
     telefoneDepositanteByText: "(51) 98531-",
@@ -52,6 +53,7 @@ export default class DepositoJudicialPage {
     testIdValorDepositoTitularCartao: "payment-resume-total-debits",
     testIdServicoConvenienciaTitularCartao: "payment-resume-service-rate",
     testIdTotalPagamentoCartao: "payment-resume-final-total-value",
+    testIdEfetuarPagamento: "btn-confirmPayment-makePayment",
     umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1"
   }
 
@@ -117,6 +119,18 @@ export default class DepositoJudicialPage {
 
   async clicaContinuar() {
     await this.base.waitAndClickGetByRoleWithoutReturn(this.Elements.buttonRoleType, this.Elements.continuarText);
+  }
+
+  async clicaProximo() {
+    await this.base.waitAndClickGetByRoleWithoutReturn(this.Elements.buttonRoleType, this.Elements.proximoText);
+  }
+
+  async clicaCheckboxTermos() {
+    await this.base.waitAndClickGetByRoleBasic(this.Elements.checkboxRole);
+  }
+
+  async clicaEfetuarPagamento() {
+    await this.base.clickByTestId(this.Elements.testIdEfetuarPagamento);
   }
 
   async clicaQuantidadeParcelas() {
@@ -239,6 +253,14 @@ export default class DepositoJudicialPage {
 
   async getEmailDepositante(){
     return await this.base.getByText(this.Elements.emailDepositanteByText);
+  }
+
+  async isBotaoPagamentoHabilitado(): Promise<boolean>{
+    return await this.base.isEnableByTestID(this.Elements.testIdEfetuarPagamento);
+  }
+
+  async isBotaoPagamentoDesabilitado(): Promise<boolean>{
+    return await this.base.isDisableByTestID(this.Elements.testIdEfetuarPagamento);
   }
   
 }

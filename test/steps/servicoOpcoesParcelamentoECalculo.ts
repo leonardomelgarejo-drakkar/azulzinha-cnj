@@ -187,6 +187,22 @@ When('clica no botão continuar', { timeout: timeout }, async function () {
   await depositoJudicialPage.clicaContinuar();
 });
 
+When('clica no botão próximo', { timeout: timeout }, async function () {
+  await depositoJudicialPage.clicaProximo();
+});
+
+When('clica no checkbox concordando com os termos', { timeout: timeout }, async function () {
+  await depositoJudicialPage.clicaCheckboxTermos();
+});
+
+When('clica no botão efetuar pagamento', { timeout: timeout }, async function () {
+  await depositoJudicialPage.clicaEfetuarPagamento();
+});
+
+When('tenta clicar no botão efetuar pagamento sem concordar com os termos', { timeout: timeout }, async function () {
+  await depositoJudicialPage.clicaEfetuarPagamento();
+});
+
 When('preenche o número do cartão com {string}', { timeout: timeout }, async function (numeroCartao: string) {
   await depositoJudicialPage.preencheNumeroCartao(numeroCartao);
 });
@@ -232,4 +248,14 @@ Then('a {string}', { timeout: timeout }, async function (valorConveniencia: stri
   const textValorConvenienciaAtual = depositoJudicialPage.getValorTotalEsperado(valorConveniencia);
 
   await assert.assertElementContains(await textValorConvenienciaAtual, valorConveniencia);
+});
+
+Then('o botão efetuar deve estar habilidado', { timeout: timeout }, async function () {
+  const botaoEfetuarPagamentoHabilitado =  await depositoJudicialPage.isBotaoPagamentoHabilitado();
+  await assert.assertTrue(botaoEfetuarPagamentoHabilitado);
+});
+
+Then('o botão efetuar deve estar desabilidado', { timeout: timeout }, async function () {
+  const botaoEfetuarPagamentoDesabilitado =  await depositoJudicialPage.isBotaoPagamentoDesabilitado();
+  await assert.assertTrue(botaoEfetuarPagamentoDesabilitado);
 });

@@ -26,4 +26,12 @@ export default class Assert {
         expect(element).toContain(text);
     }
 
+    async assertTrue(condition: boolean, message?: string) {
+        expect(condition, message).toBe(true);
+    }
+
+    async assertFalse(condition: boolean, message?: string) {
+        expect(condition, message).toBe(false);
+    }
+
 }
