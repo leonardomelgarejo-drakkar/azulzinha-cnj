@@ -9,6 +9,9 @@ Feature: Tela de Dados do Cartão
        And clica no botão continuar
        And altera quantidade de parcelas para 2x R$263,71
       Then confirma a alteração para '2x de  R$ 263,71'
+       And automaticamente o valor de depósito é carregado com 'R$ 526,10'
+       And automaticamente o serviço de conveniência é carregado com 'R$ 1,32'
+       And automaticamente o total do pagamento é carregado com 'R$ 527,42'
 
   @ui @tela-dados-cartao @dados-preenchimento-cartao
   Scenario: 02-Preenchimento de dados do cartão
@@ -35,5 +38,7 @@ Feature: Tela de Dados do Cartão
        And preenche o card verification value com '123'
        And preenche o CEP com '91220-470'
        And preenche o numero com '250'
-      Then automaticamente o endereço é carregado automaticamente com 'Rua Rubens Rosa Guedes'
-       And automaticamente o bairro é carregado automaticamente com 'Jardim Itu'
+      Then automaticamente o endereço é carregado com 'Rua Rubens Rosa Guedes'
+       And automaticamente o bairro é carregado com 'Jardim Itu'
+       And automaticamente a cidade é carregada com 'Porto Alegre'
+       And automaticamente o estado é carregado com 'Rio Grande do Sul (RS)'

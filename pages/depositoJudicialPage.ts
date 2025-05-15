@@ -26,6 +26,7 @@ export default class DepositoJudicialPage {
     telefoneDepositanteByText: "(51) 98531-",
     emailDepositanteByText: "qa.depositante@test.com",
     cpfTitularCartaoText: "CPF do titular ou CNPJ97.855.",
+    estadoTitularCartaoText: "Rio Grande do Sul (RS)",
     testIdPrimeiroPasso: "ValidaçãoProcesso",
     testIdSegundoPasso: "Natureza do depósito",
     testIdTerceiroPasso: "InformaçõesDepósito",
@@ -47,6 +48,10 @@ export default class DepositoJudicialPage {
     testIdCpfTitularCartao: "InputNameCartao",
     testIdEnderecoTitularCartao: "input-address-to-register",
     testIdBairroTitularCartao: "input-neighborhood-to-register",
+    testIdCidadeTitularCartao: "input-city-to-register",
+    testIdValorDepositoTitularCartao: "payment-resume-total-debits",
+    testIdServicoConvenienciaTitularCartao: "payment-resume-service-rate",
+    testIdTotalPagamentoCartao: "payment-resume-final-total-value",
     umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1"
   }
 
@@ -73,6 +78,26 @@ export default class DepositoJudicialPage {
   async getBairroTitularCartao(){
     return await this.base.getInputValueByTestId(this.Elements.testIdBairroTitularCartao);
   }  
+
+  async getCidadeTitularCartao(){
+    return await this.base.getInputValueByTestId(this.Elements.testIdCidadeTitularCartao);
+  }
+
+  async getValorDepositoTitularCartao(){
+    return await this.base.getByTestId(this.Elements.testIdValorDepositoTitularCartao);
+  }
+
+  async getServicoConvenienciaTitularCartao(){
+    return await this.base.getByTestId(this.Elements.testIdServicoConvenienciaTitularCartao);
+  }
+
+  async getTotalPagamentoCartao(){
+    return await this.base.getByTestId(this.Elements.testIdTotalPagamentoCartao);
+  }
+
+  async getEstadoTitularCartao(){
+    return await this.base.getByText(this.Elements.estadoTitularCartaoText);
+  }
 
   async getToolTipConveniencia(){
     return await this.base.getByText(this.Elements.toolTipConvenienciaText);

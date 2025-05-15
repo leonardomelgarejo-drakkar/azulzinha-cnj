@@ -55,14 +55,39 @@ Then('o cpf do titular é carregado automaticamente com {string}', { timeout: ti
   await assert.assertElementContains(cpfTitularCartao, cpfTitular);
 });
 
-Then('automaticamente o endereço é carregado automaticamente com {string}', { timeout: timeout }, async function (enderecoTitular: string) {
+Then('automaticamente o endereço é carregado com {string}', { timeout: timeout }, async function (enderecoTitular: string) {
   const enderecoTitularCartao = await depositoJudicialPage.getEnderecoTitularCartao();
   await assert.assertElementContains(enderecoTitularCartao, enderecoTitular);
 });
 
-Then('automaticamente o bairro é carregado automaticamente com {string}', { timeout: timeout }, async function (bairroTitular: string) {
+Then('automaticamente o bairro é carregado com {string}', { timeout: timeout }, async function (bairroTitular: string) {
   const bairroTitularCartao = await depositoJudicialPage.getBairroTitularCartao();
   await assert.assertElementContains(bairroTitularCartao, bairroTitular);
+});
+
+Then('automaticamente a cidade é carregada com {string}', { timeout: timeout }, async function (cidadeTitular: string) {
+  const cidadeTitularCartao = await depositoJudicialPage.getCidadeTitularCartao();
+  await assert.assertElementContains(cidadeTitularCartao, cidadeTitular);
+});
+
+Then('automaticamente o valor de depósito é carregado com {string}', { timeout: timeout }, async function (valorDepositoTitular: string) {
+  const valorDepositoTitularCartao = await depositoJudicialPage.getValorDepositoTitularCartao();
+  await assert.assertElementContains(valorDepositoTitularCartao, valorDepositoTitular);
+});
+
+Then('automaticamente o serviço de conveniência é carregado com {string}', { timeout: timeout }, async function (servicoConvenienciaTitular: string) {
+  const servicoConvenienciaTitularCartao = await depositoJudicialPage.getServicoConvenienciaTitularCartao();
+  await assert.assertElementContains(servicoConvenienciaTitularCartao, servicoConvenienciaTitular);
+});
+
+Then('automaticamente o total do pagamento é carregado com {string}', { timeout: timeout }, async function (totalPagamento: string) {
+  const totalPagamentoCartao = await depositoJudicialPage.getTotalPagamentoCartao();
+  await assert.assertElementContains(totalPagamentoCartao, totalPagamento);
+});
+
+Then('automaticamente o estado é carregado com {string}', { timeout: timeout }, async function (estadoTitular: string) {
+  const estadoTitularCartao = await depositoJudicialPage.getEstadoTitularCartao();
+  await assert.assertElementContains(estadoTitularCartao, estadoTitular);
 });
 
 Then('a máscara do tooltip de serviço de convêniencia está correta', { timeout: timeout }, async function () {
