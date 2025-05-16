@@ -12,7 +12,15 @@ on:
         required: false
         default: ''
       report_scenarios:
-        description: 'Reportar Test Scenarios e Test Cases no ClickUp?'
+        description: 'Report Test Scenarios and Test Cases in ClickUp?'
+        required: true
+        default: 'no'
+        type: choice
+        options:
+          - 'yes'
+          - 'no'
+      qa_report:
+        description: 'Generate QA Report?'
         required: true
         default: 'no'
         type: choice
@@ -28,347 +36,90 @@ permissions:
 
 jobs:
   test:
-    timeout-minutes: 60  
     runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
+    # --- centralized environment variables ---
+    env:
+      # test credentials and configuration
+      USER_NAME: ${{ secrets.USER_NAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+      BASEURL: ${{ secrets.BASEURL }}
+      RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
+      ENV: test
+
+      # ClickUp (bug reopening and reporting)
+      CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
+      CLICKUP_TEST_LIST_ID: ${{ secrets.CLICKUP_TEST_LIST_ID }}
+      CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+      CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
+      LIST_ID: ${{ secrets.CLICKUP_TEST_LIST_ID }}
+
+      # GitHub context for identifying this run
+      GITHUB_SERVER_URL: ${{ github.server_url }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      GITHUB_RUN_ID: ${{ github.run_id }}
+
+      # for QA Report to external docs
+      WORKSPACE_ID: ${{ secrets.WORKSPACE_ID }}
+      DOC_ID:       ${{ secrets.DOC_ID }}
+      PAGE_ID:      ${{ secrets.PAGE_ID }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Torna scripts executáveis
+      - name: Make scripts executable
         run: |
-          chmod +x ./.github/scripts/run_cucumber.sh
-          chmod +x ./.github/scripts/clickup_fail.sh
+          chmod +x .github/scripts/*.sh
 
-      - name: Setup Node.js (com cache de npm)
+      - name: Setup Node.js (with npm cache)
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
-      - name: Prepare dependências (Node + tipos)
+      - name: Prepare dependencies (Node + types)
         run: |
           npm ci
           npm install --save-dev @types/node
 
-      - name: Cache Playwright browsers
+      - name: Cache Playwright Chromium
         uses: actions/cache@v3
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-browsers-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-playwright-chromium-browsers-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-playwright-browsers-
+            ${{ runner.os }}-playwright-chromium-browsers-
 
-      - name: Install Playwright browsers + deps
-        run: npx playwright install --with-deps
+      - name: Install Chromium + deps
+        run: npx playwright install --with-deps chromium
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
 
-      - name: Ensure .env file is available
-        run: |
-          mkdir -p helper/env
-          cat <<EOF > helper/env/.env.test
-          USER_NAME=${{ secrets.USER_NAME }}
-          PASSWORD=${{ secrets.PASSWORD }}
-          BASEURL=${{ secrets.BASEURL }}
-          RESOURCE_PATH_DEPOSITO_JUDICIAL=${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-          ENV=test
-          EOF
+      - name: Prepare environment file
+        run: ./.github/scripts/prepare_env.sh
 
       - name: Run Cucumber tests
-        env:
-          BASEURL: ${{ secrets.BASEURL }}
-          RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-          ENV: test
+        id: run_cucumber
         run: ./.github/scripts/run_cucumber.sh "${{ github.event.inputs.tags }}"
 
-      - name: Criar ou reabrir bug no ClickUp para cada cenário com falha
+      - name: Create or reopen bug in ClickUp for each failed scenario
         if: failure()
-        env:
-          CLICKUP_LIST_ID:    ${{ secrets.CLICKUP_LIST_ID }}
-          CLICKUP_API_TOKEN:  ${{ secrets.CLICKUP_API_TOKEN }}
-          GITHUB_SERVER_URL:  ${{ github.server_url }}
-          GITHUB_REPOSITORY:  ${{ github.repository }}
-          GITHUB_RUN_ID:      ${{ github.run_id }}
         run: ./.github/scripts/clickup_fail.sh
 
-      - name: Reportar Test Scenarios no ClickUp
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.report_scenarios == 'yes' }}
-        env:
-          CLICKUP_TOKEN:  ${{ secrets.CLICKUP_API_TOKEN }}
-          LIST_ID:        ${{ secrets.CLICKUP_TEST_LIST_ID }}
-        run: |
-          echo "🔍 Reportando Test Scenarios..."
-          mkdir -p tmp
-          > tmp/scenario_ids.csv
+      - name: Report Test Scenarios in ClickUp
+        if: ${{ always() && github.event.inputs.report_scenarios == 'yes' }}
+        run: ./.github/scripts/report_scenarios.sh
 
-          readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
-          for FEATURE in "${FEATURES[@]}"; do
-            if jq -e --arg f "$FEATURE" '
-                [ .[] | select(.name==$f) | .elements[] | .steps[]
-                  | select(.result.status=="failed") ] | length>0
-              ' test-results/cucumber-report.json >/dev/null; then
-              NEW_STATUS="rejected"
-            else
-              NEW_STATUS="test complete"
-            fi
+      - name: Report Test Cases in ClickUp
+        if: ${{ always() && github.event.inputs.report_scenarios == 'yes' }}
+        run: ./.github/scripts/report_test_cases.sh
 
-            TASK_NAME="$FEATURE"
-            echo "🔎 Buscando '$TASK_NAME'..."
-            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
-              --data-urlencode "search=$TASK_NAME" \
-              --data-urlencode "include_closed=true" \
-              -H "Authorization: $CLICKUP_TOKEN")
-
-            TASK_ID=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '.tasks[] | select(.name==$name) | .id // empty')
-            EXISTING_STATUS=$(echo "$RESPONSE" | jq -r --arg name "$TASK_NAME" '.tasks[] | select(.name==$name) | .status // empty')
-
-            if [ -n "$TASK_ID" ]; then
-              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
-                echo "🔄 Atualizando '$TASK_NAME' (ID=$TASK_ID) de $EXISTING_STATUS → $NEW_STATUS"
-                curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -H "Content-Type: application/json" \
-                  -d "{\"status\":\"$NEW_STATUS\"}"
-              else
-                echo "✅ '$TASK_NAME' já está em '$EXISTING_STATUS' – sem alterações."
-              fi
-            else
-              echo "➕ Criando '$TASK_NAME' → $NEW_STATUS"
-              CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
-                -H "Authorization: $CLICKUP_TOKEN" \
-                -H "Content-Type: application/json" \
-                -d "$(jq -n \
-                      --arg name        "$TASK_NAME" \
-                      --arg description "Feature \"$FEATURE\" finalizada com status: $NEW_STATUS." \
-                      --arg status      "$NEW_STATUS" \
-                      --argjson custom_item_id 1009 \
-                      '{name:$name,description:$description,status:$status,custom_item_id:$custom_item_id}')")
-              TASK_ID=$(echo "$CREATED" | jq -r '.id')
-            fi
-
-            echo "${FEATURE}|${TASK_ID}" >> tmp/scenario_ids.csv
-          done  
-  
-      - name: Reportar Test Cases no ClickUp
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.report_scenarios == 'yes' }}
-        env:
-          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          LIST_ID:       ${{ secrets.CLICKUP_TEST_LIST_ID }}
-        run: |
-          set -euo pipefail
-          echo "🔍 Reportando Test Cases como subtasks…"
-          mkdir -p tmp
-
-          # 1) Mapeia FEATURE → PARENT_ID
-          declare -A PARENT
-          while IFS='|' read -r FEATURE ID; do
-            PARENT["$FEATURE"]=$ID
-          done < tmp/scenario_ids.csv
-
-          # 2) Lista cenários
-          readarray -t SCENARIOS < <(
-            jq -r '.[].elements[].name' test-results/cucumber-report.json | sort -u
-          )
-
-          for idx in "${!SCENARIOS[@]}"; do
-            SCENARIO="${SCENARIOS[idx]}"
-            FEATURE=$(jq -r --arg s "$SCENARIO" '
-              .[] | select([.elements[].name]|index($s)) | .name
-            ' test-results/cucumber-report.json)
-            PARENT_ID=${PARENT["$FEATURE"]}
-            [ -z "$PARENT_ID" ] && { echo "⚠️ Pai não encontrado para $SCENARIO"; continue; }
-
-            TASK_NAME="$SCENARIO"
-            echo "🔎 Carregando parent $PARENT_ID com subtasks…"
-            RESPONSE=$(curl -s -G "https://api.clickup.com/api/v2/task/$PARENT_ID" \
-              --data-urlencode "include_subtasks=true" \
-              -H "Authorization: $CLICKUP_TOKEN")
-
-            SUBS=$(echo "$RESPONSE" | jq '.subtasks // []')
-            TASK_ID=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[] | select(.name==$name) | .id // empty')
-            EXISTING_STATUS=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" '.[] | select(.name==$name) | .status // empty')
-
-            # 3) Define novo status
-            if jq -e --arg s "$SCENARIO" '
-                [ .[]|.elements[]|select(.name==$s)|.steps[]|select(.result.status=="failed") ] | length>0
-              ' test-results/cucumber-report.json >/dev/null; then
-              NEW_STATUS="rejected"
-            else
-              NEW_STATUS="test complete"
-            fi
-
-            # 4) Prepara comentário de passos/erro
-            RAW=$(jq -r --arg s "$SCENARIO" '
-              .[] | .elements[] | select(.name==$s)
-              | .steps[] | select((.keyword|test("^(Before|After)";"i"))|not)
-              | .keyword + " " + .name
-                + (if .result.status=="failed" then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) else "" end)
-            ' test-results/cucumber-report.json)
-            COMMENT="Scenario: $SCENARIO"$'\n'"$RAW"
-
-            # 5) Extrai e decodifica embeddings em arquivos
-            readarray -t EMBEDS < <(
-              jq -r --arg s "$SCENARIO" '
-                .[]
-                | select([.elements[].name]|index($s))
-                | (
-                    (.elements[] | select(.name==$s) | .steps[]?.embeddings[]?),
-                    (.elements[] | select(.name==$s) | .embeddings[]?)
-                  )
-                | select(.mime_type != null)
-                | .mime_type + "," + (.data // "")
-              ' test-results/cucumber-report.json
-            )
-            ATTACH_FILES=()
-            for e in "${EMBEDS[@]}"; do
-              MTYPE=${e%%,*}
-              B64=${e#*,}
-              [ -z "$B64" ] && continue
-              case "$MTYPE" in
-                video/webm)       EXT="webm" ;;
-                application/json) EXT="json" ;;
-                text/plain)       EXT="txt" ;;
-                image/png)        EXT="png" ;;
-                *)                EXT="bin" ;;
-              esac
-              BASE="tmp/${idx}_${SCENARIO// /_}"
-              FNAME="${BASE}.${EXT}"
-              COUNT=1
-              while [[ -e "$FNAME" ]]; do
-                FNAME="${BASE}_${COUNT}.${EXT}"
-                ((COUNT++))
-              done
-              echo "$B64" | base64 -d > "$FNAME"
-              ATTACH_FILES+=( "$FNAME" )
-            done
-
-            # 6) Cria ou atualiza a subtask
-            if [ -n "$TASK_ID" ]; then
-              echo "✅ Subtask existente (ID=$TASK_ID) status=$EXISTING_STATUS"
-
-              if [ "$EXISTING_STATUS" != "$NEW_STATUS" ]; then
-                echo "🔄 Atualizando status $EXISTING_STATUS → $NEW_STATUS"
-                curl -s -X PUT "https://api.clickup.com/api/v2/task/$TASK_ID" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -H "Content-Type: application/json" \
-                  -d "{\"status\":\"$NEW_STATUS\"}"
-
-                # 7) Anexa evidências apenas na transição de status
-                echo "📎 Anexando evidências após mudança para '$NEW_STATUS'..."
-                for F in "${ATTACH_FILES[@]}"; do
-                  echo "📎 Anexando '$F'"
-                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                    -H "Authorization: $CLICKUP_TOKEN" \
-                    -F "attachment=@${F}"
-                done
-
-                # Se ficou rejeitado, adiciona comentário de erro
-                if [ "$NEW_STATUS" = "rejected" ]; then
-                  curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
-                    -H "Authorization: $CLICKUP_TOKEN" \
-                    -H "Content-Type: application/json" \
-                    -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
-                fi
-              else
-                echo "ℹ️ Status já é '$EXISTING_STATUS' – sem anexos nem comentários."
-              fi
-
-            else
-              echo "➕ Criando subtask '$TASK_NAME' → $NEW_STATUS"
-              PAYLOAD=$(jq -n \
-                --arg name        "$TASK_NAME" \
-                --arg description "$COMMENT" \
-                --arg status      "$NEW_STATUS" \
-                --arg parent      "$PARENT_ID" \
-                --argjson custom_item_id 1010 \
-                '{name:$name,description:$description,status:$status,parent:$parent,custom_item_id:$custom_item_id}')
-              CREATED=$(curl -s -X POST "https://api.clickup.com/api/v2/list/$LIST_ID/task" \
-                -H "Authorization: $CLICKUP_TOKEN" \
-                -H "Content-Type: application/json" \
-                -d "$PAYLOAD")
-              TASK_ID=$(echo "$CREATED" | jq -r '.id')
-
-              # 8) Anexa todas as evidências na criação
-              echo "📎 Anexando evidências na criação de subtask..."
-              for F in "${ATTACH_FILES[@]}"; do
-                echo "📎 Anexando '$F'"
-                curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-                  -H "Authorization: $CLICKUP_TOKEN" \
-                  -F "attachment=@${F}"
-              done
-            fi
-
-          done
-
-      - name: Gerar QA Report em Markdown
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        run: |
-          echo "📝 Gerando QA Report em Markdown…"
-
-          # 1) Indicadores de Test Scenarios (features)
-          TOTAL_SCENARIOS=$(jq 'length' test-results/cucumber-report.json)
-          FAILED_SCENARIOS=$(jq '[ .[] | select([ .elements[].steps[].result.status ] | index("failed")) ] | length' test-results/cucumber-report.json)
-          EXECUTED_SCENARIOS=$((TOTAL_SCENARIOS - FAILED_SCENARIOS))
-
-          # 2) Indicadores de Test Cases (cenários únicos)
-          TOTAL_CASES=$(jq '[ .[].elements[].name ] | unique | length' test-results/cucumber-report.json)
-          FAILED_CASES=$(jq '[ .[].elements[] | select([ .steps[].result.status ] | index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
-          EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
-
-          # 3) Monta o Markdown
-          mkdir -p tmp
-          cat <<EOF > tmp/qa_report.md
-          ## Test Results
-
-          ![Totals](https://img.shields.io/badge/Totals%20-green?style=for-the-badge)
-          | **Type** | **Total** | **Executed** | **Failed** |
-          |:----------------------:	|:---------:|:------------:|:----------:|
-          | Test_Scenarios       		| $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-          | Test_Cases           		| $TOTAL_CASES     | $EXECUTED_CASES     | $FAILED_CASES     |
-
-          ![Cases per Scenario](https://img.shields.io/badge/Cases%20%20Per%20Scenario-purple?style=for-the-badge)
-          | **Scenario** | **Passed**   | **Failed** |
-          | :----------: | :--------:   | :--------: |
-          EOF
-
-          # 4) Preenche a tabela “Number of test cases per Test Scenario”
-          readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
-          for FEATURE in "${FEATURES[@]}"; do
-            TOTAL=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[].name ] | unique | length' test-results/cucumber-report.json)
-            FAILED=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements[] | select([.steps[].result.status]|index("failed")) | .name ] | unique | length' test-results/cucumber-report.json)
-            PASSED=$((TOTAL - FAILED))
-            echo "| $FEATURE | $PASSED | $FAILED |" >> tmp/qa_report.md
-          done
-
-          # 5) Link para o relatório completo em HTML
-          cat <<EOF >> tmp/qa_report.md
-
-          ![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge)
-
-          | **HTML Report** |
-          | :-------------: |
-          | [Open full report (HTML)](https://leonardomelgarejo-drakkar.github.io/azulzinha-cnj/) |
-          EOF
-  
-      - name: Atualizar QA Report no ClickUp Docs
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        env:
-          CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
-          WORKSPACE_ID:  ${{ secrets.WORKSPACE_ID }}
-          DOC_ID:        ${{ secrets.DOC_ID }}
-          PAGE_ID:       ${{ secrets.PAGE_ID }}
-        run: |
-          echo "🔄 Atualizando ClickUp Doc com QA Report…"
-          CONTENT=$(jq -Rs . tmp/qa_report.md)
-          cat <<JSON > tmp/payload.json
-          {"content_format":"text/md","content":$CONTENT}
-          JSON
-          curl -s -X PUT \
-            "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
-            -H "Authorization: ${CLICKUP_TOKEN}" \
-            -H "Content-Type: application/json" \
-            --data-binary @tmp/payload.json    
+      - name: QA Report & Update ClickUp
+        if: ${{ always() && github.event.inputs.qa_report == 'yes' }}
+        run: ./.github/scripts/qa_report.sh
 
       - name: Upload Cucumber Test Report
         uses: actions/upload-artifact@v4
@@ -383,47 +134,27 @@ jobs:
     if: always()
     runs-on: ubuntu-22.04
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download Test Report
         uses: actions/download-artifact@v4
         with:
           name: cucumber-test-report
           path: test-results
 
-      - name: Rename to index.html (se existir)
+      - name: Make scripts executable
         run: |
-          if [ -f test-results/cucumber-report.html ]; then
-            cp test-results/cucumber-report.html test-results/index.html
-          fi
-      
-      - name: Ensure JSON report is accessible
-        run: |
-          mkdir -p test-results
+          chmod +x .github/scripts/*.sh
 
-          if [[ -f test-results/cucumber-report.json ]]; then
-            cp test-results/cucumber-report.json test-results/report.json
-          else
-            echo "⚠️ Aviso: cucumber-report.json não encontrado, pulando rename."
-          fi
+      - name: Prepare HTML & JSON for Pages
+        run: ./.github/scripts/prepare_reports.sh
 
-      - name: Deploy GitHub Pages (tag)
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        continue-on-error: true
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
           publish_dir: test-results
-          destination_dir: ${{ github.ref_name }}
-          force_orphan: true
-          keep_files: true
-
-      - name: Deploy GitHub Pages (root)
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        continue-on-error: true
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: test-results
           force_orphan: true
           keep_files: true
