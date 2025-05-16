@@ -1,7 +1,7 @@
 export class DataRequest {
   
   static generateProcessoNumber(): string {
-    return `TESTQAPROC${this.generateRandomNumericString(10)}`;
+    return `${this.generateRandomNumericString(20)}`;
   }
 
   static geneProcessoAcimaDoLimite(): string {
@@ -60,7 +60,7 @@ export class DataRequest {
   }
 
   static generateDepositoId(): string {
-    return `TESTQADEPID${this.generateRandomNumericString(9)}`;
+    return `${this.generateRandomNumericString(20)}`;
   }
 
   static generateDepositoIdFixo(): string {
