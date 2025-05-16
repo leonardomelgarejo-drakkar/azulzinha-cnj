@@ -34,6 +34,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Torna script executável
+        run: chmod +x ./.github/scripts/run_cucumber.sh        
+
       - name: Setup Node.js (com cache de npm)
         uses: actions/setup-node@v4
         with:
@@ -75,19 +78,7 @@ jobs:
           BASEURL: ${{ secrets.BASEURL }}
           RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
           ENV: test
-          npm_config_TAGS: "${{ github.event.inputs.tags }}"
-        run: |
-          TAGS_OPTION=""
-          if [[ -n "${{ github.event.inputs.tags }}" ]]; then
-            TAGS_OPTION="--TAGS=${{ github.event.inputs.tags }}"
-          fi
-
-          npm test $TAGS_OPTION --exit | tee output.log
-
-          if grep -q "failed" output.log; then
-            echo "Testes falharam!"
-            exit 1
-          fi
+        run: ./.github/scripts/run_cucumber.sh "${{ github.event.inputs.tags }}"
 
       - name: Criar ou reabrir bug no ClickUp para cada cenário com falha
         if: failure()
