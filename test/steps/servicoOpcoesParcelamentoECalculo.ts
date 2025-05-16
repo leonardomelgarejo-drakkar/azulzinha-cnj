@@ -90,6 +90,11 @@ Then('automaticamente o estado é carregado com {string}', { timeout: timeout },
   await assert.assertElementContains(estadoTitularCartao, estadoTitular);
 });
 
+Then('tela é recarregada com a mensagem {string}', { timeout: timeout }, async function (pagamentoNegado: string) {
+  const pagamentoNegadoCartao = await depositoJudicialPage.getPagamentoNegado();
+  await assert.assertElementContains(pagamentoNegadoCartao, pagamentoNegado);
+});
+
 Then('a máscara do tooltip de serviço de convêniencia está correta', { timeout: timeout }, async function () {
   const toolTipConveniencia = await depositoJudicialPage.getToolTipConveniencia();
   await assert.assertElementContains(toolTipConveniencia, "O que é o serviço de conveniência?");

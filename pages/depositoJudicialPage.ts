@@ -54,6 +54,7 @@ export default class DepositoJudicialPage {
     testIdServicoConvenienciaTitularCartao: "payment-resume-service-rate",
     testIdTotalPagamentoCartao: "payment-resume-final-total-value",
     testIdEfetuarPagamento: "btn-confirmPayment-makePayment",
+    testIdDetalhePagamento: "DetalhePagamento",
     umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1"
   }
 
@@ -99,6 +100,10 @@ export default class DepositoJudicialPage {
 
   async getEstadoTitularCartao(){
     return await this.base.getByText(this.Elements.estadoTitularCartaoText);
+  }
+
+  async getPagamentoNegado(){
+    return await this.base.getByTestId(this.Elements.testIdDetalhePagamento);
   }
 
   async getToolTipConveniencia(){
