@@ -5,7 +5,7 @@ Feature: Tela de Dados do Cartão
      Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
        And a página do cadastro de depósito é acessada
-       And seleciona quantidade de parcelas igual 1 x de R$ 526,89
+       And seleciona quantidade de parcelas igual 1 x
        And clica no botão continuar
        And altera quantidade de parcelas para 2x R$263,71
       Then confirma a alteração para '2x de  R$ 263,71'
@@ -18,7 +18,7 @@ Feature: Tela de Dados do Cartão
      Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
        And a página do cadastro de depósito é acessada
-       And seleciona quantidade de parcelas igual 1 x de R$ 526,89
+       And seleciona quantidade de parcelas igual 1 x
        And clica no botão continuar
        And preenche o número do cartão com '5555555555555555'
        And preenche a validade com '12/2030'
@@ -31,7 +31,7 @@ Feature: Tela de Dados do Cartão
      Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
        And a página do cadastro de depósito é acessada
-       And seleciona quantidade de parcelas igual 1 x de R$ 526,89
+       And seleciona quantidade de parcelas igual 1 x
        And clica no botão continuar
        And preenche o número do cartão com '5555555555555555'
        And preenche a validade com '12/2030'

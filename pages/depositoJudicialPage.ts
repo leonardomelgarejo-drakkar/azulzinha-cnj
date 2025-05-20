@@ -24,7 +24,6 @@ export default class DepositoJudicialPage {
     proximoText: "Proximo",
     opcaoQuantidadeParcelasText: "Select an option",
     quantidadeParcelas2xText: "2x de R$ 263,71",
-    telefoneDepositanteByText: "(51) 98531-",
     emailDepositanteByText: "qa.depositante@test.com",
     cpfTitularCartaoText: "CPF do titular ou CNPJ97.855.",
     estadoTitularCartaoText: "Rio Grande do Sul (RS)",
@@ -55,7 +54,10 @@ export default class DepositoJudicialPage {
     testIdTotalPagamentoCartao: "payment-resume-final-total-value",
     testIdEfetuarPagamento: "btn-confirmPayment-makePayment",
     testIdDetalhePagamento: "DetalhePagamento",
-    umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1"
+    testIdPagamentoAprovado: "ConcluidoPagamento",
+    testIdTelefoneDepositante: "TelefoneDepositante",
+    umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1",
+    duasParcelasLocator: "#b4-b3-l1-11_1-Checkbox1"
   }
 
   async goto(BASEURL: string){
@@ -102,8 +104,12 @@ export default class DepositoJudicialPage {
     return await this.base.getByText(this.Elements.estadoTitularCartaoText);
   }
 
-  async getPagamentoNegado(){
-    return await this.base.getByTestId(this.Elements.testIdDetalhePagamento);
+  async getPagamentoNegado(erroMessage: string){
+    return await this.base.getByText(erroMessage);
+  }
+
+  async getPagamentoAprovado(){
+    return await this.base.getByTestId(this.Elements.testIdPagamentoAprovado);
   }
 
   async getToolTipConveniencia(){
@@ -116,10 +122,14 @@ export default class DepositoJudicialPage {
     return await text;
   }
 
-  async selecionaQuantidadeDeParcelas() {
+  async selecionaQuantidadeDeParcelas1x() {
     const text = this.base.waitAndClick(this.Elements.umaParcelaLocator);
 
     return await text;
+  }
+
+  async selecionaQuantidadeDeParcelas2x() {
+    this.base.waitAndClick(this.Elements.duasParcelasLocator);
   }
 
   async clicaContinuar() {
@@ -142,7 +152,7 @@ export default class DepositoJudicialPage {
     await this.base.waitAndClickGetByRole(this.Elements.buttonRoleType, this.Elements.opcaoQuantidadeParcelasText);
   }
 
-  async selecionaQuantidadeDeParcelas2x() {
+  async alterarQuantidadeDeParcelas2x() {
     await this.base.waitAndClickGetByRoleWithoutReturn(this.Elements.optionRoleType, this.Elements.quantidadeParcelas2xText);
   }
 
@@ -253,7 +263,7 @@ export default class DepositoJudicialPage {
   }
 
   async getTelefoneDepositante(){
-    return await this.base.getByText(this.Elements.telefoneDepositanteByText);
+    return await this.base.getByTestId(this.Elements.testIdTelefoneDepositante);
   }
 
   async getEmailDepositante(){

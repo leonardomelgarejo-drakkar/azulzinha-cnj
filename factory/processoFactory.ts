@@ -283,25 +283,48 @@ export class ProcessoFactory {
 
   static geraProcessoComValorDepositoCodigoProcessoFixo(valor: number): ProcessoJudicial {
     return new ProcessoJudicial.Builder()
-      .setProcesso(DataRequest.generateDepositoIdFixo())
+      .setProcesso("00000054819005010010")
       .setAutor({
         nome: "TESTQANAME João Silva",
-        documento: { tipo: "CPF", numero: "21363842528" },
-        "e-mail": "qa.autor@test.com",
-        telefone: "51985319314",
+        documento: { tipo: "CPF", numero: "75266722908" }
       })
       .setReu({
         nome: "TESTQANAME Roberto Lima",
-        documento: { tipo: "CPF", numero: "91616544422" }
+        documento: { tipo: "CPF", numero: "58931988087" }
       })
       .setDepositante({
         nome: "QA Depositante",
         documento: { tipo: "CNPJ",numero: "97855495000172" },
         "e-mail": "qa.depositante@test.com",
-        telefone: "51985319316",
+        telefone: "45999999999",
       })
       .setDeposito({
-        id: DataRequest.generateDepositoId(),
+        id: "0000046545642726",
+        finalidade: "GARANTIA",
+        valor: valor,
+        observacoes: "TESTQA"})
+      .build();
+  }
+
+  static geraProcessoComValorDepositoCodigoProcessoFixoComLetras(valor: number): ProcessoJudicial {
+    return new ProcessoJudicial.Builder()
+      .setProcesso("TEST0054819005010010")
+      .setAutor({
+        nome: "TESTQANAME João Silva",
+        documento: { tipo: "CPF", numero: "75266722908" }
+      })
+      .setReu({
+        nome: "TESTQANAME Roberto Lima",
+        documento: { tipo: "CPF", numero: "58931988087" }
+      })
+      .setDepositante({
+        nome: "QA Depositante",
+        documento: { tipo: "CNPJ",numero: "97855495000172" },
+        "e-mail": "qa.depositante@test.com",
+        telefone: "45999999999",
+      })
+      .setDeposito({
+        id: "TEST046545642726",
         finalidade: "GARANTIA",
         valor: valor,
         observacoes: "TESTQA"})

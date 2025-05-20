@@ -72,7 +72,6 @@ jobs:
       - name: Make scripts executable
         run: |
           chmod +x .github/scripts/*.sh
-
       - name: Setup Node.js (with npm cache)
         uses: actions/setup-node@v4
         with:
@@ -83,7 +82,6 @@ jobs:
         run: |
           npm ci
           npm install --save-dev @types/node
-
       - name: Cache Playwright Chromium
         uses: actions/cache@v3
         with:
@@ -91,7 +89,6 @@ jobs:
           key: ${{ runner.os }}-playwright-chromium-browsers-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-chromium-browsers-
-
       - name: Install Chromium + deps
         run: npx playwright install --with-deps chromium
 
@@ -146,7 +143,6 @@ jobs:
       - name: Make scripts executable
         run: |
           chmod +x .github/scripts/*.sh
-
       - name: Prepare HTML & JSON for Pages
         run: ./.github/scripts/prepare_reports.sh
 

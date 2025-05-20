@@ -33,6 +33,16 @@ Given('que a cobrança de depósito judicial fixo de valor R${string} foi cadast
   this.endpointPagamento = responseBody.endpointPagamento;
 });
 
+Given('que a cobrança de depósito judicial fixo, com letras, de valor R${string} foi cadastrada com sucesso', { timeout: timeout }, async function (valorDeposito: string) {
+  valorDepositoFluxo = Number(valorDeposito);
+  const processo = ProcessoFactory.geraProcessoComValorDepositoCodigoProcessoFixoComLetras(valorDepositoFluxo);
+  const requestData = JSON.stringify(processo);
+  
+  const { responseBody } = await cadastrarDepositoJudicial(requestData, 1, this);
+  
+  this.endpointPagamento = responseBody.endpointPagamento;
+});
+
 When('o usuário acessa o link do cadastro judicial', { timeout: timeout }, async function () {
   depositoJudicialPage = new DepositoJudicialPage(fixture.page);
   assert = new Assert(fixture.page);
@@ -91,8 +101,13 @@ Then('automaticamente o estado é carregado com {string}', { timeout: timeout },
 });
 
 Then('tela é recarregada com a mensagem {string}', { timeout: timeout }, async function (pagamentoNegado: string) {
-  const pagamentoNegadoCartao = await depositoJudicialPage.getPagamentoNegado();
+  const pagamentoNegadoCartao = await depositoJudicialPage.getPagamentoNegado(pagamentoNegado);
   await assert.assertElementContains(pagamentoNegadoCartao, pagamentoNegado);
+});
+
+Then('tela é recarregada com a mensagem Seu pagamento foi {string}', { timeout: timeout }, async function (pagamentoAprovado: string) {
+  const pagamentoAprovadoCartao = await depositoJudicialPage.getPagamentoAprovado();
+  await assert.assertElementContains(pagamentoAprovadoCartao, pagamentoAprovado);
 });
 
 Then('a máscara do tooltip de serviço de convêniencia está correta', { timeout: timeout }, async function () {
@@ -184,8 +199,12 @@ Then('a quantidade de parcelas é {string}', { timeout: timeout }, async functio
   await assert.assertElementContains(textQuantidadeParcelas, textNumParcelas);
 });
 
-When('seleciona quantidade de parcelas igual 1 x de R$ 526,89', { timeout: timeout }, async function () {
-  await depositoJudicialPage.selecionaQuantidadeDeParcelas();
+When('seleciona quantidade de parcelas igual 1 x', { timeout: timeout }, async function () {
+  await depositoJudicialPage.selecionaQuantidadeDeParcelas1x();
+});
+
+When('seleciona quantidade de parcelas igual 2 x', { timeout: timeout }, async function () {
+  await depositoJudicialPage.selecionaQuantidadeDeParcelas2x();
 });
 
 When('clica no botão continuar', { timeout: timeout }, async function () {
@@ -230,7 +249,7 @@ When('preenche o numero com {string}', { timeout: timeout }, async function (num
 
 When('altera quantidade de parcelas para 2x R$263,71', { timeout: timeout }, async function () {
   await depositoJudicialPage.clicaQuantidadeParcelas();
-  await depositoJudicialPage.selecionaQuantidadeDeParcelas2x();
+  await depositoJudicialPage.alterarQuantidadeDeParcelas2x();
 });
 
 Then('confirma a alteração para {string}', { timeout: timeout }, async function (novaQuantidadeParcelas: string) {
