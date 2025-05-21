@@ -14,7 +14,7 @@ export async function cadastrarDepositoJudicial(
   quantidadeExecucoes: number,
   world?: any
 ): Promise<{ response: APIResponse; responseBody: any; requestTime: number }> {
-  
+
   const baseURL = process.env.BASEURL;
   const resourcePath = process.env.RESOURCE_PATH_DEPOSITO_JUDICIAL;
   const url = `${baseURL}${resourcePath}`;
@@ -39,12 +39,15 @@ export async function cadastrarDepositoJudicial(
     requestTime = Number((requestEndTime - requestStartTime).toFixed(2));
 
     if (world && world.attach) {
-      world.attach(`Execução número ${i + 1} - Raw Request: ${JSON.stringify(requestData, null, 2)}`, 'application/json');
-      world.attach(`Execução número ${i + 1} - Status Code: ${response.status()}`, 'text/plain');
-      
       const jsonResponse = await response.json();
-      world.attach(`Execução número ${i + 1} - Response: ${JSON.stringify(jsonResponse, null, 2)}`, 'application/json');
-      world.attach(`Execução número ${i + 1} - Tempo de Execução: ${requestTime} ms`, 'text/plain');
+
+      const logObject = {
+        execucao: `Execução número ${i + 1}`,
+        request: JSON.parse(requestData),
+        response: jsonResponse,
+      };
+
+      world.attach(JSON.stringify(logObject, null, 2), 'application/json');
     }
   }
 

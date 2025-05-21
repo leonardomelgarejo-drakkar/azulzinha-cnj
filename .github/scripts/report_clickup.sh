@@ -3,9 +3,11 @@ set -euo pipefail
 
 TMP_DIR="tmp"
 SCENARIO_CSV="$TMP_DIR/scenario_ids.csv"
+ATTACH_CSV="$TMP_DIR/attachments_urls.csv"
 
 mkdir -p "$TMP_DIR"
 > "$SCENARIO_CSV"
+> "$ATTACH_CSV"
 
 echo "🔍 Reportando Test Scenarios em ClickUp…"
 readarray -t FEATURES < <(jq -r '.[].name' test-results/cucumber-report.json | sort -u)
@@ -96,23 +98,25 @@ for idx in "${!SCENARIOS[@]}"; do
   EXISTING_STATUS=$(echo "$SUBS" | jq -r --arg name "$TASK_NAME" \
     '.[] | select(.name==$name) | .status // empty')
 
+  # coleta de logs e mensagens de erro para comentário
   RAW=$(jq -r --arg s "$SCENARIO" '
-    .[] 
-    | .elements[] 
-    | select(.name==$s) 
-    | .steps[] 
-    | select((.keyword|test("^(Before|After)";"i"))|not) 
-    | .keyword + " " + .name 
-      + (if .result.status=="failed" 
-         then "\nError: " + (.result.error_message|gsub("\r?\n";"\n")) 
-         else "" 
+    .[]
+    | .elements[]
+    | select(.name==$s)
+    | .steps[]
+    | select((.keyword|test("^(Before|After)";"i"))|not)
+    | .keyword + " " + .name
+      + (if .result.status=="failed"
+         then "\nError: " + (.result.error_message|gsub("\r?\n";"\n"))
+         else ""
         end)
   ' test-results/cucumber-report.json)
   COMMENT="Scenario: $SCENARIO"$'\n'"$RAW"
 
+  # extrai todos os embeddings (prints, vídeos, etc)
   readarray -t EMBEDS < <(jq -r --arg s "$SCENARIO" '
-    .[] 
-    | select([.elements[].name]|index($s)) 
+    .[]
+    | select([.elements[].name]|index($s))
     | (
         (.elements[] | select(.name==$s) | .steps[]?.embeddings[]?),
         (.elements[] | select(.name==$s) | .embeddings[]?)
@@ -143,6 +147,7 @@ for idx in "${!SCENARIOS[@]}"; do
     ATTACH_FILES+=( "$FILE" )
   done
 
+  # cria ou atualiza subtask e anexa arquivos, capturando o campo `url`
   if [[ -n "$TASK_ID" ]]; then
     if [[ "$EXISTING_STATUS" != "$NEW_STATUS" ]]; then
       echo "🔄 Atualizando status: $EXISTING_STATUS → $NEW_STATUS"
@@ -150,17 +155,10 @@ for idx in "${!SCENARIOS[@]}"; do
         -H "Authorization: $CLICKUP_TOKEN" \
         -H "Content-Type: application/json" \
         -d "{\"status\":\"$NEW_STATUS\"}"
-      for F in "${ATTACH_FILES[@]}"; do
-        echo "📎 Anexando $F"
-        curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-          -H "Authorization: $CLICKUP_TOKEN" \
-          -F "attachment=@${F}"
-      done
-      [[ "$NEW_STATUS" == "rejected" ]] && \
-        curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
-          -H "Authorization: $CLICKUP_TOKEN" \
-          -H "Content-Type: application/json" \
-          -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
+      curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/comment" \
+        -H "Authorization: $CLICKUP_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d "$(jq -n --arg text "$COMMENT" '{comment_text:$text}')"
     else
       echo "✅ Já está em '$EXISTING_STATUS'"
     fi
@@ -178,13 +176,16 @@ for idx in "${!SCENARIOS[@]}"; do
       -H "Content-Type: application/json" \
       -d "$PAYLOAD")
     TASK_ID=$(echo "$CREATED" | jq -r '.id')
-    for F in "${ATTACH_FILES[@]}"; do
-      echo "📎 Anexando $F"
-      curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
-        -H "Authorization: $CLICKUP_TOKEN" \
-        -F "attachment=@${F}"
-    done
   fi
+
+  for F in "${ATTACH_FILES[@]}"; do
+    echo "📎 Anexando $F"
+    ATTACH_RES=$(curl -s -X POST "https://api.clickup.com/api/v2/task/$TASK_ID/attachment" \
+      -H "Authorization: $CLICKUP_TOKEN" \
+      -F "attachment=@${F}")
+    URL=$(echo "$ATTACH_RES" | jq -r .url)
+    echo "${FEATURE}|${SCENARIO}|${URL}" >> "$ATTACH_CSV"
+  done
 done
 
 echo ""

@@ -1,6 +1,6 @@
 Feature: Cálculo Parcelas de Cobranca Deposito Judicial
 
-  @ui @calculo-parcelamento @1x
+  @ui @calculo-parcelamento @1x @smoke
   Scenario: 01-Verificar cálculo do parcelamento em 1 x
      Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial

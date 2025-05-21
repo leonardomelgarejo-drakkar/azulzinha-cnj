@@ -1,6 +1,6 @@
 Feature: Cadastro Cobranca Deposito Judicial
 
-  @api @deposito-judicial @completo @e2e-test @smoke-test
+  @api @deposito-judicial @completo @smoke
   Scenario: 01-Tentativa de cadastrar cobrança de depósito judicial completa
     Given o usuário preenche todos os campos obrigatórios
     When a requisição de inclusão é realizada 1 vez es

@@ -72,6 +72,7 @@ jobs:
       - name: Make scripts executable
         run: |
           chmod +x .github/scripts/*.sh
+
       - name: Setup Node.js (with npm cache)
         uses: actions/setup-node@v4
         with:
@@ -107,7 +108,7 @@ jobs:
         run: ./.github/scripts/clickup_fail.sh
 
       - name: Report Test Scenarios & Cases in ClickUp
-        if: ${{ always() && github.event.inputs.report_scenarios == 'yes' }}
+        if: ${{ always() && (github.event.inputs.report_scenarios == 'yes' || github.event.inputs.qa_report == 'yes') }}
         run: ./.github/scripts/report_clickup.sh
 
       - name: QA Report & Update ClickUp

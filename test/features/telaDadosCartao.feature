@@ -1,6 +1,6 @@
 Feature: Tela de Dados do Cartão
 
-  @ui @tela-dados-cartao @alteracao-quantidade-parcelas
+  @ui @tela-dados-cartao @alteracao-quantidade-parcelas @smoke
   Scenario: 01-Alteração de quantidade de parcelas selecionadas
      Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial

@@ -1,6 +1,6 @@
 Feature: Tela Detalhamento da cobrança
 
-  @ui @tela-detalhamento-cobranca @stepper @e2e-test
+  @ui @tela-detalhamento-cobranca @stepper @smoke
   Scenario: 01-Validar máscaras do stepper
      Given que a cobrança de depósito judicial fixo de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -11,7 +11,7 @@ Feature: Tela Detalhamento da cobrança
        And o quarto passo é 'Forma de pagamento'
        And o quinto passo é 'Confirmação'
 
-  @ui @tela-detalhamento-cobranca @dados-processo @e2e-test
+  @ui @tela-detalhamento-cobranca @dados-processo
   Scenario: 02-Validar máscaras de dados dos detalhes do processo
      Given que a cobrança de depósito judicial fixo de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
@@ -28,7 +28,7 @@ Feature: Tela Detalhamento da cobrança
        And o réu é 'TESTQANAME Roberto Lima'
        And o documento do réu é '589.319.880-87'
 
-  @ui @tela-detalhamento-cobranca @dados-forma-pagamento @e2e-test
+  @ui @tela-detalhamento-cobranca @dados-forma-pagamento
   Scenario: 03-Validar máscaras de dados de forma de pagamento
      Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial

@@ -1,6 +1,6 @@
   Feature: Checkout Aceite Termo
   
-  @ui @checkout @com-aceite-termo
+  @ui @checkout @com-aceite-termo @smoke
   Scenario: 01-Habilita botão efetuar pagamento ao aceitar o termo de uso
      Given que a cobrança de depósito judicial de valor R$'526.10' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial
