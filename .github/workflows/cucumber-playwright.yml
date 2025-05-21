@@ -106,13 +106,9 @@ jobs:
         if: failure()
         run: ./.github/scripts/clickup_fail.sh
 
-      - name: Report Test Scenarios in ClickUp
+      - name: Report Test Scenarios & Cases in ClickUp
         if: ${{ always() && github.event.inputs.report_scenarios == 'yes' }}
-        run: ./.github/scripts/report_scenarios.sh
-
-      - name: Report Test Cases in ClickUp
-        if: ${{ always() && github.event.inputs.report_scenarios == 'yes' }}
-        run: ./.github/scripts/report_test_cases.sh
+        run: ./.github/scripts/report_clickup.sh
 
       - name: QA Report & Update ClickUp
         if: ${{ always() && github.event.inputs.qa_report == 'yes' }}
