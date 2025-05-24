@@ -7,13 +7,21 @@ on:
     branches: [ main ]
   workflow_dispatch:
     inputs:
-      tags:
+      env:
+        description: 'Select Environment'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - 'dev'
+          - 'test'
+      cucumber_tags:
         description: 'Cucumber Tags'
         required: false
         default: ''
       report_scenarios:
         description: 'Report Test Scenarios and Test Cases in ClickUp?'
-        required: true
+        required: false
         default: 'no'
         type: choice
         options:
@@ -21,7 +29,7 @@ on:
           - 'no'
       qa_report:
         description: 'Generate QA Report?'
-        required: true
+        required: false
         default: 'no'
         type: choice
         options:
@@ -42,11 +50,11 @@ jobs:
     # --- centralized environment variables ---
     env:
       # test credentials and configuration
-      USER_NAME: ${{ secrets.USER_NAME }}
-      PASSWORD: ${{ secrets.PASSWORD }}
-      BASEURL: ${{ secrets.BASEURL }}
+      ENV: ${{ github.event.inputs.env || 'test' }}
+      USER_NAME: ${{ secrets[format('USER_NAME_{0}', github.event.inputs.env || 'test') ] }}
+      PASSWORD: ${{ secrets[format('PASSWORD_{0}', github.event.inputs.env || 'test') ] }}
+      BASEURL:  ${{ secrets[format('BASEURL_{0}', github.event.inputs.env || 'test') ] }}
       RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
-      ENV: test
 
       # ClickUp (bug reopening and reporting)
       CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
@@ -104,7 +112,7 @@ jobs:
 
       - name: Run Cucumber tests
         id: run_cucumber
-        run: ./.github/scripts/run_cucumber.sh "${{ github.event.inputs.tags }}"
+        run: ./.github/scripts/run_cucumber.sh "${{ github.event.inputs.cucumber_tags }}"
 
       - name: Create or reopen bug in ClickUp for each failed scenario
         if: failure()
