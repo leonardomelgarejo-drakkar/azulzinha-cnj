@@ -1,144 +1,113 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Valida variáveis de ambiente obrigatórias
-: "${CLICKUP_TOKEN:?Environment variable CLICKUP_TOKEN is not set}"
-: "${WORKSPACE_ID:?Environment variable WORKSPACE_ID is not set}"
-: "${DOC_ID:?Environment variable DOC_ID is not set}"
-: "${PAGE_ID:?Environment variable PAGE_ID is not be set}"
+# script para criar ou reabrir bugs no ClickUp para cenários com falha
+# espera as seguintes variáveis de ambiente definidas:
+# CLICKUP_LIST_ID, CLICKUP_API_TOKEN, GITHUB_SERVER_URL, GITHUB_REPOSITORY, GITHUB_RUN_ID
 
-REPORT_JSON="test-results/cucumber-report.json"
-if [[ ! -f "$REPORT_JSON" ]]; then
-  echo "❌ Arquivo $REPORT_JSON não encontrado!" >&2
-  exit 1
+# 1) Extrai Feature e Scenario juntos, separados por '||'
+readarray -t FAILED_ITEMS < <(
+  jq -r '
+    .[] as $f
+    | $f.elements[]?
+    | select(.steps[].result.status=="failed")
+    | "\($f.name)||\(.name)"
+  ' test-results/cucumber-report.json | sort -u
+)
+
+if [ ${#FAILED_ITEMS[@]} -eq 0 ]; then
+  echo "✅ Nenhum cenário com falha encontrado."
+  exit 0
 fi
 
-echo "📝 Gerando QA Report em Markdown…"
-mkdir -p tmp
+for ITEM in "${FAILED_ITEMS[@]}"; do
+  FEATURE="${ITEM%%||*}"
+  SCENARIO="${ITEM##*||}"
+  echo "🔍 Verificando tarefas existentes para: $FEATURE — $SCENARIO"
 
-# 1) Indicadores de Test Scenarios (features)
-TOTAL_SCENARIOS=$(jq 'length' "$REPORT_JSON")
-FAILED_SCENARIOS=$(jq '[ .[] | select((.elements?[]? | select(.steps?[]? | .result?.status? == "failed")))] | length' "$REPORT_JSON")
-EXECUTED_SCENARIOS=$((TOTAL_SCENARIOS - FAILED_SCENARIOS))
+  # 2) Busca tasks que contenham o nome do scenario
+  EXISTING_TASKS=$(curl -s -G "https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ID}/task" \
+    --data-urlencode "search=$SCENARIO" \
+    --data-urlencode "include_closed=true" \
+    -H "Authorization: ${CLICKUP_API_TOKEN}" \
+    -H "Content-Type: application/json")
 
-# 2) Indicadores de Test Cases (cenários únicos)
-TOTAL_CASES=$(jq '[ .[].elements?[]?.name ] | unique | length' "$REPORT_JSON")
-FAILED_CASES=$(jq '[ .[].elements?[]? | select(.steps?[]? | .result?.status? == "failed") | .name ] | unique | length' "$REPORT_JSON")
-EXECUTED_CASES=$((TOTAL_CASES - FAILED_CASES))
+  MATCHING_TASK=$(echo "$EXISTING_TASKS" | jq -r --arg scenario "$SCENARIO" '
+    .tasks[] | select(.name | test($scenario)) | {id: .id, status: .status.status}
+  ')
+  MATCHING_TASK_ID=$(echo "$MATCHING_TASK" | jq -r '.id')
+  MATCHING_TASK_STATUS=$(echo "$MATCHING_TASK" | jq -r '.status')
 
-# 3) Monta o Markdown inicial
-cat <<EOF > tmp/qa_report.md
-## Test Results
+  if [ -n "$MATCHING_TASK_ID" ]; then
+    echo "🔎 Tarefa encontrada: ID=$MATCHING_TASK_ID com status=$MATCHING_TASK_STATUS"
 
-![Totals](https://img.shields.io/badge/Totals-green?style=for-the-badge)
-| **Type**           | **Total** | **Executed** | **Failed** |
-|:------------------:|:---------:|:------------:|:----------:|
-| Test_Scenarios     | $TOTAL_SCENARIOS | $EXECUTED_SCENARIOS | $FAILED_SCENARIOS |
-| Test_Cases         | $TOTAL_CASES     | $EXECUTED_CASES     | $FAILED_CASES     |
+    # 3) Se estiver fechada ou in uat, reabre e comenta
+    if [[ "$MATCHING_TASK_STATUS" == "Closed" || "$MATCHING_TASK_STATUS" == "in uat" ]]; then
+      echo "♻️ Alterando status para BACKLOG…"
+      curl -s -X PUT "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID" \
+        -H "Authorization: ${CLICKUP_API_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d '{"status":"backlog"}'
 
-![Cases per Scenario](https://img.shields.io/badge/Cases%20Per%20Scenario-purple?style=for-the-badge)
-| **Scenario**      | **Passed**   | **Failed** |
-|:-----------------:|:-----------:|:----------:|
-EOF
+      echo "💬 Adicionando comentário com o passo que falhou…"
+      FAILED_STEP=$(jq -r --arg scenario "$SCENARIO" '
+        .[]?.elements[]?
+        | select(.name == $scenario)
+        | .steps[]
+        | select(.result.status=="failed")
+        | .keyword + .name + " 💥 " + (.result.error_message // "Erro não especificado")
+      ' test-results/cucumber-report.json)
+      COMMENT_TEXT=$(printf "🔄 Bug reaberto no pipeline.\n\n📋 Passo que falhou:\n%s" "$FAILED_STEP")
 
-# 4) Preenche a tabela “Number of test cases per Test Scenario”
-mapfile -t FEATURES < <(jq -r '.[].name // empty | unique' "$REPORT_JSON")
-for FEATURE in "${FEATURES[@]}"; do
-  TOTAL=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements?[]?.name ] | unique | length' "$REPORT_JSON")
-  FAILED=$(jq --arg f "$FEATURE" '[ .[] | select(.name==$f) | .elements?[]? | select(.steps?[]? | .result?.status? == "failed") | .name ] | unique | length' "$REPORT_JSON")
-  PASSED=$((TOTAL - FAILED))
-  echo "| $FEATURE | $PASSED | $FAILED |" >> tmp/qa_report.md
-done
-
-# 5) Test Evidence links extraídos dos attachments
-ATTACH_CSV="tmp/attachments_urls.csv"
-if [[ -f "$ATTACH_CSV" ]]; then
-  declare -A EVIDENCES
-  declare -A COUNT
-
-  # 5.1) Acumula URLs por FEATURE|||SCENARIO
-  while IFS='|' read -r FEATURE SCENARIO URL; do
-    KEY="${FEATURE}|||${SCENARIO}"
-    if [[ -n "${EVIDENCES[$KEY]:-}" ]]; then
-      EVIDENCES[$KEY]="${EVIDENCES[$KEY]}||$URL"
-      COUNT[$KEY]=$((COUNT[$KEY] + 1))
+      curl -s -X POST "https://api.clickup.com/api/v2/task/$MATCHING_TASK_ID/comment" \
+        -H "Authorization: ${CLICKUP_API_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d "$(jq -n --arg text "$COMMENT_TEXT" '{notify_all:true,comment_text:$text}')"
     else
-      EVIDENCES[$KEY]="$URL"
-      COUNT[$KEY]=1
+      echo "⚠️ Bug já existe com status ativo ($MATCHING_TASK_STATUS) – sem alterações."
     fi
-  done < "$ATTACH_CSV"
 
-  # 5.2) Para cada FEATURE em ordem alfabética
-  mapfile -t FEATURES < <(
-    printf '%s\n' "${!EVIDENCES[@]}" |
-    cut -d '|' -f1 |
-    sort -u
-  )
+  else
+    echo "🐞 Nenhuma tarefa encontrada – criando nova para: $FEATURE — $SCENARIO"
 
-  for FEATURE in "${FEATURES[@]}"; do
-    # Descobre cenários deste FEATURE e calcula máximo de evidências
-    mapfile -t SCENARIOS < <(
-      printf '%s\n' "${!EVIDENCES[@]}" |
-      grep -F "${FEATURE}|||" |
-      cut -d '|' -f4 |
-      sort -u
+    # 4) Monta descrição com passos
+    STEPS=$(jq -r --arg scenario "$SCENARIO" '
+      .[]?.elements[]?
+      | select(.name == $scenario)
+      | .steps[]
+      | "- " + .keyword + .name + " (" + .result.status + ")"
+        + (if .result.error_message then "\n  💥 " + ( .result.error_message | gsub("\n";" ") | gsub("\r";"") ) else "" end)
+    ' test-results/cucumber-report.json)
+
+    DESCRIPTION=$(printf "Falha no cenário automatizado: \"%s\" — Feature: \"%s\"\n\n🔗 Workflow: %s/%s/actions/runs/%s\n\n📋 Passos:\n%s" \
+      "$SCENARIO" "$FEATURE" "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$STEPS")
+
+    echo "📝 Criando nova tarefa no ClickUp…"
+    NEW_TASK_RESPONSE=$(curl -s -X POST "https://api.clickup.com/api/v2/list/${CLICKUP_LIST_ID}/task" \
+      -H "Authorization: ${CLICKUP_API_TOKEN}" \
+      -H "Content-Type: application/json" \
+      -d "$(jq -n \
+        --arg feature "$FEATURE" \
+        --arg scenario "$SCENARIO" \
+        --arg description "$DESCRIPTION" \
+        '{
+          name: ("CI Fail : " + $feature + " | " + $scenario),
+          description: $description,
+          status: "backlog",
+          priority: 3,
+          custom_item_id: 1003
+        }')"
     )
-    MAX=0
-    for SCENARIO in "${SCENARIOS[@]}"; do
-      CNT=${COUNT["${FEATURE}|||${SCENARIO}"]:-0}
-      ((CNT > MAX)) && MAX=$CNT
-    done
+    NEW_TASK_ID=$(echo "$NEW_TASK_RESPONSE" | jq -r '.id')
 
-    # Insere badge e cabeçalho dinâmico
-    {
-      echo ""
-      echo "![Test Evidence](https://img.shields.io/badge/Test%20Evidence-orange?style=for-the-badge)"
-      header="| Test Scenario       | Test Case            "
-      sep="|:-------------------:|:--------------------:"
-      for ((i=1; i<=MAX; i++)); do
-        header+="| Test Evidence $i "
-        sep+="|:---------------:"
-      done
-      header+="|"
-      sep+="|"
-      echo "$header"
-      echo "$sep"
-    } >> tmp/qa_report.md
-
-    # Preenche linhas
-    for SCENARIO in "${SCENARIOS[@]}"; do
-      KEY="${FEATURE}|||${SCENARIO}"
-      IFS='||' read -r -a URLS <<< "${EVIDENCES[$KEY]:-}"
-
-      line="| $FEATURE | $SCENARIO "
-      for url in "${URLS[@]}"; do
-        [[ -n "$url" ]] && line+="| [ver evidência]($url) " || line+="|  "
-      done
-
-      # preenche colunas vazias
-      for ((c=${#URLS[@]}; c<MAX; c++)); do
-        line+="|  "
-      done
-      line+="|"
-
-      echo "$line" >> tmp/qa_report.md
-    done
-  done
-else
-  echo "🔍 Nenhum attachment encontrado em $ATTACH_CSV"
-fi
-
-# 6) Atualiza documento no ClickUp
-echo "🔄 Atualizando ClickUp Doc com QA Report…"
-CONTENT=$(jq -Rs . tmp/qa_report.md)
-cat <<JSON > tmp/payload.json
-{"content_format":"text/md","content":$CONTENT}
-JSON
-
-curl -s -X PUT \
-  "https://api.clickup.com/api/v3/workspaces/${WORKSPACE_ID}/docs/${DOC_ID}/pages/${PAGE_ID}" \
-  -H "Authorization: ${CLICKUP_TOKEN}" \
-  -H "Content-Type: application/json" \
-  --data-binary @tmp/payload.json
-
-echo "✅ QA Report enviado para ClickUp"
+    # 5) Anexa relatório HTML, se existir
+    if [ -f test-results/cucumber-report.html ]; then
+      echo "📎 Anexando cucumber-report.html à tarefa $NEW_TASK_ID…"
+      curl -s -X POST "https://api.clickup.com/api/v2/task/$NEW_TASK_ID/attachment" \
+        -H "Authorization: ${CLICKUP_API_TOKEN}" \
+        -F "attachment=@test-results/cucumber-report.html"
+    else
+      echo "⚠️ Arquivo cucumber-report.html não encontrado – pulando anexo."
+    fi
+  fi
+done

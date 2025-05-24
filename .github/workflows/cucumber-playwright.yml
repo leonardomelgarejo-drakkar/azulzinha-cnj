@@ -99,6 +99,9 @@ jobs:
       - name: Prepare environment file
         run: ./.github/scripts/prepare_env.sh
 
+      - name: Detect CPU cores
+        run: echo "⚙️ $(nproc) núcleos disponíveis para execução paralela"
+
       - name: Run Cucumber tests
         id: run_cucumber
         run: ./.github/scripts/run_cucumber.sh "${{ github.event.inputs.tags }}"
