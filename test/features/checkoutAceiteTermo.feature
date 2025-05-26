@@ -46,6 +46,8 @@
        And clica no botão próximo
        And clica no checkbox concordando com os termos
        And clica no botão efetuar pagamento
+       And seleciona Status N - Negado
+       And clica no botão enviar
       Then tela é recarregada com a mensagem 'Erro no pagamento'
 
   @ui @checkout @pagamento-pos-aceite @pagamento-aprovado @1x
@@ -63,6 +65,8 @@
        And clica no botão próximo
        And clica no checkbox concordando com os termos
        And clica no botão efetuar pagamento
+       And seleciona Status Y - Sucesso
+       And clica no botão enviar
       Then tela é recarregada com a mensagem Seu pagamento foi 'concluído!'
 
 @ui @checkout @pagamento-pos-aceite @pagamento-aprovado @2x
@@ -80,4 +84,6 @@
        And clica no botão próximo
        And clica no checkbox concordando com os termos
        And clica no botão efetuar pagamento
+       And seleciona Status Y - Sucesso
+       And clica no botão enviar
       Then tela é recarregada com a mensagem Seu pagamento foi 'concluído!'

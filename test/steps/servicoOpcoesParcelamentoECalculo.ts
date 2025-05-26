@@ -203,6 +203,14 @@ When('seleciona quantidade de parcelas igual 1 x', { timeout: timeout }, async f
   await depositoJudicialPage.selecionaQuantidadeDeParcelas1x();
 });
 
+When('seleciona Status N - Negado', { timeout: timeout }, async function () {
+  await depositoJudicialPage.selecionaSimulador3DScomStatusNegado();
+});
+
+When('seleciona Status Y - Sucesso', { timeout: timeout }, async function () {
+  await depositoJudicialPage.selecionaSimulador3DScomStatusSucesso();
+});
+
 When('seleciona quantidade de parcelas igual 2 x', { timeout: timeout }, async function () {
   await depositoJudicialPage.selecionaQuantidadeDeParcelas2x();
 });
@@ -221,6 +229,11 @@ When('clica no checkbox concordando com os termos', { timeout: timeout }, async 
 
 When('clica no botão efetuar pagamento', { timeout: timeout }, async function () {
   await depositoJudicialPage.clicaEfetuarPagamento();
+});
+
+When('clica no botão enviar', { timeout: timeout }, async function () {
+  await depositoJudicialPage.clicaEnviarChallenge();
+  console.log("Debug");
 });
 
 When('tenta clicar no botão efetuar pagamento sem concordar com os termos', { timeout: timeout }, async function () {

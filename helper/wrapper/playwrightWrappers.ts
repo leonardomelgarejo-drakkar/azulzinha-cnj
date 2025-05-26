@@ -15,6 +15,16 @@ export default class PlaywrightWrapper {
         await element.click();
     }
 
+async waitAndClickWithChallenge(locator1: string, locator2: string, option: string) {
+    const frame = await this.page.locator(locator1).contentFrame();
+    const element = frame.locator(locator2);
+
+    await element.waitFor({ state: "visible" });
+    await element.scrollIntoViewIfNeeded();
+    await element.selectOption(option);
+}
+
+
     async waitAndClickGetByText(text: string) {
         const element = this.page.getByText(text);
         await element.waitFor({ state: "visible" });
@@ -32,7 +42,14 @@ export default class PlaywrightWrapper {
         const element = this.page.getByRole(roleType as any);
         await element.waitFor({ state: "visible" });
         await element.click();
+    }
 
+    async waitAndClickGetByRoleWithChallenge(locator1: string, roleType: string, role: string) {
+        const frame = this.page.locator(locator1).contentFrame();
+        const element = frame.getByRole(roleType as any, { name: role });
+        
+        await element.waitFor({ state: "visible" });
+        await element.click();
     }
 
     async waitAndClickGetByRoleWithoutReturn(roleType: string, role: string) {

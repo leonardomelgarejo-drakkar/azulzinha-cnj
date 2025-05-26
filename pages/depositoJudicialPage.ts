@@ -27,6 +27,7 @@ export default class DepositoJudicialPage {
     emailDepositanteByText: "qa.depositante@test.com",
     cpfTitularCartaoText: "CPF do titular ou CNPJ97.855.",
     estadoTitularCartaoText: "Rio Grande do Sul (RS)",
+    enviarText: "Enviar",
     testIdPrimeiroPasso: "ValidaçãoProcesso",
     testIdSegundoPasso: "Natureza do depósito",
     testIdTerceiroPasso: "InformaçõesDepósito",
@@ -57,7 +58,9 @@ export default class DepositoJudicialPage {
     testIdPagamentoAprovado: "ConcluidoPagamento",
     testIdTelefoneDepositante: "TelefoneDepositante",
     umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1",
-    duasParcelasLocator: "#b4-b3-l1-11_1-Checkbox1"
+    duasParcelasLocator: "#b4-b3-l1-11_1-Checkbox1",
+    challengeFrameLocator: "iframe[name='challengeFrame']",
+    resultFrameLocator: "#result"
   }
 
   async goto(BASEURL: string){
@@ -128,6 +131,14 @@ export default class DepositoJudicialPage {
     return await text;
   }
 
+  async selecionaSimulador3DScomStatusNegado() {
+    await this.base.waitAndClickWithChallenge(this.Elements.challengeFrameLocator, this.Elements.resultFrameLocator, "N");
+  }
+
+  async selecionaSimulador3DScomStatusSucesso() {
+    await this.base.waitAndClickWithChallenge(this.Elements.challengeFrameLocator, this.Elements.resultFrameLocator, "Y");
+  }
+
   async selecionaQuantidadeDeParcelas2x() {
     this.base.waitAndClick(this.Elements.duasParcelasLocator);
   }
@@ -146,6 +157,10 @@ export default class DepositoJudicialPage {
 
   async clicaEfetuarPagamento() {
     await this.base.clickByTestId(this.Elements.testIdEfetuarPagamento);
+  }
+
+  async clicaEnviarChallenge() {
+    await this.base.waitAndClickGetByRoleWithChallenge(this.Elements.challengeFrameLocator, this.Elements.buttonRoleType, this.Elements.enviarText);
   }
 
   async clicaQuantidadeParcelas() {
