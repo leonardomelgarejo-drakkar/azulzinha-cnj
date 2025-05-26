@@ -47,7 +47,7 @@ After({ tags: "@ui" }, async function ({ pickle }) {
   await context.tracing.stop({ path: path });
   await fixture.page.close();
   await context.close();
-  await this.attach(
+  this.attach(
     img, "image/png"
   );
   await this.attach(
