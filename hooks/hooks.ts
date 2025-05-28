@@ -16,7 +16,7 @@ BeforeAll(async function() {
 })
 
 Before({ tags: "@skip" }, async function () {
-  return "skipped";
+  return 'pending';
 });
 
 Before({ tags: "@ui" },async function ({ pickle }) {
@@ -38,22 +38,28 @@ Before({ tags: "@ui" },async function ({ pickle }) {
 })
 
 After({ tags: "@ui" }, async function ({ pickle }) {
-  let videoPath: string;
-  let img: Buffer;
+  if (!fixture.page || !fixture.page.screenshot) {
+    console.warn(`⚠️ Página não inicializada — pulando pós-condições de teardown para: ${pickle.name}`);
+    return;
+  }
+
   const path = `./test-results/report/trace/${pickle.id}.zip`;
-  img = await fixture.page.screenshot(
-      { path: `./test-results/report/screenshots/${pickle.name}.png`, type: "png" })
-  videoPath = await fixture.page.video().path();
-  await context.tracing.stop({ path: path });
+  const img = await fixture.page.screenshot({
+    path: `./test-results/report/screenshots/${pickle.name}.png`,
+    type: "png"
+  });
+  const videoPath = await fixture.page.video()?.path();
+
+  await context.tracing.stop({ path });
   await fixture.page.close();
   await context.close();
-  this.attach(
-    img, "image/png"
-  );
-  await this.attach(
-    fs.readFileSync(videoPath),
-    "video/webm"
-  );
+
+  this.attach(img, "image/png");
+
+  if (videoPath) {
+    const video = fs.readFileSync(videoPath);
+    await this.attach(video, "video/webm");
+  }
 });
 
 AfterAll(async function () {

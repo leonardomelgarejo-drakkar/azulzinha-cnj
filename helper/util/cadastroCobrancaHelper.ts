@@ -18,9 +18,6 @@ export async function cadastrarDepositoJudicial(
   const baseURL = process.env.BASEURL || "";
   const resourcePath = process.env.RESOURCE_PATH_DEPOSITO_JUDICIAL || "";
   const fullUrl = `${baseURL}${resourcePath}`;
-
-  console.log("fullUrl: " + fullUrl.length);
-
   const context: APIRequestContext = await request.newContext(); // sem baseURL
 
   let response: APIResponse;

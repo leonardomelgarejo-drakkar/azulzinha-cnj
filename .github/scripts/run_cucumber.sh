@@ -23,9 +23,6 @@ export ENV USER_NAME PASSWORD BASEURL
 
 # Debug das variáveis de ambiente
 echo "🔐 ENV: $ENV"
-echo "🔐 USER_NAME length: ${#USER_NAME}"
-echo "🔐 PASSWORD length: ${#PASSWORD}"
-echo "🔐 BASEURL: $BASEURL"
 
 # Executa os testes com Cucumber
 npx cucumber-js --config=config/cucumber.js "${TAGS_OPTION[@]}" --parallel "$PARALLEL" | tee output.log

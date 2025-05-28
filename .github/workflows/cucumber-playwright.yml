@@ -105,9 +105,6 @@ jobs:
       - name: Install Chromium + deps
         run: npx playwright install --with-deps chromium
 
-      - name: Ensure test-results directory exists
-        run: mkdir -p test-results
-
       - name: Run Cucumber tests
         id: run_cucumber
         run: |
@@ -120,10 +117,6 @@ jobs:
             export PASSWORD="${PASSWORD_TEST}"
             export BASEURL="${BASEURL_TEST}"
           fi
-
-          echo "🔐 USER_NAME length: ${#USER_NAME}"
-          echo "🔐 PASSWORD length: ${#PASSWORD}"
-          echo "🔐 BASEURL: $BASEURL"
 
           TAGS="${{ github.event.inputs.cucumber_tags }}"
           ./.github/scripts/run_cucumber.sh "$TAGS"
