@@ -2,7 +2,7 @@
 set -euo pipefail
 
 TAGS_INPUT="$1"
-TAGS_OPTION=""
+TAGS_OPTION=()
 
 # Detecta número de núcleos disponíveis (fallback: 2)
 if command -v nproc >/dev/null; then
@@ -13,14 +13,22 @@ fi
 
 # Prepara as tags se fornecidas
 if [[ -n "$TAGS_INPUT" ]]; then
-  TAGS_OPTION="--tags \"$TAGS_INPUT\""
+  TAGS_OPTION=(--tags "$TAGS_INPUT")
 fi
 
 echo "📌 Executando testes com $PARALLEL workers..."
-echo "📌 Comando: npx cross-env ENV=test FORCE_COLOR=0 cucumber-js --config=config/cucumber.js $TAGS_OPTION --parallel $PARALLEL"
 
-# Executa testes e salva log
-eval npx cross-env ENV="$ENV" FORCE_COLOR=0 cucumber-js --config=config/cucumber.js $TAGS_OPTION --parallel $PARALLEL | tee output.log
+# Exporta variáveis de ambiente de forma robusta
+export ENV USER_NAME PASSWORD BASEURL
+
+# Debug das variáveis de ambiente
+echo "🔐 ENV: $ENV"
+echo "🔐 USER_NAME length: ${#USER_NAME}"
+echo "🔐 PASSWORD length: ${#PASSWORD}"
+echo "🔐 BASEURL: $BASEURL"
+
+# Executa os testes com Cucumber
+npx cucumber-js --config=config/cucumber.js "${TAGS_OPTION[@]}" --parallel "$PARALLEL" | tee output.log
 
 # Verifica falha
 if grep -q "failed" output.log; then

@@ -47,28 +47,31 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 60
 
-    # --- centralized environment variables ---
     env:
-      # test credentials and configuration
-      ENV: ${{ github.event.inputs.env || 'test' }}
-      USER_NAME: ${{ secrets[format('USER_NAME_{0}', github.event.inputs.env || 'test') ] }}
-      PASSWORD: ${{ secrets[format('PASSWORD_{0}', github.event.inputs.env || 'test') ] }}
-      BASEURL:  ${{ secrets[format('BASEURL_{0}', github.event.inputs.env || 'test') ] }}
+      ENV: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.env || 'test' }}
+
+      # Fixed secrets
+      USER_NAME_DEV: ${{ secrets.USER_NAME_DEV }}
+      USER_NAME_TEST: ${{ secrets.USER_NAME_TEST }}
+      PASSWORD_DEV: ${{ secrets.PASSWORD_DEV }}
+      PASSWORD_TEST: ${{ secrets.PASSWORD_TEST }}
+      BASEURL_DEV: ${{ secrets.BASEURL_DEV }}
+      BASEURL_TEST: ${{ secrets.BASEURL_TEST }}
       RESOURCE_PATH_DEPOSITO_JUDICIAL: ${{ secrets.RESOURCE_PATH_DEPOSITO_JUDICIAL }}
 
-      # ClickUp (bug reopening and reporting)
+      # ClickUp
       CLICKUP_LIST_ID: ${{ secrets.CLICKUP_LIST_ID }}
       CLICKUP_TEST_LIST_ID: ${{ secrets.CLICKUP_TEST_LIST_ID }}
       CLICKUP_API_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
       CLICKUP_TOKEN: ${{ secrets.CLICKUP_API_TOKEN }}
       LIST_ID: ${{ secrets.CLICKUP_TEST_LIST_ID }}
 
-      # GitHub context for identifying this run
+      # GitHub context
       GITHUB_SERVER_URL: ${{ github.server_url }}
       GITHUB_REPOSITORY: ${{ github.repository }}
       GITHUB_RUN_ID: ${{ github.run_id }}
 
-      # for QA Report to external docs
+      # QA Report
       WORKSPACE_ID: ${{ secrets.WORKSPACE_ID }}
       DOC_ID:       ${{ secrets.DOC_ID }}
       PAGE_ID:      ${{ secrets.PAGE_ID }}
@@ -78,8 +81,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Make scripts executable
-        run: |
-          chmod +x .github/scripts/*.sh
+        run: chmod +x .github/scripts/*.sh
 
       - name: Setup Node.js (with npm cache)
         uses: actions/setup-node@v4
@@ -91,6 +93,7 @@ jobs:
         run: |
           npm ci
           npm install --save-dev @types/node
+
       - name: Cache Playwright Chromium
         uses: actions/cache@v3
         with:
@@ -98,21 +101,32 @@ jobs:
           key: ${{ runner.os }}-playwright-chromium-browsers-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-playwright-chromium-browsers-
+
       - name: Install Chromium + deps
         run: npx playwright install --with-deps chromium
 
       - name: Ensure test-results directory exists
         run: mkdir -p test-results
 
-      - name: Prepare environment file
-        run: ./.github/scripts/prepare_env.sh
-
-      - name: Detect CPU cores
-        run: echo "⚙️ $(nproc) núcleos disponíveis para execução paralela"
-
       - name: Run Cucumber tests
         id: run_cucumber
-        run: ./.github/scripts/run_cucumber.sh "${{ github.event.inputs.cucumber_tags }}"
+        run: |
+          if [ "$ENV" = "dev" ]; then
+            export USER_NAME="${USER_NAME_DEV}"
+            export PASSWORD="${PASSWORD_DEV}"
+            export BASEURL="${BASEURL_DEV}"
+          else
+            export USER_NAME="${USER_NAME_TEST}"
+            export PASSWORD="${PASSWORD_TEST}"
+            export BASEURL="${BASEURL_TEST}"
+          fi
+
+          echo "🔐 USER_NAME length: ${#USER_NAME}"
+          echo "🔐 PASSWORD length: ${#PASSWORD}"
+          echo "🔐 BASEURL: $BASEURL"
+
+          TAGS="${{ github.event.inputs.cucumber_tags }}"
+          ./.github/scripts/run_cucumber.sh "$TAGS"
 
       - name: Create or reopen bug in ClickUp for each failed scenario
         if: failure()
@@ -149,8 +163,8 @@ jobs:
           path: test-results
 
       - name: Make scripts executable
-        run: |
-          chmod +x .github/scripts/*.sh
+        run: chmod +x .github/scripts/*.sh
+
       - name: Prepare HTML & JSON for Pages
         run: ./.github/scripts/prepare_reports.sh
 

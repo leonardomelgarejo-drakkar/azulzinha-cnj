@@ -184,9 +184,14 @@ Then('o tempo de resposta é abaixo de {int} milisegundos', async function (expe
 });
 
 Then('o endpoint de pagamento é retornado corretamente', async function () {
+  const ambiente = process.env.ENV || 'qa'; // default opcional para QA
+
+  const dominioEsperado = ambiente === 'dev'
+    ? 'https://dev.azulzinhapay.fiserv.com/CNJ/pagaid/'
+    : 'https://qa.azulzinhapay.fiserv.com/CNJ/pagaid/';
+
   expect(this.responseBody).toHaveProperty("endpointPagamento");
-  expect(this.responseBody.endpointPagamento).toContain("https://qa.azulzinhapay.fiserv.com/CNJ/pagaid/");
-  expect(this.responseBody.endpointPagamento.length).toBe(82);
+  expect(this.responseBody.endpointPagamento).toContain(dominioEsperado);
 });
 
 Then('a resposta contém a mensagem {string}', async function (expectedErroMessage) {

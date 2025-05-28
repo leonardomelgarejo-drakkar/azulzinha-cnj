@@ -4,6 +4,9 @@ export const getHeaders = () => {
   const authRaw = `${user}:${pass}`;
   const authBase64 = Buffer.from(authRaw).toString("base64");
 
+  console.log("user: " + user.length);
+  console.log("pass: " + pass.length);
+
   return {
     "Accept": "application/json",
     "Content-Type": "application/json",

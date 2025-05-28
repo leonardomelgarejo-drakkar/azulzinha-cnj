@@ -15,13 +15,13 @@ export async function cadastrarDepositoJudicial(
   world?: any
 ): Promise<{ response: APIResponse; responseBody: any; requestTime: number }> {
 
-  const baseURL = process.env.BASEURL;
-  const resourcePath = process.env.RESOURCE_PATH_DEPOSITO_JUDICIAL;
-  const url = `${baseURL}${resourcePath}`;
+  const baseURL = process.env.BASEURL || "";
+  const resourcePath = process.env.RESOURCE_PATH_DEPOSITO_JUDICIAL || "";
+  const fullUrl = `${baseURL}${resourcePath}`;
 
-  const context: APIRequestContext = await request.newContext({
-    baseURL: url,
-  });
+  console.log("fullUrl: " + fullUrl.length);
+
+  const context: APIRequestContext = await request.newContext(); // sem baseURL
 
   let response: APIResponse;
   let requestTime = 0;
@@ -29,7 +29,7 @@ export async function cadastrarDepositoJudicial(
   for (let i = 0; i < quantidadeExecucoes; i++) {
     const requestStartTime = performance.now();
 
-    response = await context.post("", {
+    response = await context.post(fullUrl, {
       headers: getHeaders(),
       data: requestData,
       timeout: 30 * 1000,
