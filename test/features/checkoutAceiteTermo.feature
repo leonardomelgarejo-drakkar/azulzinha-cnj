@@ -50,7 +50,7 @@
        And clica no botão enviar
       Then tela é recarregada com a mensagem 'Erro no pagamento'
 
-  @skip @ui @checkout @pagamento-pos-aceite @pagamento-aprovado @1x
+  @ui @checkout @pagamento-pos-aceite @pagamento-aprovado @1x
   Scenario: 04-Pagamento realizado em 1x com sucesso após aceite
      Given que a cobrança de depósito judicial fixo de valor R$'525.31' foi cadastrada com sucesso
       When o usuário acessa o link do cadastro judicial

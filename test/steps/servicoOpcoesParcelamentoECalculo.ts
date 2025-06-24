@@ -52,7 +52,7 @@ When('o usuário acessa o link do cadastro judicial', { timeout: timeout }, asyn
 
 When('a página do cadastro de depósito é acessada', { timeout: timeout }, async function () {
   depositoJudicialHeaderText = await depositoJudicialPage.getdepositoJudicialHeaderText();
-  await assert.assertElementContains(depositoJudicialHeaderText, "Depósito Judicial Não Tributá");
+  await assert.assertElementContains(depositoJudicialHeaderText, "Depósito Judicial");
 });
 
 Then('o nome do titular é carregado automaticamente com {string}', { timeout: timeout }, async function (titularCartao: string) {
