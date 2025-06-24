@@ -38,29 +38,37 @@ Before({ tags: "@ui" },async function ({ pickle }) {
 })
 
 After({ tags: "@ui" }, async function ({ pickle }) {
-  if (!fixture.page || !fixture.page.screenshot) {
-    console.warn(`⚠️ Página não inicializada — pulando pós-condições de teardown para: ${pickle.name}`);
-    return;
-  }
+  try {
+    if (!fixture.page) {
+      console.warn(`⚠️ Página não inicializada — pulando teardown para: ${pickle.name}`);
+      return;
+    }
 
-  const path = `./test-results/report/trace/${pickle.id}.zip`;
-  const img = await fixture.page.screenshot({
-    path: `./test-results/report/screenshots/${pickle.name}.png`,
-    type: "png"
-  });
-  const videoPath = await fixture.page.video()?.path();
+    const path = `./test-results/report/trace/${pickle.id}.zip`;
 
-  await context.tracing.stop({ path });
-  await fixture.page.close();
-  await context.close();
+    const img = await fixture.page.screenshot({
+      path: `./test-results/report/screenshots/${pickle.name}.png`,
+      type: "png"
+    });
 
-  this.attach(img, "image/png");
+    const videoPath = await fixture.page.video()?.path();
 
-  if (videoPath) {
-    const video = fs.readFileSync(videoPath);
-    await this.attach(video, "video/webm");
+    await context.tracing.stop({ path });
+    await fixture.page.close();
+    await context.close();
+
+    this.attach(img, "image/png");
+
+    if (videoPath) {
+      const video = await fs.promises.readFile(videoPath);
+      this.attach(video, "video/webm");
+    }
+
+  } catch (e) {
+    console.warn(`⚠️ Falha no After hook para "${pickle.name}": ${e}`);
   }
 });
+
 
 AfterAll(async function () {
   await browser.close();

@@ -16,7 +16,7 @@ export default class DepositoJudicialPage {
     buttonRoleType: "button",
     optionRoleType: "option",
     checkboxRole: "checkbox",
-    depositoJudicialHeaderText: "Depósito Judicial Não Tributá",
+    depositoJudicialHeaderText: "Depósito Judicial",
     toolTipConvenienciaText: "O que é o serviço de conveniê",
     valor: "R$1.001,51",
     numeroProcessoText: "Processo N°:",
@@ -57,8 +57,8 @@ export default class DepositoJudicialPage {
     testIdDetalhePagamento: "DetalhePagamento",
     testIdPagamentoAprovado: "ConcluidoPagamento",
     testIdTelefoneDepositante: "TelefoneDepositante",
-    umaParcelaLocator: "#b4-b3-l1-11_0-Checkbox1",
-    duasParcelasLocator: "#b4-b3-l1-11_1-Checkbox1",
+    umaParcelaLocator: "#b4-b3-l1-7_0-Checkbox1",
+    duasParcelasLocator: "#b4-b3-l1-7_1-Checkbox1",
     challengeFrameLocator: "iframe[name='challengeFrame']",
     resultFrameLocator: "#result"
   }
