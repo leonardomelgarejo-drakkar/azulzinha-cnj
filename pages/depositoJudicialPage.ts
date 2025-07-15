@@ -57,8 +57,8 @@ export default class DepositoJudicialPage {
     testIdDetalhePagamento: "DetalhePagamento",
     testIdPagamentoAprovado: "ConcluidoPagamento",
     testIdTelefoneDepositante: "TelefoneDepositante",
-    umaParcelaLocator: "#b4-b3-l1-7_0-Checkbox1",
-    duasParcelasLocator: "#b4-b3-l1-7_1-Checkbox1",
+    umaParcelaLocator: "ParcelaLocator1",
+    duasParcelasLocator: "ParcelaLocator2",
     challengeFrameLocator: "iframe[name='challengeFrame']",
     resultFrameLocator: "#result"
   }
@@ -126,7 +126,7 @@ export default class DepositoJudicialPage {
   }
 
   async selecionaQuantidadeDeParcelas1x() {
-    const text = this.base.waitAndClick(this.Elements.umaParcelaLocator);
+    const text = this.base.waitAndClickByTestId(this.Elements.umaParcelaLocator);
 
     return await text;
   }
@@ -140,7 +140,7 @@ export default class DepositoJudicialPage {
   }
 
   async selecionaQuantidadeDeParcelas2x() {
-    this.base.waitAndClick(this.Elements.duasParcelasLocator);
+    this.base.waitAndClickByTestId(this.Elements.duasParcelasLocator);
   }
 
   async clicaContinuar() {

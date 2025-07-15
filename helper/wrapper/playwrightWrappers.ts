@@ -8,12 +8,19 @@ export default class PlaywrightWrapper {
         await this.page.goto(url, { waitUntil: "domcontentloaded" });
     }
 
-    async waitAndClick(locator: string) {
-        const element = this.page.locator(locator);
-        await element.waitFor({ state: "visible" });
-        await element.scrollIntoViewIfNeeded();
-        await element.click();
-    }
+async waitAndClick(locator: string) {
+    const element = this.page.locator(locator);
+    await element.waitFor({ state: "visible" });
+    await element.scrollIntoViewIfNeeded();
+    await element.click();
+}
+
+async waitAndClickByTestId(locator: string) {
+    const element = this.page.getByTestId(locator);
+    await element.waitFor({ state: "visible" });
+    await element.scrollIntoViewIfNeeded();
+    await element.click();
+}
 
 async waitAndClickWithChallenge(locator1: string, locator2: string, option: string) {
     const frame = await this.page.locator(locator1).contentFrame();
